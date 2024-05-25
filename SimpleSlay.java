@@ -21,14 +21,16 @@ class Player {
     int health;
     int block;
     int energy;
+    int baseAttack;
     ArrayList<Card> deck;
     ArrayList<Card> hand;
     ArrayList<Card> discardPile;
 
-    Player(int health) {
+    Player(int health, int baseAttack) {
         this.health = health;
         this.block = 0;
         this.energy = 3;
+        this.baseAttack = baseAttack;
         this.deck = new ArrayList<>();
         this.hand = new ArrayList<>();
         this.discardPile = new ArrayList<>();
@@ -79,12 +81,16 @@ class Enemy {
     int damage;
     int block;
     int turnCounter;
+    int attackCounter;
+    int blockCounter;
 
     Enemy(int health, int damage) {
         this.health = health;
         this.damage = damage;
         this.block = 0;
         this.turnCounter = 0;
+        this.attackCounter = 0;
+        this.blockCounter = 0;
     }
 
     void takeDamage(int damage) {
@@ -97,12 +103,15 @@ class Enemy {
 
     void act(Player player) {
         turnCounter++;
-        if (turnCounter % 5 == 0) {
-            health += 5;
-            System.out.println("Enemy heals for 5 health!");
-        } else if (turnCounter % 3 == 0) {
+        attackCounter++;
+        if (attackCounter % 3 == 0) {
             block += 5;
+            blockCounter++;
             System.out.println("Enemy gains 5 block!");
+            if (blockCounter % 5 == 0) {
+                health += 5;
+                System.out.println("Enemy heals for 5 health!");
+            }
         } else {
             System.out.println("Enemy attacks you for " + damage + " damage!");
             player.takeDamage(damage);
@@ -116,7 +125,7 @@ public class SimpleSlay {
         Random random = new Random();
 
         // Initialize player
-        Player player = new Player(30);
+        Player player = new Player(30, 2);
         // Create 15 cards and add to player's deck
         for (int i = 0; i < 10; i++) {
             player.addCardToDeck(new Card("Strike", 6, 0, 1));
@@ -130,7 +139,7 @@ public class SimpleSlay {
         for (int level = 1; level <= 3; level++) {
             System.out.println("\n--- Level " + level + " ---");
             int enemyHealth = 20 + level * 10;
-            int enemyDamage = 5 + level * 2;
+            int enemyDamage = 3 + level;  // Lowered enemy attack power
             Enemy enemy = new Enemy(enemyHealth, enemyDamage);
 
             // Each level combat
@@ -142,41 +151,47 @@ public class SimpleSlay {
                 // Draw cards to hand
                 player.drawCards(5);
 
-                // Show hand
-                System.out.println("Choose a card to play:");
-                for (int i = 0; i < player.hand.size(); i++) {
-                    Card card = player.hand.get(i);
-                    System.out.println((i + 1) + ". " + card.name + " (Damage: " + card.damage + ", Block: " + card.block + ", Energy: " + card.energyCost + ")");
+                // Player's turn
+                while (player.energy > 0 && player.health > 0 && enemy.health > 0) {
+                    // Show hand
+                    System.out.println("Choose a card to play:");
+                    for (int i = 0; i < player.hand.size(); i++) {
+                        Card card = player.hand.get(i);
+                        System.out.println((i + 1) + ". " + card.name + " (Damage: " + card.damage + ", Block: " + card.block + ", Energy: " + card.energyCost + ")");
+                    }
+
+                    // Player chooses a card
+                    int choice = scanner.nextInt() - 1;
+                    if (choice < 0 || choice >= player.hand.size()) {
+                        System.out.println("Invalid choice. Try again.");
+                        continue;
+                    }
+
+                    Card chosenCard = player.hand.get(choice);
+                    if (player.energy >= chosenCard.energyCost) {
+                        player.energy -= chosenCard.energyCost;
+                        enemy.takeDamage(chosenCard.damage + player.baseAttack);
+                        player.block += chosenCard.block;
+                        System.out.println("You played " + chosenCard.name);
+                    } else {
+                        System.out.println("Not enough energy. Choose another card.");
+                        continue;
+                    }
+
+                    if (enemy.health <= 0) {
+                        System.out.println("You defeated the enemy!");
+                        break;
+                    }
+
+                    player.hand.remove(choice);  // Remove the card from hand
                 }
 
-                // Player chooses a card
-                int choice = scanner.nextInt() - 1;
-                if (choice < 0 || choice >= player.hand.size()) {
-                    System.out.println("Invalid choice. Try again.");
-                    continue;
-                }
-
-                Card chosenCard = player.hand.get(choice);
-                if (player.energy >= chosenCard.energyCost) {
-                    player.energy -= chosenCard.energyCost;
-                    enemy.takeDamage(chosenCard.damage);
-                    player.block += chosenCard.block;
-                    System.out.println("You played " + chosenCard.name);
-                } else {
-                    System.out.println("Not enough energy. Choose another card.");
-                    continue;
-                }
-
-                if (enemy.health <= 0) {
-                    System.out.println("You defeated the enemy!");
-                    break;
-                }
-
-                enemy.act(player);
-
-                if (player.health <= 0) {
-                    System.out.println("You have been defeated!");
-                    return;
+                if (enemy.health > 0) {
+                    enemy.act(player);
+                    if (player.health <= 0) {
+                        System.out.println("You have been defeated!");
+                        return;
+                    }
                 }
 
                 player.endTurn();
