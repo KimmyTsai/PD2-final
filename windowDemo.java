@@ -59,7 +59,7 @@ public class windowDemo extends JFrame {
         // 按鈕的點擊事件
         btn1.addActionListener(e -> imagePanel.setVisible(true));
         
-        this.setTitle("背景圖設定");
+        this.setTitle("Final");
         this.setSize(1920, 1080); // 設定窗體大小
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setResizable(false);
