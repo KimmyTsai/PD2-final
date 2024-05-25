@@ -194,7 +194,11 @@ public class SimpleSlay {
                     }
                 }
 
+                // End of player's turn, reset energy and block
                 player.endTurn();
+
+                // Draw new hand
+                player.drawCards(5);
             }
 
             // Heal player before next level
