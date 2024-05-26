@@ -72,7 +72,16 @@ public class SimpleSlay {
                     Card chosenCard = player.hand.get(choice);
                     if (player.energy >= chosenCard.energyCost) {
                         player.energy -= chosenCard.energyCost;
-                        chosenCard.use(player, enemy);
+                        if (chosenCard.name.equals("Muscle")) {
+                            player.useMuscle();
+                            System.out.println("You used Muscle! Base attack increased by 2 for 1 turn.");
+                        } else if (chosenCard.name.equals("Combust")) {
+                            player.health -= 1;
+                            enemy.takeDamage(chosenCard.damage);
+                            System.out.println("You used Combust! Dealt 5 damage to all enemies and lost 1 health.");
+                        } else {
+                            chosenCard.use(player, enemy);
+                        }
                         player.discardPile.add(chosenCard);  // Add used card to discard pile
                     } else {
                         System.out.println("Not enough energy. Choose another card.");

@@ -28,33 +28,38 @@ class Player {
         deck.add(card);
     }
 
-    void refillHand() {
-        while (hand.size() < 5 && !deck.isEmpty()) {
-            hand.add(deck.remove(0));
-        }
-        if (deck.isEmpty()) {
-            Collections.shuffle(discardPile);
-            deck.addAll(discardPile);
-            discardPile.clear();
+    void drawCards(int numCards) {
+        for (int i = 0; i < numCards; i++) {
+            if (deck.isEmpty()) {
+                reshuffleDiscardPileIntoDeck();
+            }
+            if (!deck.isEmpty()) {
+                hand.add(deck.remove(0));
+            }
         }
     }
 
-    void useMuscle() {
-        baseAttack += 2;
-        muscleTurns = 1;
+    void refillHand() {
+        drawCards(5 - hand.size());
+    }
+
+    void reshuffleDiscardPileIntoDeck() {
+        Collections.shuffle(discardPile);
+        deck.addAll(discardPile);
+        discardPile.clear();
     }
 
     void endTurn() {
         energy = 3;
         block = 0;
-        if (muscleTurns > 0) {
-            muscleTurns--;
-            if (muscleTurns == 0) {
-                baseAttack -= 2;
-            }
-        }
         discardPile.addAll(hand);
         hand.clear();
+        refillHand();
+    }
+
+    void useMuscle() {
+        baseAttack += 2;
+        muscleTurns = 1;
     }
 
     void takeDamage(int damage) {
