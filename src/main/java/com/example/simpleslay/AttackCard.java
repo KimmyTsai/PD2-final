@@ -1,3 +1,4 @@
+// 卡牌:攻擊
 package com.example.simpleslay;
 
 import java.util.List;

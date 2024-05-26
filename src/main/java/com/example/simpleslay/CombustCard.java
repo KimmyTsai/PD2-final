@@ -1,3 +1,4 @@
+// 卡牌:自燃
 package com.example.simpleslay;
 
 import java.util.List;
