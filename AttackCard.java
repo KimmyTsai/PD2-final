@@ -1,5 +1,4 @@
 // 卡牌:攻擊
-
 import java.util.List;
 
 import com.example.simpleslay.Card;

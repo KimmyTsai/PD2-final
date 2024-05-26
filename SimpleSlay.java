@@ -1,9 +1,3 @@
-<<<<<<< HEAD
-package com.example.simpleslay;
-
-=======
-//5/26
->>>>>>> c027c75773aad575e919bf6202f1dec1a07593b7
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;

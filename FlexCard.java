@@ -1,6 +1,4 @@
 // 卡牌:肌肉活性
-
-
 import java.util.List;
 
 import com.example.simpleslay.Card;

@@ -1,6 +1,4 @@
 // 卡牌:防禦
-
-
 import java.util.List;
 
 import com.example.simpleslay.Card;

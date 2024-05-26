@@ -1,6 +1,4 @@
 // 卡牌:重擊
-
-
 import java.util.List;
 
 import com.example.simpleslay.Card;

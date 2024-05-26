@@ -1,6 +1,4 @@
 // 卡牌:自燃
-
-
 import java.util.List;
 
 import com.example.simpleslay.Card;
