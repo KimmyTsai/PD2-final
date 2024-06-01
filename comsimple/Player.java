@@ -9,6 +9,8 @@ class Player {
     int energy;
     int baseAttack;
     int muscleTurns;
+    boolean isVulnerable;
+    boolean isWeak;
     ArrayList<Card> deck;
     ArrayList<Card> hand;
     ArrayList<Card> discardPile;
@@ -19,6 +21,8 @@ class Player {
         this.energy = 3;
         this.baseAttack = baseAttack;
         this.muscleTurns = 0;
+        this.isVulnerable = false;
+        this.isWeak = false;
         this.deck = new ArrayList<>();
         this.hand = new ArrayList<>();
         this.discardPile = new ArrayList<>();
@@ -63,6 +67,10 @@ class Player {
     }
 
     void takeDamage(int damage) {
+        if (isVulnerable) {
+            damage *= 1.5;
+            isVulnerable = false;
+        }
         int effectiveDamage = damage - block;
         if (effectiveDamage > 0) {
             health -= effectiveDamage;
@@ -82,5 +90,13 @@ class Player {
 
     int getEffectiveAttack() {
         return baseAttack;
+    }
+
+    void applyVulnerable() {
+        isVulnerable = true;
+    }
+
+    void applyWeak() {
+        isWeak = true;
     }
 }
