@@ -6,129 +6,129 @@ import java.util.Scanner;
 
 public class SimpleSlay {
     public static ArrayList<Enemy> enemies;
+    private static Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-
         // Initialize player
         Player player = new Player(80, 0);
         // Create cards and add to player's deck
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 5; i++) {
             player.addCardToDeck(new AttackCard("Strike", 6, 0, 1));
         }
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 4; i++) {
             player.addCardToDeck(new DefendCard("Defend", 0, 5, 1));
         }
-        player.addCardToDeck(new FlexCard("Muscle", 0, 0, 0));
-        player.addCardToDeck(new CombustCard("Combust", 5, 0, 0));
-        player.addCardToDeck(new BashCard("Bash", 8, 0, 2));
+        for (int i = 0; i < 2; i++) {
+            player.addCardToDeck(new FlexCard("Muscle", 0, 0, 0));
+            player.addCardToDeck(new CombustCard("Combust", 5, 0, 0));
+            player.addCardToDeck(new BashCard("Bash", 8, 0, 2));
+        }
 
         Collections.shuffle(player.deck);
 
-        // Start the game with four levels
-        String[] enemyNames = {"python", "java", "javascript", "fortran"};
+        // Start the game with three levels
+        String[] enemyNames = {"python", "java", "javascript"};
         enemies = new ArrayList<>();
-        for (int level = 0; level < 4; level++) {
-            String enemyName = enemyNames[level];
+        for (int level = 0; level < 2; level++) {
             System.out.println("\n--- Level " + (level + 1) + " ---");
-            int enemyHealth = 20 + (level + 1) * 10;
-            int enemyDamage = 5 + (level + 1) * 2;
-            Enemy enemy = new Enemy(enemyName, enemyHealth, enemyDamage);
-            enemies.add(enemy);
 
-            int turnCounter = 0;
-
-            // Each level combat
-            while (player.health > 0 && enemy.health > 0) {
-                turnCounter++;
-                System.out.println("\nLevel " + (level + 1) + " - Turn " + turnCounter);
-                System.out.println("Your HP: " + player.health);
-                System.out.println(enemy.name + " HP: " + enemy.health);
-                System.out.println(enemy.name + " Block: " + enemy.block);
-                System.out.println("Your energy: " + player.energy);
-                if (player.muscleTurns > 0) {
-                    System.out.println("Muscle effect: " + player.muscleTurns + " turns remaining");
-                }
-
-                // Draw cards to hand
-                player.refillHand();
-
-                // Player's turn
-                while (player.energy > 0 && player.health > 0 && enemy.health > 0) {
-                    // Show hand
-                    System.out.println("Choose a card to play:");
-                    for (int i = 0; i < player.hand.size(); i++) {
-                        Card card = player.hand.get(i);
-                        System.out.println((i + 1) + ". " + card.name + " (Damage: " + card.damage + ", Block: " + card.block + ", Energy: " + card.energyCost + ")");
-                    }
-
-                    // Player chooses a card
-                    int choice = scanner.nextInt() - 1;
-                    if (choice < 0 || choice >= player.hand.size()) {
-                        System.out.println("Invalid choice. Try again.");
-                        continue;
-                    }
-
-                    Card chosenCard = player.hand.get(choice);
-                    if (player.energy >= chosenCard.energyCost) {
-                        player.energy -= chosenCard.energyCost;
-                        if (chosenCard.name.equals("Muscle")) {
-                            player.useMuscle();
-                            System.out.println("You used Muscle! Base attack increased by 2 for 1 turn.");
-                        } else if (chosenCard.name.equals("Combust")) {
-                            player.health -= 1;
-                            enemy.takeDamage(chosenCard.damage);
-                            System.out.println("You used Combust! Dealt 5 damage to all enemies and lost 1 health.");
-                        } else {
-                            chosenCard.use(player, enemy);
-                        }
-                        player.discardPile.add(chosenCard);  // Add used card to discard pile
-                    } else {
-                        System.out.println("Not enough energy. Choose another card.");
-                        continue;
-                    }
-
-                    if (enemy.health <= 0) {
-                        System.out.println("You defeated " + enemy.name + "!");
-                        break;
-                    }
-
-                    player.hand.remove(choice);  // Remove the card from hand
-                }
-
-                if (enemy.health > 0) {
-                    enemy.act(player);
-                    if (player.health <= 0) {
-                        System.out.println("You have been defeated!");
-                        return;
-                    }
-                }
-
-                // End of player's turn, reset energy and block
-                player.endTurn();
+            if (level == 0) {
+                // First level with one enemy
+                Enemy python = new Enemy("python", 30, 7);
+                enemies.add(python);
+                combat(player, new Enemy[]{python});
+            } else {
+                // Second level with two enemies
+                Enemy java = new Enemy("java", 40, 8);
+                Enemy javascript = new Enemy("javascript", 40, 8);
+                enemies.add(java);
+                enemies.add(javascript);
+                combat(player, new Enemy[]{java, javascript});
             }
 
-            // Heal player before next level
-            player.health = Math.min(player.health + 10, 80);
-            System.out.println("You have been healed. Your current HP: " + player.health);
+            if (player.health <= 0) {
+                System.out.println("You have been defeated!");
+                return;
+            }
+
+            // Rest stop between levels
+            System.out.println("\n--- Rest Stop ---");
+            System.out.println("You can heal or choose a new card:");
+            System.out.println("1. Heal 20 HP");
+            System.out.println("2. Choose a new card (Muscle, Combust, Bash)");
+
+            int choice = scanner.nextInt();
+            if (choice == 1) {
+                player.health = Math.min(player.health + 20, 80);
+                System.out.println("You have been healed. Your current HP: " + player.health);
+            } else if (choice == 2) {
+                System.out.println("Choose a card to add to your deck:");
+                System.out.println("1. Muscle");
+                System.out.println("2. Combust");
+                System.out.println("3. Bash");
+
+                int cardChoice = scanner.nextInt();
+                if (cardChoice == 1) {
+                    player.addCardToDeck(new FlexCard("Muscle", 0, 0, 0));
+                } else if (cardChoice == 2) {
+                    player.addCardToDeck(new CombustCard("Combust", 5, 0, 0));
+                } else if (cardChoice == 3) {
+                    player.addCardToDeck(new BashCard("Bash", 8, 0, 2));
+                }
+            }
+            Collections.shuffle(player.deck);
         }
 
-        // Level 5 with two enemies
-        System.out.println("\n--- Level 5 ---");
-        Enemy cPlusPlus = new Enemy("c++", 80, 10);
-        Enemy c = new Enemy("c", 80, 10);
+        // Third level with two bosses
+        System.out.println("\n--- Level 3 (Boss) ---");
+        Enemy cPlusPlus = new Enemy("c++", 80, 10) {
+            @Override
+            void act(Player player) {
+                if (this.turnCounter % 2 == 1) {
+                    super.act(player);
+                    player.applyWeak();
+                } else {
+                    heal(this.ally, 10);
+                }
+                this.turnCounter++;
+            }
+        };
+        Enemy c = new Enemy("c", 80, 10) {
+            @Override
+            void act(Player player) {
+                super.act(player);
+                player.applyVulnerable();
+            }
+        };
+        // 設置盟友
+        cPlusPlus.ally = c;
+        c.ally = cPlusPlus;
         enemies.add(cPlusPlus);
         enemies.add(c);
+
+        combat(player, new Enemy[]{cPlusPlus, c});
+
+        if (player.health > 0) {
+            System.out.println("Congratulations! You have completed all levels.");
+        } else {
+            System.out.println("You have been defeated!");
+        }
+        scanner.close();
+    }
+
+    public static void combat(Player player, Enemy[] enemies) {
         int turnCounter = 0;
 
-        while (player.health > 0 && (cPlusPlus.health > 0 || c.health > 0)) {
+        while (player.health > 0 && enemiesStillAlive(enemies)) {
             turnCounter++;
-            System.out.println("\nLevel 5 - Turn " + turnCounter);
+            System.out.println("\nTurn " + turnCounter);
             System.out.println("Your HP: " + player.health);
-            System.out.println("c++ HP: " + cPlusPlus.health);
-            System.out.println("c HP: " + c.health);
-            System.out.println("c++ Block: " + cPlusPlus.block);
-            System.out.println("c Block: " + c.block);
+            for (Enemy enemy : enemies) {
+                if (enemy.health > 0) {
+                    System.out.println(enemy.name + " HP: " + enemy.health);
+                    System.out.println(enemy.name + " Block: " + enemy.block);
+                }
+            }
             System.out.println("Your energy: " + player.energy);
             if (player.muscleTurns > 0) {
                 System.out.println("Muscle effect: " + player.muscleTurns + " turns remaining");
@@ -138,7 +138,7 @@ public class SimpleSlay {
             player.refillHand();
 
             // Player's turn
-            while (player.energy > 0 && player.health > 0 && (cPlusPlus.health > 0 || c.health > 0)) {
+            while (player.energy > 0 && player.health > 0 && enemiesStillAlive(enemies)) {
                 // Show hand
                 System.out.println("Choose a card to play:");
                 for (int i = 0; i < player.hand.size(); i++) {
@@ -161,13 +161,17 @@ public class SimpleSlay {
                         System.out.println("You used Muscle! Base attack increased by 2 for 1 turn.");
                     } else if (chosenCard.name.equals("Combust")) {
                         player.health -= 1;
-                        cPlusPlus.takeDamage(chosenCard.damage);
-                        c.takeDamage(chosenCard.damage);
+                        for (Enemy enemy : enemies) {
+                            enemy.takeDamage(chosenCard.damage);
+                        }
                         System.out.println("You used Combust! Dealt 5 damage to all enemies and lost 1 health.");
-                    } else if (cPlusPlus.health > 0) {
-                        chosenCard.use(player, cPlusPlus);
                     } else {
-                        chosenCard.use(player, c);
+                        for (Enemy enemy : enemies) {
+                            if (enemy.health > 0) {
+                                chosenCard.use(player, enemy);
+                                break;
+                            }
+                        }
                     }
                     player.block += chosenCard.block;
                     System.out.println("You played " + chosenCard.name);
@@ -177,19 +181,18 @@ public class SimpleSlay {
                     continue;
                 }
 
-                if (cPlusPlus.health <= 0 && c.health <= 0) {
-                    System.out.println("You defeated c++ and c!");
+                if (!enemiesStillAlive(enemies)) {
+                    System.out.println("You defeated all enemies!");
                     break;
                 }
 
                 player.hand.remove(choice);  // Remove the card from hand
             }
 
-            if (cPlusPlus.health > 0) {
-                cPlusPlus.act(player);
-            }
-            if (c.health > 0) {
-                c.act(player);
+            for (Enemy enemy : enemies) {
+                if (enemy.health > 0) {
+                    enemy.act(player);
+                }
             }
 
             if (player.health <= 0) {
@@ -200,8 +203,14 @@ public class SimpleSlay {
             // End of player's turn, reset energy and block
             player.endTurn();
         }
+    }
 
-        System.out.println("Congratulations! You have completed all levels.");
-        scanner.close();
+    public static boolean enemiesStillAlive(Enemy[] enemies) {
+        for (Enemy enemy : enemies) {
+            if (enemy.health > 0) {
+                return true;
+            }
+        }
+        return false;
     }
 }
