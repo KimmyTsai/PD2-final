@@ -4,25 +4,27 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 class Player {
+    String name;
     int health;
     int block;
     int energy;
     int baseAttack;
     int muscleTurns;
-    boolean isVulnerable;
-    boolean isWeak;
+    int vulnerableTurns;
+    int weakTurns;
     ArrayList<Card> deck;
     ArrayList<Card> hand;
     ArrayList<Card> discardPile;
 
     Player(int health, int baseAttack) {
+        this.name = "Player";
         this.health = health;
         this.block = 0;
         this.energy = 3;
         this.baseAttack = baseAttack;
         this.muscleTurns = 0;
-        this.isVulnerable = false;
-        this.isWeak = false;
+        this.vulnerableTurns = 0;
+        this.weakTurns = 0;
         this.deck = new ArrayList<>();
         this.hand = new ArrayList<>();
         this.discardPile = new ArrayList<>();
@@ -59,6 +61,18 @@ class Player {
         discardPile.addAll(hand);
         hand.clear();
         refillHand();
+        if (muscleTurns > 0) {
+            muscleTurns--;
+            if (muscleTurns == 0) {
+                baseAttack -= 2;
+            }
+        }
+        if (vulnerableTurns > 0) {
+            vulnerableTurns--;
+        }
+        if (weakTurns > 0) {
+            weakTurns--;
+        }
     }
 
     void useMuscle() {
@@ -67,11 +81,10 @@ class Player {
     }
 
     void takeDamage(int damage) {
-        if (isVulnerable) {
-            damage *= 1.5;
-            isVulnerable = false;
-        }
         int effectiveDamage = damage - block;
+        if (vulnerableTurns > 0) {
+            effectiveDamage *= 1.5;  // 增加易伤效果
+        }
         if (effectiveDamage > 0) {
             health -= effectiveDamage;
             block = 0;
@@ -92,11 +105,11 @@ class Player {
         return baseAttack;
     }
 
-    void applyVulnerable() {
-        isVulnerable = true;
+    void applyVulnerable(int turns) {
+        vulnerableTurns += turns;
     }
 
-    void applyWeak() {
-        isWeak = true;
+    void applyWeak(int turns) {
+        weakTurns += turns;
     }
 }

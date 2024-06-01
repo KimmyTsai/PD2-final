@@ -1,17 +1,14 @@
 package comsimple;
 
-class Vulnerable {
-    int duration;
+public class Vulnerable {
+    int vulnerableDuration;
 
-    Vulnerable(int duration) {
-        this.duration = duration;
+    Vulnerable(int vulnerableDuration) {
+        this.vulnerableDuration = vulnerableDuration;
     }
 
-    void apply(Player player) {
-        player.isVulnerable = true;
-    }
-
-    void remove(Player player) {
-        player.isVulnerable = false;
+    void apply(Enemy enemy) {
+        enemy.isVulnerable = true;
+        enemy.vulnerableDuration = vulnerableDuration;
     }
 }

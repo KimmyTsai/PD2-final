@@ -6,9 +6,10 @@ import java.util.Scanner;
 
 public class SimpleSlay {
     public static ArrayList<Enemy> enemies;
-    private static Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
         // Initialize player
         Player player = new Player(80, 0);
         // Create cards and add to player's deck
@@ -26,108 +27,41 @@ public class SimpleSlay {
 
         Collections.shuffle(player.deck);
 
-        // Start the game with three levels
-        String[] enemyNames = {"python", "java", "javascript"};
-        enemies = new ArrayList<>();
-        for (int level = 0; level < 2; level++) {
-            System.out.println("\n--- Level " + (level + 1) + " ---");
+        // Level 1
+        System.out.println("Entering Level 1");
+        Enemy python = new Enemy("python", 30, 7);
+        combat(player, new Enemy[]{python}, scanner, 1);
 
-            if (level == 0) {
-                // First level with one enemy
-                Enemy python = new Enemy("python", 30, 7);
-                enemies.add(python);
-                combat(player, new Enemy[]{python});
-            } else {
-                // Second level with two enemies
-                Enemy java = new Enemy("java", 40, 8);
-                Enemy javascript = new Enemy("javascript", 40, 8);
-                enemies.add(java);
-                enemies.add(javascript);
-                combat(player, new Enemy[]{java, javascript});
-            }
+        // Level 2
+        System.out.println("Entering Level 2");
+        Enemy java = new Enemy("java", 40, 9);
+        Enemy javascript = new Enemy("javascript", 40, 9);
+        combat(player, new Enemy[]{java, javascript}, scanner, 2);
 
-            if (player.health <= 0) {
-                System.out.println("You have been defeated!");
-                return;
-            }
+        // Resting station before Level 3
+        rest(player, scanner);
 
-            // Rest stop between levels
-            System.out.println("\n--- Rest Stop ---");
-            System.out.println("You can heal or choose a new card:");
-            System.out.println("1. Heal 20 HP");
-            System.out.println("2. Choose a new card (Muscle, Combust, Bash)");
-
-            int choice = scanner.nextInt();
-            if (choice == 1) {
-                player.health = Math.min(player.health + 20, 80);
-                System.out.println("You have been healed. Your current HP: " + player.health);
-            } else if (choice == 2) {
-                System.out.println("Choose a card to add to your deck:");
-                System.out.println("1. Muscle");
-                System.out.println("2. Combust");
-                System.out.println("3. Bash");
-
-                int cardChoice = scanner.nextInt();
-                if (cardChoice == 1) {
-                    player.addCardToDeck(new FlexCard("Muscle", 0, 0, 0));
-                } else if (cardChoice == 2) {
-                    player.addCardToDeck(new CombustCard("Combust", 5, 0, 0));
-                } else if (cardChoice == 3) {
-                    player.addCardToDeck(new BashCard("Bash", 8, 0, 2));
-                }
-            }
-            Collections.shuffle(player.deck);
-        }
-
-        // Third level with two bosses
-        System.out.println("\n--- Level 3 (Boss) ---");
-        Enemy cPlusPlus = new Enemy("c++", 80, 10) {
-            @Override
-            void act(Player player) {
-                if (this.turnCounter % 2 == 1) {
-                    super.act(player);
-                    player.applyWeak();
-                } else {
-                    heal(this.ally, 10);
-                }
-                this.turnCounter++;
-            }
-        };
-        Enemy c = new Enemy("c", 80, 10) {
-            @Override
-            void act(Player player) {
-                super.act(player);
-                player.applyVulnerable();
-            }
-        };
-        // 設置盟友
+        // Level 3 (Boss)
+        System.out.println("Entering Level 3");
+        Enemy cPlusPlus = new Enemy("c++", 80, 10);
+        Enemy c = new Enemy("c", 80, 10);
         cPlusPlus.ally = c;
         c.ally = cPlusPlus;
-        enemies.add(cPlusPlus);
-        enemies.add(c);
+        combat(player, new Enemy[]{cPlusPlus, c}, scanner, 3);
 
-        combat(player, new Enemy[]{cPlusPlus, c});
-
-        if (player.health > 0) {
-            System.out.println("Congratulations! You have completed all levels.");
-        } else {
-            System.out.println("You have been defeated!");
-        }
+        System.out.println("Congratulations! You have completed all levels.");
         scanner.close();
     }
 
-    public static void combat(Player player, Enemy[] enemies) {
+    public static void combat(Player player, Enemy[] enemies, Scanner scanner, int level) {
         int turnCounter = 0;
 
         while (player.health > 0 && enemiesStillAlive(enemies)) {
             turnCounter++;
-            System.out.println("\nTurn " + turnCounter);
+            System.out.println("\nLevel " + level + " - Turn " + turnCounter);
             System.out.println("Your HP: " + player.health);
             for (Enemy enemy : enemies) {
-                if (enemy.health > 0) {
-                    System.out.println(enemy.name + " HP: " + enemy.health);
-                    System.out.println(enemy.name + " Block: " + enemy.block);
-                }
+                System.out.println(enemy.name + " HP: " + enemy.health + " (" + enemy.nextAction() + ")");
             }
             System.out.println("Your energy: " + player.energy);
             if (player.muscleTurns > 0) {
@@ -139,6 +73,11 @@ public class SimpleSlay {
 
             // Player's turn
             while (player.energy > 0 && player.health > 0 && enemiesStillAlive(enemies)) {
+                if (player.hand.isEmpty()) {
+                    System.out.println("No cards left in hand. Ending turn.");
+                    break;
+                }
+
                 // Show hand
                 System.out.println("Choose a card to play:");
                 for (int i = 0; i < player.hand.size(); i++) {
@@ -146,7 +85,6 @@ public class SimpleSlay {
                     System.out.println((i + 1) + ". " + card.name + " (Damage: " + card.damage + ", Block: " + card.block + ", Energy: " + card.energyCost + ")");
                 }
 
-                // Player chooses a card
                 int choice = scanner.nextInt() - 1;
                 if (choice < 0 || choice >= player.hand.size()) {
                     System.out.println("Invalid choice. Try again.");
@@ -155,53 +93,44 @@ public class SimpleSlay {
 
                 Card chosenCard = player.hand.get(choice);
                 if (player.energy >= chosenCard.energyCost) {
-                    player.energy -= chosenCard.energyCost;
-                    if (chosenCard.name.equals("Muscle")) {
-                        player.useMuscle();
-                        System.out.println("You used Muscle! Base attack increased by 2 for 1 turn.");
-                    } else if (chosenCard.name.equals("Combust")) {
-                        player.health -= 1;
-                        for (Enemy enemy : enemies) {
-                            enemy.takeDamage(chosenCard.damage);
-                        }
-                        System.out.println("You used Combust! Dealt 5 damage to all enemies and lost 1 health.");
-                    } else {
-                        for (Enemy enemy : enemies) {
-                            if (enemy.health > 0) {
-                                chosenCard.use(player, enemy);
-                                break;
-                            }
-                        }
+                    System.out.println("Choose an enemy to target:");
+                    for (int i = 0; i < enemies.length; i++) {
+                        System.out.println((i + 1) + ". " + enemies[i].name + " (HP: " + enemies[i].health + ")");
                     }
-                    player.block += chosenCard.block;
-                    System.out.println("You played " + chosenCard.name);
-                    player.discardPile.add(chosenCard);  // Add used card to discard pile
+                    int targetChoice = scanner.nextInt() - 1;
+                    if (targetChoice < 0 || targetChoice >= enemies.length) {
+                        System.out.println("Invalid target choice. Try again.");
+                        continue;
+                    }
+
+                    player.energy -= chosenCard.energyCost;
+                    chosenCard.use(player, enemies[targetChoice]);
+
+                    if (enemies[targetChoice].health <= 0) {
+                        System.out.println(enemies[targetChoice].name + " has been defeated!");
+                    }
+
+                    player.hand.remove(choice);
                 } else {
                     System.out.println("Not enough energy. Choose another card.");
-                    continue;
                 }
-
-                if (!enemiesStillAlive(enemies)) {
-                    System.out.println("You defeated all enemies!");
-                    break;
-                }
-
-                player.hand.remove(choice);  // Remove the card from hand
             }
 
+            // End player's turn
+            player.endTurn();
+
+            // Enemies' turn
             for (Enemy enemy : enemies) {
                 if (enemy.health > 0) {
                     enemy.act(player);
                 }
             }
+        }
 
-            if (player.health <= 0) {
-                System.out.println("You have been defeated!");
-                return;
-            }
-
-            // End of player's turn, reset energy and block
-            player.endTurn();
+        if (player.health <= 0) {
+            System.out.println("You have been defeated...");
+        } else {
+            System.out.println("You have defeated all enemies!");
         }
     }
 
@@ -212,5 +141,63 @@ public class SimpleSlay {
             }
         }
         return false;
+    }
+
+    public static void rest(Player player, Scanner scanner) {
+        System.out.println("You have reached a resting station.");
+        System.out.println("1. Heal (recover 20 HP)");
+        System.out.println("2. Remove a card from your deck");
+        System.out.println("3. Add a special card to your deck");
+
+        int choice = scanner.nextInt();
+
+        switch (choice) {
+            case 1:
+                player.health += 20;
+                System.out.println("You have recovered 20 HP. Your current HP is " + player.health);
+                break;
+            case 2:
+                System.out.println("Choose a card to remove:");
+                for (int i = 0; i < player.deck.size(); i++) {
+                    System.out.println((i + 1) + ". " + player.deck.get(i).name);
+                }
+                int removeChoice = scanner.nextInt() - 1;
+                if (removeChoice >= 0 && removeChoice < player.deck.size()) {
+                    Card removedCard = player.deck.remove(removeChoice);
+                    System.out.println("You have removed " + removedCard.name + " from your deck.");
+                } else {
+                    System.out.println("Invalid choice.");
+                }
+                break;
+            case 3:
+                System.out.println("Choose a special card to add:");
+                System.out.println("1. Muscle");
+                System.out.println("2. Combust");
+                System.out.println("3. Bash");
+
+                int specialChoice = scanner.nextInt();
+                Card specialCard;
+                switch (specialChoice) {
+                    case 1:
+                        specialCard = new FlexCard("Muscle", 0, 0, 0);
+                        break;
+                    case 2:
+                        specialCard = new CombustCard("Combust", 5, 0, 0);
+                        break;
+                    case 3:
+                        specialCard = new BashCard("Bash", 8, 0, 2);
+                        break;
+                    default:
+                        System.out.println("Invalid choice.");
+                        return;
+                }
+
+                player.addCardToDeck(specialCard);
+                System.out.println("You added " + specialCard.name + " to your deck.");
+                break;
+            default:
+                System.out.println("Invalid choice.");
+                break;
+        }
     }
 }

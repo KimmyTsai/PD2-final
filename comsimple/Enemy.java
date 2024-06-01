@@ -5,18 +5,23 @@ public class Enemy {
     int health;
     int block;
     int damage;
-    int turnCounter;
-    int vulnerableDuration;
     Enemy ally;
+    int actionCounter;
+    boolean isVulnerable;
+    int vulnerableDuration;
+    boolean isWeak;
+    int weakDuration;
 
     Enemy(String name, int health, int damage) {
         this.name = name;
         this.health = health;
         this.block = 0;
         this.damage = damage;
-        this.turnCounter = 1;
-        this.ally = null;
-        this.vulnerableDuration = 0; // 初始化為0
+        this.actionCounter = 0;
+        this.isVulnerable = false;
+        this.vulnerableDuration = 0;
+        this.isWeak = false;
+        this.weakDuration = 0;
     }
 
     void takeDamage(int damage) {
@@ -30,31 +35,57 @@ public class Enemy {
     }
 
     void act(Player player) {
-        if (turnCounter % 3 == 0) {
-            block += 10;
-            System.out.println(name + " is blocking.");
+        if (name.equals("c++") && actionCounter % 2 == 1) {
+            ally.heal(10);
+            System.out.println(name + " heals " + ally.name + " for 10 HP.");
         } else {
-            int finalDamage = damage;
-            if (vulnerableDuration > 0) {
-                finalDamage *= 1.5;
-                vulnerableDuration--;
+            player.takeDamage(damage);
+            if (name.equals("c")) {
+                player.applyVulnerable(1);
+                System.out.println(player.name + " is now Vulnerable.");
+            } else if (name.equals("c++")) {
+                player.applyWeak(1);
+                System.out.println(player.name + " is now Weak.");
             }
-            player.takeDamage(finalDamage);
-            System.out.println(name + " attacked for " + finalDamage + " damage.");
         }
-        turnCounter++;
+        actionCounter++;
+        updateEffects();
     }
 
-    void heal(Enemy ally, int healAmount) {
-        if (ally.health > 0) {
-            ally.health += healAmount;
-            System.out.println(name + " healed " + ally.name + " for " + healAmount + " health.");
+    void heal(int amount) {
+        health += amount;
+    }
+
+    String nextAction() {
+        if (name.equals("c++") && actionCounter % 2 == 0) {
+            return "Healing " + ally.name + " for 10 HP";
+        } else if (actionCounter % 3 == 2) {
+            return "Blocking for " + damage;
+        } else {
+            return "Attacking for " + damage;
         }
     }
 
     void applyEffect(Vulnerable vulnerable) {
-        vulnerable.apply(null);
-        vulnerableDuration = vulnerable.duration;
-        System.out.println(name + " is now vulnerable for " + vulnerableDuration + " turns.");
+        vulnerable.apply(this);
+    }
+
+    void applyEffect(Weak weak) {
+        weak.apply(this);
+    }
+
+    void updateEffects() {
+        if (isVulnerable) {
+            vulnerableDuration--;
+            if (vulnerableDuration <= 0) {
+                isVulnerable = false;
+            }
+        }
+        if (isWeak) {
+            weakDuration--;
+            if (weakDuration <= 0) {
+                isWeak = false;
+            }
+        }
     }
 }
