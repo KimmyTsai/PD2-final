@@ -10,6 +10,12 @@ public class windowDemo extends JFrame {
     private JButton btn2;
     private ImageIcon homeImg;
     private ImageIcon mapImg;
+    private ImageIcon passImg;
+    private JLabel iconLabel1;
+    private JLabel iconLabel2;
+    private JLabel iconLabel3;
+    private JLabel iconLabel4;
+    private int[] pass =  new int[4];
     
     public windowDemo() {
         init();
@@ -17,9 +23,24 @@ public class windowDemo extends JFrame {
 
     @SuppressWarnings("removal")
     private void init() {
+
+        this.setTitle("FINAL");
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setResizable(false);
+        this.setVisible(true);
+
+        // 設置全屏
+        GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+        if (gd.isFullScreenSupported()) {
+            gd.setFullScreenWindow(this);
+        } else {
+            System.err.println("Full screen not supported");
+            this.setSize(1920, 1080); //視窗大小，不能全屏就1920*1080
+        }
+
         btn1 = new JButton("How To Play");
         btn2 = new JButton("Start");
-
+        
         // 主畫面
         homeImg = new ImageIcon("wallpaper.jpg");
 
@@ -58,20 +79,7 @@ public class windowDemo extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 levelChoose();
         }});
-        
-        this.setTitle("FINAL");
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setResizable(false);
-        this.setVisible(true);
 
-        // 設置全屏
-        GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
-        if (gd.isFullScreenSupported()) {
-            gd.setFullScreenWindow(this);
-        } else {
-            System.err.println("Full screen not supported");
-            this.setSize(1920, 1080); //視窗大小，不能全屏就1920*1080
-        }
     }
     
     private void levelChoose() { //關卡選擇頁面
@@ -103,51 +111,133 @@ public class windowDemo extends JFrame {
 
     @SuppressWarnings("removal")
     private void addCustomIcons() {
+        final JDialog dialog = new JDialog();
+        dialog.setAlwaysOnTop(true);
         // 第一關
-        JLabel iconLabel1 = new JLabel(new ImageIcon("icon1.png"));
-        iconLabel1.setBounds(450, 200, 64, 64);
+        
+        if(pass[0] != 1){
+            iconLabel1 = new JLabel(new ImageIcon("icon1.png"));
+            iconLabel1.setBounds(420, 200,200, 200);
+        }
+        else{
+            iconLabel1.setVisible(true);
+        }
+
         iconLabel1.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                JOptionPane.showMessageDialog(null, "Icon 1 clicked!");
+                if(pass[0] != 1){
+                    imgLabel.setIcon(scaleImageIcon(new ImageIcon("level1.jpg"), getScreenWidth(), getScreenHeight()));
+                    imgLabel.repaint();
+                    hideIcon();
+                    iconLabel1.setIcon(new ImageIcon("icon1_new.png"));
+                    //關卡內容
+                    //
+                    pass[0] = 1;
+                    levelChoose();
+                }
+                // else{
+                //     JOptionPane.showMessageDialog(null, "Level 1 passed!");
+                // }
+                
             }
         });
         this.getLayeredPane().add(iconLabel1, new Integer(Integer.MIN_VALUE + 2));
 
         // 第二關
-        JLabel iconLabel2 = new JLabel(new ImageIcon("icon1.png"));
-        iconLabel2.setBounds(600, 500, 64, 64);
+        if(pass[1] != 1){
+            iconLabel2 = new JLabel(new ImageIcon("icon1.png"));
+            iconLabel2.setBounds(550, 500, 200, 200);
+        }
+        else{
+            iconLabel2.setVisible(true);
+        }
         iconLabel2.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                JOptionPane.showMessageDialog(null, "Icon 2 clicked!");
+                if(pass[1] != 1 && pass[0] == 1){
+                    imgLabel.setIcon(scaleImageIcon(new ImageIcon("level1.jpg"), getScreenWidth(), getScreenHeight()));
+                    imgLabel.repaint();
+                    hideIcon();
+                    iconLabel2.setIcon(new ImageIcon("icon1_new.png"));
+                    //關卡內容
+                    //
+                    pass[1] = 1;
+                    levelChoose();
+                }
+                else{
+                    JOptionPane.showMessageDialog(null, "Please pass the previous level!");
+                }
+
             }
         });
         this.getLayeredPane().add(iconLabel2, new Integer(Integer.MIN_VALUE + 2));
 
         // 回血點
-        JLabel iconLabel3 = new JLabel(new ImageIcon("icon2.png"));
-        iconLabel3.setBounds(800, 300, 64, 64);
+        if(pass[2] != 1){
+            iconLabel3 = new JLabel(new ImageIcon("icon2.png"));
+            iconLabel3.setBounds(720, 300, 200, 200);
+        }
+        else {
+            iconLabel3.setVisible(true);
+        }
         iconLabel3.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                JOptionPane.showMessageDialog(null, "Icon 3 clicked!");
+                if(pass[2] != 1 && pass[0] == 1 && pass[1] == 1){
+                    imgLabel.setIcon(scaleImageIcon(new ImageIcon("level1.jpg"), getScreenWidth(), getScreenHeight()));
+                    imgLabel.repaint();
+                    hideIcon();
+                    iconLabel3.setIcon(new ImageIcon("icon2_new.png"));
+                    //關卡內容
+                    //
+                    pass[2] = 1;
+                    levelChoose();
+                }
+                else{
+                    JOptionPane.showMessageDialog(null, "Please pass the previous level!");
+                }
+
             }
         });
         this.getLayeredPane().add(iconLabel3, new Integer(Integer.MIN_VALUE + 2));
 
         // 王關
-        JLabel iconLabel4 = new JLabel(new ImageIcon("icon3.png"));
-        iconLabel4.setBounds(1000, 400, 100, 100);
+        if(pass[3] != 1){
+            iconLabel4 = new JLabel(new ImageIcon("icon3.png"));
+            iconLabel4.setBounds(950, 400, 200, 200);
+        }
+        else{
+            iconLabel4.setVisible(true);
+        }
         iconLabel4.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                JOptionPane.showMessageDialog(null, "Icon 4 clicked!");
+                if(pass[3] != 1 && pass[0] == 1 && pass[1] == 1 && pass[2] == 1){
+                    imgLabel.setIcon(scaleImageIcon(new ImageIcon("level1.jpg"), getScreenWidth(), getScreenHeight()));
+                    imgLabel.repaint();
+                    hideIcon();
+                    iconLabel4.setIcon(new ImageIcon("icon3_new.png"));
+                    //關卡內容
+                    //
+                    pass[3] = 1;
+                    passImg = new ImageIcon("pass.jpg");
+                    imgLabel.setIcon(scaleImageIcon(passImg, getScreenWidth(), getScreenHeight()));
+                    imgLabel.repaint();
+                }
+                else{
+                    JOptionPane.showMessageDialog(null, "Please pass the previous level!");
+                }
             }
         });
         this.getLayeredPane().add(iconLabel4, new Integer(Integer.MIN_VALUE + 2));
     }
-
+    private void hideIcon(){
+        iconLabel1.setVisible(false);
+        iconLabel2.setVisible(false);
+        iconLabel3.setVisible(false);
+        iconLabel4.setVisible(false);
+    }
     private int getScreenWidth() {
         return Toolkit.getDefaultToolkit().getScreenSize().width;
     }
