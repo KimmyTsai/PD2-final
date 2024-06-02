@@ -1,14 +1,15 @@
 package comsimple;
 
 public class Weak {
-    int weakDuration;
+    int duration;
 
-    Weak(int weakDuration) {
-        this.weakDuration = weakDuration;
+    public Weak(int duration) {
+        this.duration = duration;
     }
 
-    void apply(Enemy enemy) {
-        enemy.isWeak = true;
-        enemy.weakDuration = weakDuration;
+    public void apply(Player player) {
+        player.isWeak = true;
+        player.weakDuration = duration;
+        System.out.println(player.name + " is now Weak for " + duration + " turns.");
     }
 }

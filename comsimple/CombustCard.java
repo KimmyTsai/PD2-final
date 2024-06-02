@@ -7,7 +7,13 @@ class CombustCard extends Card {
 
     @Override
     void use(Player player, Enemy enemy) {
-        enemy.takeDamage(player.applyStrength(damage));
-        player.health -= 1;
+        for (Enemy e : SimpleSlay.enemies) {
+            e.takeDamage(damage);
+        }
+    }
+
+    @Override
+    public String toString() {
+        return name + " (Deal 5 damage to all enemies)";
     }
 }

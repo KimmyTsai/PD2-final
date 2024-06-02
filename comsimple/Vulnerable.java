@@ -1,14 +1,15 @@
 package comsimple;
 
 public class Vulnerable {
-    int vulnerableDuration;
+    int duration;
 
-    Vulnerable(int vulnerableDuration) {
-        this.vulnerableDuration = vulnerableDuration;
+    public Vulnerable(int duration) {
+        this.duration = duration;
     }
 
-    void apply(Enemy enemy) {
-        enemy.isVulnerable = true;
-        enemy.vulnerableDuration = vulnerableDuration;
+    public void apply(Player player) {
+        player.isVulnerable = true;
+        player.vulnerableDuration = duration;
+        System.out.println(player.name + " is now Vulnerable for " + duration + " turns.");
     }
 }
