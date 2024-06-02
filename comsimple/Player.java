@@ -10,21 +10,25 @@ class Player {
     int energy;
     int baseAttack;
     int muscleTurns;
-    int vulnerableTurns;
-    int weakTurns;
+    boolean isVulnerable;
+    int vulnerableDuration;
+    boolean isWeak;
+    int weakDuration;
     ArrayList<Card> deck;
     ArrayList<Card> hand;
     ArrayList<Card> discardPile;
 
-    Player(int health, int baseAttack) {
-        this.name = "Player";
+    Player(String name, int health, int baseAttack) {
+        this.name = name;
         this.health = health;
         this.block = 0;
         this.energy = 3;
         this.baseAttack = baseAttack;
         this.muscleTurns = 0;
-        this.vulnerableTurns = 0;
-        this.weakTurns = 0;
+        this.isVulnerable = false;
+        this.vulnerableDuration = 0;
+        this.isWeak = false;
+        this.weakDuration = 0;
         this.deck = new ArrayList<>();
         this.hand = new ArrayList<>();
         this.discardPile = new ArrayList<>();
@@ -65,13 +69,22 @@ class Player {
             muscleTurns--;
             if (muscleTurns == 0) {
                 baseAttack -= 2;
+                System.out.println("Muscle effect has ended. Base attack returned to normal.");
             }
         }
-        if (vulnerableTurns > 0) {
-            vulnerableTurns--;
+        if (isVulnerable) {
+            vulnerableDuration--;
+            if (vulnerableDuration == 0) {
+                isVulnerable = false;
+                System.out.println("Vulnerable effect has ended.");
+            }
         }
-        if (weakTurns > 0) {
-            weakTurns--;
+        if (isWeak) {
+            weakDuration--;
+            if (weakDuration == 0) {
+                isWeak = false;
+                System.out.println("Weak effect has ended.");
+            }
         }
     }
 
@@ -81,10 +94,10 @@ class Player {
     }
 
     void takeDamage(int damage) {
-        int effectiveDamage = damage - block;
-        if (vulnerableTurns > 0) {
-            effectiveDamage *= 1.5;  // 增加易伤效果
+        if (isVulnerable) {
+            damage = (int) (damage * 1.5);
         }
+        int effectiveDamage = damage - block;
         if (effectiveDamage > 0) {
             health -= effectiveDamage;
             block = 0;
@@ -98,6 +111,9 @@ class Player {
     }
 
     int applyStrength(int baseDamage) {
+        if (isWeak) {
+            baseDamage = (int) (baseDamage * 0.5);
+        }
         return baseDamage + baseAttack;
     }
 
@@ -105,11 +121,8 @@ class Player {
         return baseAttack;
     }
 
-    void applyVulnerable(int turns) {
-        vulnerableTurns += turns;
-    }
-
-    void applyWeak(int turns) {
-        weakTurns += turns;
+    void discardCard(Card card) {
+        hand.remove(card);
+        discardPile.add(card);
     }
 }

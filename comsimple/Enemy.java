@@ -5,87 +5,61 @@ public class Enemy {
     int health;
     int block;
     int damage;
-    Enemy ally;
-    int actionCounter;
     boolean isVulnerable;
-    int vulnerableDuration;
+    int vulnerableTurns;
     boolean isWeak;
-    int weakDuration;
+    int weakTurns;
 
     Enemy(String name, int health, int damage) {
         this.name = name;
         this.health = health;
         this.block = 0;
         this.damage = damage;
-        this.actionCounter = 0;
         this.isVulnerable = false;
-        this.vulnerableDuration = 0;
+        this.vulnerableTurns = 0;
         this.isWeak = false;
-        this.weakDuration = 0;
+        this.weakTurns = 0;
     }
 
     void takeDamage(int damage) {
-        int effectiveDamage = damage - block;
+        int effectiveDamage = isVulnerable ? (int)(damage * 1.5) : damage;
+        effectiveDamage = effectiveDamage - block;
         if (effectiveDamage > 0) {
             health -= effectiveDamage;
             block = 0;
         } else {
-            block -= damage;
+            block -= effectiveDamage;
         }
     }
 
     void act(Player player) {
-        if (name.equals("c++") && actionCounter % 2 == 1) {
-            ally.heal(10);
-            System.out.println(name + " heals " + ally.name + " for 10 HP.");
-        } else {
-            player.takeDamage(damage);
-            if (name.equals("c")) {
-                player.applyVulnerable(1);
-                System.out.println(player.name + " is now Vulnerable.");
-            } else if (name.equals("c++")) {
-                player.applyWeak(1);
-                System.out.println(player.name + " is now Weak.");
-            }
+        if (isWeak) {
+            System.out.println(name + " is weak and attacks with half damage!");
         }
-        actionCounter++;
-        updateEffects();
-    }
-
-    void heal(int amount) {
-        health += amount;
-    }
-
-    String nextAction() {
-        if (name.equals("c++") && actionCounter % 2 == 0) {
-            return "Healing " + ally.name + " for 10 HP";
-        } else if (actionCounter % 3 == 2) {
-            return "Blocking for " + damage;
-        } else {
-            return "Attacking for " + damage;
+        if (isVulnerable) {
+            System.out.println(name + " is vulnerable and takes extra damage!");
         }
+        player.takeDamage(damage);
     }
 
     void applyEffect(Vulnerable vulnerable) {
-        vulnerable.apply(this);
+        this.isVulnerable = true;
+        this.vulnerableTurns = vulnerable.duration;
+        System.out.println(name + " is now Vulnerable for " + vulnerable.duration + " turns.");
     }
 
     void applyEffect(Weak weak) {
-        weak.apply(this);
+        this.isWeak = true;
+        this.weakTurns = weak.duration;
+        System.out.println(name + " is now Weak for " + weak.duration + " turns.");
     }
 
-    void updateEffects() {
-        if (isVulnerable) {
-            vulnerableDuration--;
-            if (vulnerableDuration <= 0) {
-                isVulnerable = false;
-            }
-        }
-        if (isWeak) {
-            weakDuration--;
-            if (weakDuration <= 0) {
-                isWeak = false;
-            }
+    String getNextAction() {
+        // Example of action logic; can be customized
+        if (block > 0) {
+            return "Block for " + block + " points";
+        } else {
+            return "Attack for " + damage + " points";
         }
     }
 }
