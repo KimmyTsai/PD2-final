@@ -165,7 +165,7 @@ public class windowDemo extends JFrame {
                     pass[1] = 1;
                     levelChoose();
                 }
-                else{
+                else if(pass[1] != 1){
                     JOptionPane.showMessageDialog(null, "Please pass the previous level!");
                 }
 
@@ -194,7 +194,7 @@ public class windowDemo extends JFrame {
                     pass[2] = 1;
                     levelChoose();
                 }
-                else{
+                else if(pass[2] != 1){
                     JOptionPane.showMessageDialog(null, "Please pass the previous level!");
                 }
 
@@ -225,7 +225,7 @@ public class windowDemo extends JFrame {
                     imgLabel.setIcon(scaleImageIcon(passImg, getScreenWidth(), getScreenHeight()));
                     imgLabel.repaint();
                 }
-                else{
+                else if(pass[3] != 1){
                     JOptionPane.showMessageDialog(null, "Please pass the previous level!");
                 }
             }
