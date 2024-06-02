@@ -41,12 +41,15 @@ public class windowDemo extends JFrame {
 
         // 設置全屏
         GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+        this.setSize(1920, 1080);
+        /*
         if (gd.isFullScreenSupported()) {
             gd.setFullScreenWindow(this);
         } else {
             System.err.println("Full screen not supported");
             this.setSize(1920, 1080); //視窗大小，不能全屏就1920*1080
         }
+        */
 
         btn1 = new JButton("How To Play");
         btn2 = new JButton("Start");
