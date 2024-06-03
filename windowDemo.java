@@ -1,6 +1,5 @@
 import java.awt.*;
 import java.awt.event.*;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -21,20 +20,31 @@ public class windowDemo extends JFrame {
     private JLabel iconLabel4;
     private List<JLabel> cardLabels = new ArrayList<>();
     private int attackNumber = 5;
-    private int defendNumber = 4;
+    private int defendNumber = 4; 
     private int bashNumber = 2;
     private int muscleNumber = 2;
     private JLabel monsterLabel;
     private JLabel manLabel;
+    private JLabel hpLabel;
+    private JLabel hpNumber;
+    private JLabel monsterhpLabel;
+    private JLabel monsterhpNumber;
+    private JLabel nextLabel;
+    private JLabel energyLabel;
     private int[] pass =  new int[4];
     private Point initialClick;
     private Point initialPosition;
     private JPanel cardPanel;
     private List<String> cardTypes = new ArrayList<>();
+    List<String> cards = new ArrayList<>();  //卡牌總表
     private int discardDeck = 0;
     private int deck;
     private JLabel discardDeckLabel;
     private JLabel deckLabel;
+    private JLabel discardDeckNumber;
+    private JLabel deckNumber;
+    private int HP = 80;
+    private int monsterHP = 20;
     public windowDemo() {
         init();
     }
@@ -164,8 +174,14 @@ public class windowDemo extends JFrame {
                     getLayeredPane().add(monsterLabel, new Integer(Integer.MIN_VALUE + 3));
 
                     manLabel = new JLabel(new ImageIcon("image/fighter.png"));
-                    manLabel.setBounds(110, 110, 500, 500);
+                    manLabel.setBounds(45, 95, 500, 500);
                     getLayeredPane().add(manLabel, new Integer(Integer.MIN_VALUE + 3));
+
+                    discardDeckNumber = new JLabel(discardDeck + "");
+                    discardDeckNumber.setFont(new Font("Arial", Font.BOLD, 25));
+                    discardDeckNumber.setForeground(Color.WHITE);
+                    getLayeredPane().add(discardDeckNumber, new Integer(Integer.MIN_VALUE + 4));
+                    discardDeckNumber.setBounds(1325, 767, 50, 50);
 
                     discardDeckLabel = new JLabel(new ImageIcon("image/棄牌堆.png"));
                     discardDeckLabel.setBounds(1300, 700, 156, 133);
@@ -174,8 +190,36 @@ public class windowDemo extends JFrame {
                     deckLabel = new JLabel(new ImageIcon("image/牌堆.png"));
                     deckLabel.setBounds(10, 700, 148, 135);
                     getLayeredPane().add(deckLabel, new Integer(Integer.MIN_VALUE + 3));
+                    
+                    deckNumber = new JLabel((attackNumber + defendNumber + bashNumber + muscleNumber) + "");
+                    deckNumber.setFont(new Font("Arial", Font.BOLD, 25));
+                    deckNumber.setForeground(Color.WHITE);
+                    getLayeredPane().add(deckNumber, new Integer(Integer.MIN_VALUE + 4));
+                    deckNumber.setBounds(113, 767, 50, 50);
+
+                    hpLabel = new JLabel(new ImageIcon("image/hp.png"));
+                    hpLabel.setBounds(180, 500, 289, 20);
+                    getLayeredPane().add(hpLabel, new Integer(Integer.MIN_VALUE + 3));
+
+                    hpNumber = new JLabel(HP + "/80");
+                    hpNumber.setFont(new Font("Arial", Font.BOLD, 25));
+                    hpNumber.setForeground(Color.WHITE);
+                    getLayeredPane().add(hpNumber, new Integer(Integer.MIN_VALUE + 4));
+                    hpNumber.setBounds(290, 485, 120, 50);
+
+                    monsterhpLabel = new JLabel(new ImageIcon("image/hp.png"));
+                    monsterhpLabel.setBounds(1120, 500, 289, 20);
+                    getLayeredPane().add(monsterhpLabel, new Integer(Integer.MIN_VALUE + 3));
+
+                    monsterhpNumber = new JLabel(monsterHP + "/20");
+                    monsterhpNumber.setFont(new Font("Arial", Font.BOLD, 25));
+                    monsterhpNumber.setForeground(Color.WHITE);
+                    getLayeredPane().add(monsterhpNumber, new Integer(Integer.MIN_VALUE + 4));
+                    monsterhpNumber.setBounds(1230, 485, 120, 50);
 
                     deck = showRandomCards();
+                    deckNumber.setText(deck + "");
+
                     //
                     pass[0] = 1;
                     //levelChoose();
@@ -314,12 +358,26 @@ public class windowDemo extends JFrame {
             public void mouseReleased(MouseEvent e) {
                 boolean collided = false;
                 for (int i = 0; i < cardLabels.size(); i++) {
+                    System.out.println(cardLabels.size());
                     JLabel otherLabel = cardLabels.get(i);
                     String otherLabelType = cardTypes.get(i);
                     if (label != otherLabel && label.getBounds().intersects(monsterLabel.getBounds())) {
                         collided = true;
-                        JOptionPane.showMessageDialog(null, labelType + " collided with monster " + "!");
 
+                        cards.remove(labelType);
+                        // 移除
+                        cardPanel.remove(label);
+                        //cardLabels.remove(label);
+                        //cardTypes.remove(labelType); //有問題
+
+                        int countLabelName = Collections.frequency(cards, labelType);
+                        JOptionPane.showMessageDialog(null, labelType + " 碰撞到怪物\n" +
+                        labelType + " 總共 " + countLabelName + " 張\n");
+
+                        label.setVisible(false);
+                        System.out.println(cards);
+                        discardDeck++;
+                        discardDeckNumber.setText(discardDeck + "");
                         label.setLocation(initialPosition);
                         break;
                     }
@@ -333,7 +391,7 @@ public class windowDemo extends JFrame {
 
     @SuppressWarnings("removal")
     private int showRandomCards() {
-        List<String> cards = new ArrayList<>();
+
         // 添加卡片到列表
         for (int i = 0; i < attackNumber; i++) {
             cards.add("image/attack.png");
@@ -356,7 +414,7 @@ public class windowDemo extends JFrame {
         cardLabels.clear();
         cardTypes.clear();
         for (int i = 0; i < 5; i++) {
-            JLabel cardLabel = new JLabel(new ImageIcon(cards.get(i)));
+            JLabel cardLabel = new JLabel(new ImageIcon(cards.get(i))); //手牌
             String cardType = cards.get(i);
             moveObject(cardLabel, cardType);
             cardLabel.setBounds(170 + i * 210, getScreenHeight() - 330, 220, 288); // 设置卡片位置和大小
