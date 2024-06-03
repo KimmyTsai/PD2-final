@@ -8,6 +8,6 @@ public class DefendCard extends Card {
     @Override
     void use(Player player, Enemy enemy) {
         player.gainBlock(block);
-        player.discardCard(this);  // 丢到弃牌堆
+        // 不在这里直接丢弃卡片
     }
 }
