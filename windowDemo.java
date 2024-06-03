@@ -20,13 +20,21 @@ public class windowDemo extends JFrame {
     private JLabel iconLabel3;
     private JLabel iconLabel4;
     private List<JLabel> cardLabels = new ArrayList<>();
+    private int attackNumber = 5;
+    private int defendNumber = 4;
+    private int bashNumber = 2;
+    private int muscleNumber = 2;
     private JLabel monsterLabel;
     private JLabel manLabel;
     private int[] pass =  new int[4];
     private Point initialClick;
     private Point initialPosition;
     private JPanel cardPanel;
-    
+    private List<String> cardTypes = new ArrayList<>();
+    private int discardDeck = 0;
+    private int deck;
+    private JLabel discardDeckLabel;
+    private JLabel deckLabel;
     public windowDemo() {
         init();
     }
@@ -152,14 +160,22 @@ public class windowDemo extends JFrame {
                     iconLabel1.setIcon(new ImageIcon("image/icon1_new.png"));
                     //關卡內容
                     monsterLabel = new JLabel(new ImageIcon("image/monster1.png"));
-                    monsterLabel.setBounds(1050, 150, 400, 400);
+                    monsterLabel.setBounds(1050, 100, 400, 400);
                     getLayeredPane().add(monsterLabel, new Integer(Integer.MIN_VALUE + 3));
 
                     manLabel = new JLabel(new ImageIcon("image/fighter.png"));
                     manLabel.setBounds(110, 110, 500, 500);
                     getLayeredPane().add(manLabel, new Integer(Integer.MIN_VALUE + 3));
 
-                    showRandomCards();
+                    discardDeckLabel = new JLabel(new ImageIcon("image/棄牌堆.png"));
+                    discardDeckLabel.setBounds(1300, 700, 156, 133);
+                    getLayeredPane().add(discardDeckLabel, new Integer(Integer.MIN_VALUE + 3));
+
+                    deckLabel = new JLabel(new ImageIcon("image/牌堆.png"));
+                    deckLabel.setBounds(10, 700, 148, 135);
+                    getLayeredPane().add(deckLabel, new Integer(Integer.MIN_VALUE + 3));
+
+                    deck = showRandomCards();
                     //
                     pass[0] = 1;
                     //levelChoose();
@@ -267,7 +283,7 @@ public class windowDemo extends JFrame {
         iconLabel4.setVisible(false);
     }
 
-    private void moveObject(JLabel label) { //拖動物件
+    private void moveObject(JLabel label, String labelType) { //拖動物件
         label.addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
                 initialPosition = label.getLocation();
@@ -297,10 +313,14 @@ public class windowDemo extends JFrame {
             @Override
             public void mouseReleased(MouseEvent e) {
                 boolean collided = false;
-                for (JLabel otherLabel : cardLabels) {
+                for (int i = 0; i < cardLabels.size(); i++) {
+                    JLabel otherLabel = cardLabels.get(i);
+                    String otherLabelType = cardTypes.get(i);
                     if (label != otherLabel && label.getBounds().intersects(monsterLabel.getBounds())) {
                         collided = true;
-                        JOptionPane.showMessageDialog(null, "Attack!");
+                        JOptionPane.showMessageDialog(null, labelType + " collided with monster " + "!");
+
+                        label.setLocation(initialPosition);
                         break;
                     }
                 }
@@ -312,19 +332,19 @@ public class windowDemo extends JFrame {
     }
 
     @SuppressWarnings("removal")
-    private void showRandomCards() {
+    private int showRandomCards() {
         List<String> cards = new ArrayList<>();
         // 添加卡片到列表
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < attackNumber; i++) {
             cards.add("image/attack.png");
         }
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < defendNumber; i++) {
             cards.add("image/defend.png");
         }
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < bashNumber; i++) {
             cards.add("image/bash.png");
         }
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < muscleNumber; i++) {
             cards.add("image/muscle.png");
         }
 
@@ -334,15 +354,19 @@ public class windowDemo extends JFrame {
         // 显示前五张卡片
         cardPanel.removeAll();
         cardLabels.clear();
+        cardTypes.clear();
         for (int i = 0; i < 5; i++) {
             JLabel cardLabel = new JLabel(new ImageIcon(cards.get(i)));
-            moveObject(cardLabel);
-            cardLabel.setBounds(150 + i * 210, getScreenHeight() - 330, 220, 288); // 设置卡片位置和大小
+            String cardType = cards.get(i);
+            moveObject(cardLabel, cardType);
+            cardLabel.setBounds(170 + i * 210, getScreenHeight() - 330, 220, 288); // 设置卡片位置和大小
             this.getLayeredPane().add(cardLabel, new Integer(Integer.MIN_VALUE + 4));
             cardLabels.add(cardLabel);
+            cardTypes.add(cardType);
         }
         cardPanel.revalidate();
         cardPanel.repaint();
+        return cards.size();
     }
 
     private int getScreenWidth() {
