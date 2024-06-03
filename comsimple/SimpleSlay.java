@@ -22,12 +22,10 @@ public class SimpleSlay {
         for (int i = 0; i < 2; i++) {
             player.addCardToDeck(new FlexCard("Muscle (增加2點基礎攻擊力，持續1回合)", 0, 0, 0));
             player.addCardToDeck(new CombustCard("Combust (對所有敵人造成5點傷害，自己損失1點生命)", 5, 0, 0));
-            player.addCardToDeck(new BashCard("Bash (造成8點傷害，使敵人虚弱2回合)", 8, 0, 2));
+            player.addCardToDeck(new BashCard("Bash (造成8點傷害，使敵人虛弱2回合)", 8, 0, 2));
         }
 
         Collections.shuffle(player.deck);
-
-       
 
         // Start the game with three levels
         String[] enemyNames = {"python", "java", "javascript"};
@@ -35,11 +33,15 @@ public class SimpleSlay {
         for (int level = 0; level < 3; level++) {
             System.out.println("\n--- Level " + (level + 1) + " ---");
             if (level == 0) {
-                enemies.add(new Enemy(enemyNames[level], 30, 7));
-            } else {
-                enemies.add(new Enemy(enemyNames[level], 40, 10));
-                enemies.add(new Enemy(enemyNames[level + 1], 40, 10));
-            }
+                enemies.add(new Enemy(enemyNames[level], 10, 6));
+            } else if (level == 1) {
+                enemies.add(new Enemy(enemyNames[level], 20, 10));
+                enemies.add(new Enemy(enemyNames[level + 1], 20, 10));
+            } /*else if (level == 2) {
+                enemies.add(new Enemy(enemyNames[level], 50, 12));
+                enemies.add(new Enemy(enemyNames[level - 1], 50, 12));
+            }*/
+
 
             int turnCounter = 0;
 
@@ -50,7 +52,7 @@ public class SimpleSlay {
 
                 for (Enemy enemy : enemies) {
                     if (enemy.health > 0) {
-                        System.out.println(enemy.name + " HP: " + enemy.health + " (" + enemy.getNextAction() + ")");
+                        System.out.println(enemy.name + " HP: " + enemy.health + " (" + enemy.getNextAction(turnCounter) + ")");
                     }
                 }
 
@@ -90,42 +92,54 @@ public class SimpleSlay {
                     Card chosenCard = player.hand.get(choice);
                     if (player.energy >= chosenCard.energyCost) {
                         player.energy -= chosenCard.energyCost;
-                        if (chosenCard.name.contains("Muscle")) {
-                            player.useMuscle();
-                            System.out.println("你使用了 Muscle! 基礎攻擊力增加2，持續1回合.");
-                        } else if (chosenCard.name.contains("Combust")) {
-                            player.health -= 1;
-                            for (Enemy enemy : enemies) {
-                                if (enemy.health > 0) {
-                                    enemy.takeDamage(chosenCard.damage);
-                                }
-                            }
-                            System.out.println("你使用了 Combust! 對所有敵人造成5點傷害，自身損失1點生命.");
-                        } else {
-                            if (chosenCard.name.contains("Defend")) {
-                                chosenCard.use(player, null);
-                            } else {
-                                System.out.println("選擇一個敵人進行攻擊:");
-                                for (int i = 0; i < enemies.size(); i++) {
-                                    if (enemies.get(i).health > 0) {
-                                        System.out.println((i + 1) + ". " + enemies.get(i).name + " (HP: " + enemies.get(i).health + ")");
+    
+                        boolean validAttack = false;
+                        while (!validAttack) {
+                            if (chosenCard.name.contains("Muscle")) {
+                                player.useMuscle();
+                                System.out.println("你使用了 Muscle! 基礎攻擊力增加2，持續1回合.");
+                                validAttack = true;
+                            } else if (chosenCard.name.contains("Combust")) {
+                                player.health -= 1;
+                                for (Enemy enemy : enemies) {
+                                    if (enemy.health > 0) {
+                                        enemy.takeDamage(chosenCard.damage);
                                     }
                                 }
-                                System.out.println("請輸入要攻擊的敵人編號:");
-                                int enemyChoice = scanner.nextInt() - 1;
-                                if (enemyChoice < 0 || enemyChoice >= enemies.size() || enemies.get(enemyChoice).health <= 0) {
-                                    System.out.println("無效選擇. 請再試一次.");
-                                    continue;
+                                System.out.println("你使用了 Combust! 對所有敵人造成5點傷害，自身損失1點生命.");
+                                validAttack = true;
+                            } else {
+                                if (chosenCard.name.contains("Defend")) {
+                                    chosenCard.use(player, null);
+                                    validAttack = true;
+                                } else {
+                                    System.out.println("選擇一個敵人進行攻擊:");
+                                    for (int i = 0; i < enemies.size(); i++) {
+                                        if (enemies.get(i).health > 0) {
+                                            System.out.println((i + 1) + ". " + enemies.get(i).name + " (HP: " + enemies.get(i).health + ")");
+                                        }
+                                    }
+                                    System.out.println("請輸入要攻擊的敵人編號:");
+                                    int enemyChoice = scanner.nextInt() - 1;
+                                    if (enemyChoice < 0 || enemyChoice >= enemies.size() || enemies.get(enemyChoice).health <= 0) {
+                                        System.out.println("無效選擇. 請再試一次.");
+                                    } else {
+                                        chosenCard.use(player, enemies.get(enemyChoice));
+                                        validAttack = true;
+                                    }
                                 }
-                                chosenCard.use(player, enemies.get(enemyChoice));
                             }
                         }
-                        player.discardPile.add(chosenCard); // Add used card to discard pile
+    
                         player.hand.remove(choice); // Remove the card from hand
+                        player.discardPile.add(chosenCard); // Add used card to discard pile
 
                         // Print remaining hand
-                    
-                        
+                        /*System.out.println("剩餘手牌:");
+                        for (int i = 0; i < player.hand.size(); i++) {
+                            Card card = player.hand.get(i);
+                            System.out.println((i + 1) + ". " + card.name + " (傷害: " + card.damage + ", 格擋: " + card.block + ", 能量消耗: " + card.energyCost + ")");
+                        }*/
                     } else {
                         System.out.println("能量不足. 選擇另一張牌.");
                     }
@@ -135,7 +149,7 @@ public class SimpleSlay {
                 if (!allEnemiesDefeated()) {
                     for (Enemy enemy : enemies) {
                         if (enemy.health > 0) {
-                            enemy.act(player);
+                            enemy.act(player, turnCounter);
                         }
                     }
                 }
@@ -151,15 +165,15 @@ public class SimpleSlay {
 
             // Between level 2 and 3, offer a rest stop
             if (level == 1) {
-                System.out.println("\n--- 休息站 ---");
-                System.out.println("你可以恢復生命並選擇一張牌添加到你的牌組.");
+                System.out.println("\n--- Rest Stop ---");
+                System.out.println("你可以治療並選擇一張卡牌加入你的牌組.");
                 player.health = Math.min(player.health + 20, 80);
-                System.out.println("你當前的 HP: " + player.health);
+                System.out.println("你的當前 HP: " + player.health);
 
-                System.out.println("選擇一張牌添加到你的牌組:");
+                System.out.println("選擇一張卡牌加入你的牌組:");
                 System.out.println("1. Muscle (增加2點基礎攻擊力，持續1回合)");
                 System.out.println("2. Combust (對所有敵人造成5點傷害，自己損失1點生命)");
-                System.out.println("3. Bash (造成8點傷害，使敵人虚弱2回合)");
+                System.out.println("3. Bash (造成8點傷害，使敵人虛弱2回合)");
 
                 int cardChoice = scanner.nextInt();
                 switch (cardChoice) {
@@ -170,32 +184,32 @@ public class SimpleSlay {
                         player.addCardToDeck(new CombustCard("Combust (對所有敵人造成5點傷害，自己損失1點生命)", 5, 0, 0));
                         break;
                     case 3:
-                        player.addCardToDeck(new BashCard("Bash (造成8點傷害，使敵人虚弱2回合)", 8, 0, 2));
+                        player.addCardToDeck(new BashCard("Bash (造成8點傷害，使敵人虛弱2回合)", 8, 0, 2));
                         break;
                     default:
-                        System.out.println("無效選擇. 未添加任何牌.");
+                        System.out.println("無效選擇. 沒有卡牌被加入.");
                 }
                 Collections.shuffle(player.deck);
             }
         }
 
-        // Level 3 with two bosses
-        System.out.println("\n--- Level 3 ---");
-        Enemy cPlusPlus = new Enemy("C++", 50, 15);
-        BossEnemy pythonBoss = new BossEnemy("Python Boss", 80, 20);
-        enemies.add(cPlusPlus);
-        enemies.add(pythonBoss);
-
-        int turnCounter = 0;
-        while (player.health > 0 && !allEnemiesDefeated()) {
-            turnCounter++;
-            System.out.println("\nLevel 3 - Turn " + turnCounter);
-
-            for (Enemy enemy : enemies) {
-                if (enemy.health > 0) {
-                    System.out.println(enemy.name + " HP: " + enemy.health + " (" + enemy.getNextAction() + ")");
-                }
-            }
+         // Level 3 with two bosses
+         System.out.println("\n--- Level 3 ---");
+         BossEnemy cPlusPlus = new BossEnemy("C++", 50, 12);
+         BossEnemy c = new BossEnemy("C Boss", 80, 12);
+         enemies.add(cPlusPlus);
+         enemies.add(c);
+ 
+         int turnCounter = 0;
+         while (player.health > 0 && !allEnemiesDefeated()) {
+             turnCounter++;
+             System.out.println("\nLevel 3 - Turn " + turnCounter);
+ 
+             for (Enemy enemy : enemies) {
+                 if (enemy.health > 0) {
+                     System.out.println(enemy.name + " HP: " + enemy.health + " (" + enemy.getNextAction(turnCounter) + ")");
+                 }
+             }
 
             System.out.println("你的 HP: " + player.health);
             System.out.println("你的能量: " + player.energy);
@@ -233,41 +247,54 @@ public class SimpleSlay {
                 Card chosenCard = player.hand.get(choice);
                 if (player.energy >= chosenCard.energyCost) {
                     player.energy -= chosenCard.energyCost;
-                    if (chosenCard.name.contains("Muscle")) {
-                        player.useMuscle();
-                        System.out.println("你使用了 Muscle! 基礎攻擊力增加2，持續1回合.");
-                    } else if (chosenCard.name.contains("Combust")) {
-                        player.health -= 1;
-                        for (Enemy enemy : enemies) {
-                            if (enemy.health > 0) {
-                                enemy.takeDamage(chosenCard.damage);
-                            }
-                        }
-                        System.out.println("你使用了 Combust! 對所有敵人造成5點傷害，自身損失1點生命.");
-                    } else {
-                        if (chosenCard.name.contains("Defend")) {
-                            chosenCard.use(player, null);
-                        } else {
-                            System.out.println("選擇一個敵人進行攻擊:");
-                            for (int i = 0; i < enemies.size(); i++) {
-                                if (enemies.get(i).health > 0) {
-                                    System.out.println((i + 1) + ". " + enemies.get(i).name + " (HP: " + enemies.get(i).health + ")");
+
+                    boolean validAttack = false;
+                    while (!validAttack) {
+                        if (chosenCard.name.contains("Muscle")) {
+                            player.useMuscle();
+                            System.out.println("你使用了 Muscle! 基礎攻擊力增加2，持續1回合.");
+                            validAttack = true;
+                        } else if (chosenCard.name.contains("Combust")) {
+                            player.health -= 1;
+                            for (Enemy enemy : enemies) {
+                                if (enemy.health > 0) {
+                                    enemy.takeDamage(chosenCard.damage);
                                 }
                             }
-                            System.out.println("請輸入要攻擊的敵人編號:");
-                            int enemyChoice = scanner.nextInt() - 1;
-                            if (enemyChoice < 0 || enemyChoice >= enemies.size() || enemies.get(enemyChoice).health <= 0) {
-                                System.out.println("無效選擇. 請再試一次.");
-                                continue;
+                            System.out.println("你使用了 Combust! 對所有敵人造成5點傷害，自身損失1點生命.");
+                            validAttack = true;
+                        } else {
+                            if (chosenCard.name.contains("Defend")) {
+                                chosenCard.use(player, null);
+                                validAttack = true;
+                            } else {
+                                System.out.println("選擇一個敵人進行攻擊:");
+                                for (int i = 0; i < enemies.size(); i++) {
+                                    if (enemies.get(i).health > 0) {
+                                        System.out.println((i + 1) + ". " + enemies.get(i).name + " (HP: " + enemies.get(i).health + ")");
+                                    }
+                                }
+                                System.out.println("請輸入要攻擊的敵人編號:");
+                                int enemyChoice = scanner.nextInt() - 1;
+                                if (enemyChoice < 0 || enemyChoice >= enemies.size() || enemies.get(enemyChoice).health <= 0) {
+                                    System.out.println("無效選擇. 請再試一次.");
+                                } else {
+                                    chosenCard.use(player, enemies.get(enemyChoice));
+                                    validAttack = true;
+                                }
                             }
-                            chosenCard.use(player, enemies.get(enemyChoice));
                         }
                     }
-                    player.discardPile.add(chosenCard); // Add used card to discard pile
-                    player.hand.remove(choice); // Remove the card from hand
 
-                    
-                  
+                    player.hand.remove(choice); // Remove the card from hand
+                    player.discardPile.add(chosenCard); // Add used card to discard pile
+
+                    // Print remaining hand
+                    /*System.out.println("剩餘手牌:");
+                    for (int i = 0; i < player.hand.size(); i++) {
+                        Card card = player.hand.get(i);
+                        System.out.println((i + 1) + ". " + card.name + " (傷害: " + card.damage + ", 格擋: " + card.block + ", 能量消耗: " + card.energyCost + ")");
+                    }*/
                 } else {
                     System.out.println("能量不足. 選擇另一張牌.");
                 }
@@ -277,7 +304,7 @@ public class SimpleSlay {
             if (!allEnemiesDefeated()) {
                 for (Enemy enemy : enemies) {
                     if (enemy.health > 0) {
-                        enemy.act(player);
+                        enemy.act(player,turnCounter);
                     }
                 }
             }
@@ -286,16 +313,16 @@ public class SimpleSlay {
             player.endTurn();
         }
 
-        if (player.health <= 0) {
-            System.out.println("你已被擊敗!");
+        if (player.health > 0) {
+            System.out.println("恭喜! 你已經擊敗了所有敵人.");
         } else {
-            System.out.println("恭喜你! 你已經擊敗了所有敵人!");
+            System.out.println("你已被擊敗!");
         }
 
         scanner.close();
     }
 
-    public static boolean allEnemiesDefeated() {
+    private static boolean allEnemiesDefeated() {
         for (Enemy enemy : enemies) {
             if (enemy.health > 0) {
                 return false;

@@ -125,4 +125,8 @@ class Player {
         hand.remove(card);
         discardPile.add(card);
     }
+    void applyWeak() {
+        isWeak = true;
+    }
+    
 }
