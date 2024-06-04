@@ -31,6 +31,7 @@ public class windowDemo extends JFrame {
     private JLabel monsterhpNumber;
     private JLabel nextLabel;
     private JLabel energyLabel;
+    private JLabel energyNumber;
     private int[] pass =  new int[4];
     private Point initialClick;
     private Point initialPosition;
@@ -45,6 +46,8 @@ public class windowDemo extends JFrame {
     private JLabel deckNumber;
     private int HP = 80;
     private int monsterHP = 20;
+    private int energy;
+    private int round = 0;
     public windowDemo() {
         init();
     }
@@ -169,56 +172,12 @@ public class windowDemo extends JFrame {
                     hideIcon();
                     iconLabel1.setIcon(new ImageIcon("image/icon1_new.png"));
                     //關卡內容
-                    monsterLabel = new JLabel(new ImageIcon("image/monster1.png"));
-                    monsterLabel.setBounds(1050, 100, 400, 400);
-                    getLayeredPane().add(monsterLabel, new Integer(Integer.MIN_VALUE + 3));
-
-                    manLabel = new JLabel(new ImageIcon("image/fighter.png"));
-                    manLabel.setBounds(45, 95, 500, 500);
-                    getLayeredPane().add(manLabel, new Integer(Integer.MIN_VALUE + 3));
-
-                    discardDeckNumber = new JLabel(discardDeck + "");
-                    discardDeckNumber.setFont(new Font("Arial", Font.BOLD, 25));
-                    discardDeckNumber.setForeground(Color.WHITE);
-                    getLayeredPane().add(discardDeckNumber, new Integer(Integer.MIN_VALUE + 4));
-                    discardDeckNumber.setBounds(1325, 767, 50, 50);
-
-                    discardDeckLabel = new JLabel(new ImageIcon("image/棄牌堆.png"));
-                    discardDeckLabel.setBounds(1300, 700, 156, 133);
-                    getLayeredPane().add(discardDeckLabel, new Integer(Integer.MIN_VALUE + 3));
-
-                    deckLabel = new JLabel(new ImageIcon("image/牌堆.png"));
-                    deckLabel.setBounds(10, 700, 148, 135);
-                    getLayeredPane().add(deckLabel, new Integer(Integer.MIN_VALUE + 3));
-                    
-                    deckNumber = new JLabel((attackNumber + defendNumber + bashNumber + muscleNumber) + "");
-                    deckNumber.setFont(new Font("Arial", Font.BOLD, 25));
-                    deckNumber.setForeground(Color.WHITE);
-                    getLayeredPane().add(deckNumber, new Integer(Integer.MIN_VALUE + 4));
-                    deckNumber.setBounds(113, 767, 50, 50);
-
-                    hpLabel = new JLabel(new ImageIcon("image/hp.png"));
-                    hpLabel.setBounds(180, 500, 289, 20);
-                    getLayeredPane().add(hpLabel, new Integer(Integer.MIN_VALUE + 3));
-
-                    hpNumber = new JLabel(HP + "/80");
-                    hpNumber.setFont(new Font("Arial", Font.BOLD, 25));
-                    hpNumber.setForeground(Color.WHITE);
-                    getLayeredPane().add(hpNumber, new Integer(Integer.MIN_VALUE + 4));
-                    hpNumber.setBounds(290, 485, 120, 50);
-
-                    monsterhpLabel = new JLabel(new ImageIcon("image/hp.png"));
-                    monsterhpLabel.setBounds(1120, 500, 289, 20);
-                    getLayeredPane().add(monsterhpLabel, new Integer(Integer.MIN_VALUE + 3));
-
-                    monsterhpNumber = new JLabel(monsterHP + "/20");
-                    monsterhpNumber.setFont(new Font("Arial", Font.BOLD, 25));
-                    monsterhpNumber.setForeground(Color.WHITE);
-                    getLayeredPane().add(monsterhpNumber, new Integer(Integer.MIN_VALUE + 4));
-                    monsterhpNumber.setBounds(1230, 485, 120, 50);
+                    energy = 3;
+                    callAllLabel();
 
                     deck = showRandomCards();
                     deckNumber.setText(deck + "");
+                    nextRound();
 
                     //
                     pass[0] = 1;
@@ -417,7 +376,7 @@ public class windowDemo extends JFrame {
             JLabel cardLabel = new JLabel(new ImageIcon(cards.get(i))); //手牌
             String cardType = cards.get(i);
             moveObject(cardLabel, cardType);
-            cardLabel.setBounds(170 + i * 210, getScreenHeight() - 330, 220, 288); // 设置卡片位置和大小
+            cardLabel.setBounds(190 + i * 210, getScreenHeight() - 330, 220, 288); // 设置卡片位置和大小
             this.getLayeredPane().add(cardLabel, new Integer(Integer.MIN_VALUE + 4));
             cardLabels.add(cardLabel);
             cardTypes.add(cardType);
@@ -426,7 +385,80 @@ public class windowDemo extends JFrame {
         cardPanel.repaint();
         return cards.size();
     }
+    @SuppressWarnings("removal")
+    private void callAllLabel(){
+        monsterLabel = new JLabel(new ImageIcon("image/monster1.png"));  //怪物
+        monsterLabel.setBounds(1050, 100, 400, 400);
+        getLayeredPane().add(monsterLabel, new Integer(Integer.MIN_VALUE + 3));
 
+        manLabel = new JLabel(new ImageIcon("image/fighter.png")); //角色
+        manLabel.setBounds(45, 95, 500, 500);
+        getLayeredPane().add(manLabel, new Integer(Integer.MIN_VALUE + 3));
+
+        discardDeckLabel = new JLabel(new ImageIcon("image/棄牌堆.png")); //棄牌堆
+        discardDeckLabel.setBounds(1300, 700, 156, 133);
+        getLayeredPane().add(discardDeckLabel, new Integer(Integer.MIN_VALUE + 3));
+
+        discardDeckNumber = new JLabel(discardDeck + ""); //棄牌堆數量
+        discardDeckNumber.setFont(new Font("Arial", Font.BOLD, 25)); 
+        discardDeckNumber.setForeground(Color.WHITE);
+        getLayeredPane().add(discardDeckNumber, new Integer(Integer.MIN_VALUE + 4));
+        discardDeckNumber.setBounds(1325, 767, 50, 50);
+
+        deckLabel = new JLabel(new ImageIcon("image/牌堆.png")); //牌堆
+        deckLabel.setBounds(10, 700, 148, 135);
+        getLayeredPane().add(deckLabel, new Integer(Integer.MIN_VALUE + 3));
+        
+        deckNumber = new JLabel((attackNumber + defendNumber + bashNumber + muscleNumber) + ""); //牌堆數量
+        deckNumber.setFont(new Font("Arial", Font.BOLD, 25));
+        deckNumber.setForeground(Color.WHITE);
+        getLayeredPane().add(deckNumber, new Integer(Integer.MIN_VALUE + 4));
+        deckNumber.setBounds(113, 767, 50, 50);
+
+        hpLabel = new JLabel(new ImageIcon("image/hp.png")); //HP
+        hpLabel.setBounds(180, 500, 289, 20);
+        getLayeredPane().add(hpLabel, new Integer(Integer.MIN_VALUE + 3));
+
+        hpNumber = new JLabel(HP + "/80"); //HP數字
+        hpNumber.setFont(new Font("Arial", Font.BOLD, 25));
+        hpNumber.setForeground(Color.WHITE);
+        getLayeredPane().add(hpNumber, new Integer(Integer.MIN_VALUE + 4));
+        hpNumber.setBounds(290, 485, 120, 50);
+
+        monsterhpLabel = new JLabel(new ImageIcon("image/hp.png")); //怪物HP
+        monsterhpLabel.setBounds(1120, 500, 289, 20);
+        getLayeredPane().add(monsterhpLabel, new Integer(Integer.MIN_VALUE + 3));
+
+        monsterhpNumber = new JLabel(monsterHP + "/20"); //怪物HP數量
+        monsterhpNumber.setFont(new Font("Arial", Font.BOLD, 25));
+        monsterhpNumber.setForeground(Color.WHITE);
+        getLayeredPane().add(monsterhpNumber, new Integer(Integer.MIN_VALUE + 4));
+        monsterhpNumber.setBounds(1230, 485, 120, 50);
+
+        nextLabel = new JLabel(new ImageIcon("image/next.png")); //結束回合
+        nextLabel.setBounds(1290, 570, 195, 83);
+        getLayeredPane().add(nextLabel, new Integer(Integer.MIN_VALUE + 4));
+
+        energyLabel = new JLabel(new ImageIcon("image/energy.png")); //能量圖示
+        energyLabel.setBounds(10, 530, 130, 131);
+        getLayeredPane().add(energyLabel, new Integer(Integer.MIN_VALUE + 4));
+
+        energyNumber = new JLabel(energy + "/3"); //能量數量
+        energyNumber.setFont(new Font("Arial", Font.BOLD, 35));
+        energyNumber.setForeground(Color.WHITE);
+        getLayeredPane().add(energyNumber, new Integer(Integer.MIN_VALUE + 5));
+        energyNumber.setBounds(52, 570, 120, 50);
+
+    }
+    private void nextRound() {
+        nextLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                JOptionPane.showMessageDialog(null, "Next Round!");
+                round ++;
+            }
+        });
+    }
     private int getScreenWidth() {
         return Toolkit.getDefaultToolkit().getScreenSize().width;
     }
