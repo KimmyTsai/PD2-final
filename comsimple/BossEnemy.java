@@ -24,13 +24,10 @@ public class BossEnemy extends Enemy {
                 block = 2;
                 System.out.println(name + " blocks for " + block + " points.");
             } else {
-                if (turnCounter % 3 == 0) {
-                    player.applyWeak(); // Apply Weak to the player
-                    System.out.println(name + " makes the player take 50% more damage next turn.");
-                } else {
+               
                     player.takeDamage(damage);
                     System.out.println(name + " attacks for " + damage + " points.");
-                }
+                
             }
         } else {
             super.act(player, turnCounter);
@@ -49,11 +46,9 @@ public class BossEnemy extends Enemy {
             if (turnCounter % 2 == 0) {
                 return "Block for 2 points";
             } else {
-                if (turnCounter % 3 == 0) {
-                    return "Make player take 50% more damage next turn";
-                } else {
+                
                     return "Attack for " + damage + " points";
-                }
+                
             }
         } else {
             return super.getNextAction(turnCounter);

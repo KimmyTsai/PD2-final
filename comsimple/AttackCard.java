@@ -8,6 +8,6 @@ public class AttackCard extends Card {
     @Override
     void use(Player player, Enemy enemy) {
         enemy.takeDamage(player.applyStrength(damage));
-        // 不在这里直接丢弃卡片
+        
     }
 }
