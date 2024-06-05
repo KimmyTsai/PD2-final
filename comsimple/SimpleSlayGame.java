@@ -22,25 +22,17 @@ public class SimpleSlayGame {
     }
 }
 
-abstract class Card {
+class AttackCard extends Card {
     String name;
     int damage;
     int block;
     int energyCost;
 
-    Card(String name, int damage, int block, int energyCost) {
+    AttackCard(String name, int damage, int block, int energyCost) {
         this.name = name;
         this.damage = damage;
         this.block = block;
         this.energyCost = energyCost;
-    }
-
-    abstract void use(Player player, Enemy enemy);
-}
-
-class AttackCard extends Card {
-    AttackCard(String name, int damage, int block, int energyCost) {
-        super(name, damage, block, energyCost);
     }
 
     @Override
@@ -50,8 +42,16 @@ class AttackCard extends Card {
 }
 
 class DefendCard extends Card {
+    String name;
+    int damage;
+    int block;
+    int energyCost;
+
     DefendCard(String name, int damage, int block, int energyCost) {
-        super(name, damage, block, energyCost);
+        this.name = name;
+        this.damage = damage;
+        this.block = block;
+        this.energyCost = energyCost;
     }
 
     @Override
@@ -61,8 +61,16 @@ class DefendCard extends Card {
 }
 
 class FlexCard extends Card {
+    String name;
+    int damage;
+    int block;
+    int energyCost;
+
     FlexCard(String name, int damage, int block, int energyCost) {
-        super(name, damage, block, energyCost);
+        this.name = name;
+        this.damage = damage;
+        this.block = block;
+        this.energyCost = energyCost;
     }
 
     @Override
@@ -77,8 +85,16 @@ class FlexCard extends Card {
 }
 
 class CombustCard extends Card {
+    String name;
+    int damage;
+    int block;
+    int energyCost;
+
     CombustCard(String name, int damage, int block, int energyCost) {
-        super(name, damage, block, energyCost);
+        this.name = name;
+        this.damage = damage;
+        this.block = block;
+        this.energyCost = energyCost;
     }
 
     @Override
@@ -95,10 +111,17 @@ class CombustCard extends Card {
 }
 
 class BashCard extends Card {
+    String name;
+    int damage;
+    int block;
+    int energyCost;
     int vulnerableDuration;
 
     BashCard(String name, int damage, int block, int vulnerableDuration) {
-        super(name, damage, block, 2);
+        this.name = name;
+        this.damage = damage;
+        this.block = block;
+        this.energyCost = 2; // 能量耗费为2
         this.vulnerableDuration = vulnerableDuration;
     }
 
@@ -112,6 +135,10 @@ class BashCard extends Card {
     public String toString() {
         return name + " (Deal " + damage + " damage and apply " + vulnerableDuration + " turn(s) of Vulnerable)";
     }
+}
+
+abstract class Card {
+    abstract void use(Player player, Enemy enemy);
 }
 
 class Player {
