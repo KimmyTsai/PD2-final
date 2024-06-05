@@ -24,15 +24,14 @@ public class Enemy {
     }
 
     void takeDamage(int damage) {
-        int effectiveDamage = isVulnerable ? (int)(damage * 1.5) : damage;
-        //
         if (turnCounter % 2 == 0) {
             block = 2;
-            
-        }
-        if (turnCounter % 2 == 1) {
+        } else {
             block = 0;
         }
+        
+        int effectiveDamage = isVulnerable ? (int)(damage * 1.5) : damage;
+        //
         //
         effectiveDamage -= block;
         if (effectiveDamage > 0) {
@@ -49,7 +48,7 @@ public class Enemy {
             System.out.println(name + " is weak and attacks with half damage!");
         }
         if (isVulnerable) {
-            System.out.println(name + " is vulnerable and takes extra damage!");
+            System.out.println(name + " is vulnerable!");
         }
         if (turnCounter % 2 == 0) {
             block = 2;

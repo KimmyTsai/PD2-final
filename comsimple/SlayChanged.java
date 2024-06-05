@@ -4,8 +4,38 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Scanner;
 
-public class SimpleSlay {
+public class SlayChanged {
     public static ArrayList<Enemy> enemies;
+
+    public static class CardType {
+        public int damage;
+        public int block;
+        public int energyCost;
+    
+        public CardType(int damage, int block, int energyCost) {
+            this.damage = damage;
+            this.block = block;
+            this.energyCost = energyCost;
+        }
+    
+        public static CardType createAttackCard() {
+            int damage = 6;
+            int block = 0;
+            int energyCost = 1;
+            return new CardType(damage, block, energyCost);
+
+        }
+    
+        public static CardType createDefendCard() {
+            int damage = 0;
+            int block = 8;
+            int energyCost = 1;
+            return new CardType(damage, block, energyCost);
+            
+        }
+    }
+    
+    
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -13,19 +43,23 @@ public class SimpleSlay {
         // Initialize player
         Player player = new Player("Player", 80, 0);
         // Create cards and add to player's deck
-        for (int i = 0; i < 5; i++) {
-            player.addCardToDeck(new AttackCard("Strike", 6, 0, 1));
-        }
-        for (int i = 0; i < 4; i++) {
-            player.addCardToDeck(new DefendCard("Defend", 0, 5, 1));
-        }
-        for (int i = 0; i < 2; i++) {
-            player.addCardToDeck(new FlexCard("Muscle (增加2點基礎攻擊力，持續1回合)", 0, 0, 0));
-            player.addCardToDeck(new CombustCard("Combust (對所有敵人造成5點傷害，自己損失1點生命)", 5, 0, 0));
-            player.addCardToDeck(new BashCard("Bash (造成8點傷害，使敵人虛弱2回合)", 8, 0, 2));
-        }
+        CardType attackCard = CardType.createAttackCard();
+        CardType defendCard = CardType.createDefendCard();
 
-        Collections.shuffle(player.deck);
+        // 輸出卡牌名稱和對應數值
+        System.out.println("Attack Card: " + attackCard);
+        System.out.println("Defend Card: " + defendCard);
+
+        
+        /* 
+        DefendCard("Defend", 0, 5, 1);
+        
+        
+        FlexCard("Muscle (增加2點基礎攻擊力，持續1回合)", 0, 0, 0);
+        CombustCard("Combust (對所有敵人造成5點傷害，自己損失1點生命)", 5, 0, 0);
+        BashCard("Bash (造成8點傷害，使敵人虛弱2回合)", 8, 0, 2);
+        */
+
 
         // Start the game with three levels
         String[] enemyNames = {"python", "java", "javascript"};
