@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.List;
 import javax.swing.*;
 
+import comsimple.AttackCard;
+
 public class windowDemo extends JFrame {
     
     private JLabel imgLabel;
