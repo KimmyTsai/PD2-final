@@ -332,6 +332,26 @@ public class windowDemo extends JFrame {
                         int countLabelName = Collections.frequency(cards, labelType);
                         JOptionPane.showMessageDialog(null, labelType + " 碰撞到怪物\n" +
                         labelType + " 總共 " + countLabelName + " 張\n");
+                        switch (labelType){
+                            case "image/attack.png" :
+                                System.out.println("attack");
+                                break;
+
+                            case "image/defend.png" :
+                                System.out.println("defend");
+                                break;
+
+                            case "image/muscle.png" :
+                                System.out.println("muscle");
+                                break;
+
+                            case "image/bash.png" :
+                                System.out.println("defend");
+                                break;
+
+                            default:
+                            System.out.println("");
+                        }
 
                         label.setVisible(false);
                         System.out.println(cards);
