@@ -23,6 +23,7 @@ public class windowDemo extends JFrame {
     private int defendNumber = 4; 
     private int bashNumber = 2;
     private int muscleNumber = 2;
+    private int combustNumber = 2;
     private JLabel monsterLabel;
     private JLabel manLabel;
     private JLabel hpLabel;
@@ -348,6 +349,10 @@ public class windowDemo extends JFrame {
                             case "image/bash.png" :
                                 System.out.println("defend");
                                 break;
+                                
+                            case "image/combust.png" :
+                                System.out.println("combust");
+                                break;
 
                             default:
                             System.out.println("");
@@ -383,6 +388,9 @@ public class windowDemo extends JFrame {
         }
         for (int i = 0; i < muscleNumber; i++) {
             cards.add("image/muscle.png");
+        }
+        for (int i = 0; i < combustNumber; i++) {
+            cards.add("image/combust.png");
         }
 
         // 打乱卡片顺序
@@ -429,7 +437,7 @@ public class windowDemo extends JFrame {
         deckLabel.setBounds(10, 700, 148, 135);
         getLayeredPane().add(deckLabel, new Integer(Integer.MIN_VALUE + 3));
         
-        deckNumber = new JLabel((attackNumber + defendNumber + bashNumber + muscleNumber) + ""); //牌堆數量
+        deckNumber = new JLabel((attackNumber + defendNumber + bashNumber + muscleNumber + combustNumber) + ""); //牌堆數量
         deckNumber.setFont(new Font("Arial", Font.BOLD, 25));
         deckNumber.setForeground(Color.WHITE);
         getLayeredPane().add(deckNumber, new Integer(Integer.MIN_VALUE + 4));
