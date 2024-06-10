@@ -49,6 +49,7 @@ public class windowDemo extends JFrame {
     private int monsterHP = 20;
     private int energy;
     private int round = 0;
+    private JLabel vulnerableJLabel;
     public windowDemo() {
         init();
     }
@@ -372,7 +373,9 @@ public class windowDemo extends JFrame {
             }
         });
     }
+    private void vulnerable(){
 
+    }
     @SuppressWarnings("removal")
     private int showRandomCards() {
 
