@@ -5,8 +5,6 @@ import java.util.Collections;
 import java.util.List;
 import javax.swing.*;
 
-import comsimple.AttackCard;
-
 public class windowDemo extends JFrame {
     
     private JLabel imgLabel;
@@ -51,7 +49,10 @@ public class windowDemo extends JFrame {
     private int monsterHP = 20;
     private int energy;
     private int round = 0;
-    private JLabel vulnerableJLabel;
+    private JLabel vulnerableLabel;
+    private int block = 0;
+    private JLabel blockLabel;
+    private JLabel blockNumber;
     public windowDemo() {
         init();
     }
@@ -177,6 +178,9 @@ public class windowDemo extends JFrame {
                     iconLabel1.setIcon(new ImageIcon("image/icon1_new.png"));
                     //關卡內容
                     energy = 3;
+                    vulnerable();
+                    addBlock();
+
                     callAllLabel();
 
                     deck = showRandomCards();
@@ -375,7 +379,25 @@ public class windowDemo extends JFrame {
             }
         });
     }
+    @SuppressWarnings("removal")
     private void vulnerable(){
+        vulnerableLabel = new JLabel(new ImageIcon("image/vulnerable.png")); //易傷
+        vulnerableLabel.setBounds(1120, 470, 35, 35);
+        getLayeredPane().add(vulnerableLabel, new Integer(Integer.MIN_VALUE + 4));
+    }
+
+    @SuppressWarnings("removal")
+    private void addBlock(){
+        if(block >= 1){
+            blockLabel = new JLabel(new ImageIcon("image/block.png")); //格擋
+            blockLabel.setBounds(155, 435, 50, 50);
+            getLayeredPane().add(blockLabel, new Integer(Integer.MIN_VALUE + 4));
+            blockNumber = new JLabel(block + ""); //格擋值
+            blockNumber.setFont(new Font("Arial", Font.BOLD, 25));
+            blockNumber.setForeground(Color.BLACK);
+            getLayeredPane().add(blockNumber, new Integer(Integer.MIN_VALUE + 5));
+            blockNumber.setBounds(173, 435, 50, 50);
+        }
 
     }
     @SuppressWarnings("removal")
@@ -421,11 +443,11 @@ public class windowDemo extends JFrame {
     @SuppressWarnings("removal")
     private void callAllLabel(){
         monsterLabel = new JLabel(new ImageIcon("image/monster1.png"));  //怪物
-        monsterLabel.setBounds(1050, 100, 400, 400);
+        monsterLabel.setBounds(1050, 50, 400, 400);
         getLayeredPane().add(monsterLabel, new Integer(Integer.MIN_VALUE + 3));
 
         manLabel = new JLabel(new ImageIcon("image/fighter.png")); //角色
-        manLabel.setBounds(45, 95, 500, 500);
+        manLabel.setBounds(45, 45, 500, 500);
         getLayeredPane().add(manLabel, new Integer(Integer.MIN_VALUE + 3));
 
         discardDeckLabel = new JLabel(new ImageIcon("image/棄牌堆.png")); //棄牌堆
@@ -449,24 +471,24 @@ public class windowDemo extends JFrame {
         deckNumber.setBounds(113, 767, 50, 50);
 
         hpLabel = new JLabel(new ImageIcon("image/hp.png")); //HP
-        hpLabel.setBounds(180, 500, 289, 20);
+        hpLabel.setBounds(180, 450, 289, 20);
         getLayeredPane().add(hpLabel, new Integer(Integer.MIN_VALUE + 3));
 
         hpNumber = new JLabel(HP + "/80"); //HP數字
         hpNumber.setFont(new Font("Arial", Font.BOLD, 25));
         hpNumber.setForeground(Color.WHITE);
         getLayeredPane().add(hpNumber, new Integer(Integer.MIN_VALUE + 4));
-        hpNumber.setBounds(290, 485, 120, 50);
+        hpNumber.setBounds(290, 435, 120, 50);
 
         monsterhpLabel = new JLabel(new ImageIcon("image/hp.png")); //怪物HP
-        monsterhpLabel.setBounds(1120, 500, 289, 20);
+        monsterhpLabel.setBounds(1120, 450, 289, 20);
         getLayeredPane().add(monsterhpLabel, new Integer(Integer.MIN_VALUE + 3));
 
         monsterhpNumber = new JLabel(monsterHP + "/20"); //怪物HP數量
         monsterhpNumber.setFont(new Font("Arial", Font.BOLD, 25));
         monsterhpNumber.setForeground(Color.WHITE);
         getLayeredPane().add(monsterhpNumber, new Integer(Integer.MIN_VALUE + 4));
-        monsterhpNumber.setBounds(1230, 485, 120, 50);
+        monsterhpNumber.setBounds(1230, 435, 120, 50);
 
         nextLabel = new JLabel(new ImageIcon("image/next.png")); //結束回合
         nextLabel.setBounds(1290, 570, 195, 83);
@@ -478,7 +500,7 @@ public class windowDemo extends JFrame {
 
         energyNumber = new JLabel(energy + "/3"); //能量數量
         energyNumber.setFont(new Font("Arial", Font.BOLD, 35));
-        energyNumber.setForeground(Color.WHITE);
+        energyNumber.setForeground(Color.BLACK);
         getLayeredPane().add(energyNumber, new Integer(Integer.MIN_VALUE + 5));
         energyNumber.setBounds(52, 570, 120, 50);
 
