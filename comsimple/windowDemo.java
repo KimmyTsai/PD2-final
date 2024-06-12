@@ -204,6 +204,7 @@ public class windowDemo extends JFrame {
                     //關卡內容
                     energy = 3;
                     callAllLabel();
+                    initGame();
 
                     deck = showRandomCards();
                     deckNumber.setText(deck + "");
@@ -373,24 +374,24 @@ public class windowDemo extends JFrame {
                             case "image/attack.png":
                                 AttackCard attackCard = new AttackCard("Strike", 6, 0, 1);
                                 enemy.takeDamage(6); 
-                               // break;
+                               break;
             
                             case "image/defend.png":
                                 DefendCard defendCard = new DefendCard("Defend", 0, 5, 1);
                                 player.gainBlock(5);
-                                //break;
+                                break;
             
                             case "image/muscle.png":
                                 FlexCard muscleCard = new FlexCard("Muscle", 0, 0, 0);
                                 player.useMuscle();
                                 System.out.println("Muscle: Base attack increased by 2 for 1 turn.");
-                                //break;
+                                break;
             
                             case "image/bash.png":
                                 BashCard bashCard = new BashCard("Bash", 8, 0, 2);
                                 enemy.takeDamage(8); // 这会更新enemy的血量
                                 enemy.applyEffect(new Vulnerable(2));
-                                //break;
+                                break;
             
                             case "image/combust.png":
                                 BashCard combustCard = new BashCard("Bash (造成8點傷害，使敵人虛弱2回合)", 8, 0, 2);
@@ -401,11 +402,11 @@ public class windowDemo extends JFrame {
                                     }
                                 }
                                 System.out.println("Combust: Dealt 5 damage to all enemies, player loses 1 health.");
-                                //break;
+                                break;
             
                             default:
                                 System.out.println("Unknown card type.");
-                                //break;
+                                break;
                         }
             
                         
