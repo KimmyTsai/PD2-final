@@ -67,10 +67,13 @@ public class SlayChanged {
         for (int level = 0; level < 3; level++) {
             System.out.println("\n--- Level " + (level + 1) + " ---");
             if (level == 0) {
-                enemies.add(new Enemy(enemyNames[level], 10, 6));
+                //enemies.add(new Enemy(enemyNames[level], 10, 6));
+                enemies.add(new Enemy( 10, 6));
             } else if (level == 1) {
-                enemies.add(new Enemy(enemyNames[level], 20, 10));
-                enemies.add(new Enemy(enemyNames[level + 1], 20, 10));
+                //enemies.add(new Enemy(enemyNames[level], 20, 10));
+                //enemies.add(new Enemy(enemyNames[level + 1], 20, 10));
+                enemies.add(new Enemy( 20, 10));
+                enemies.add(new Enemy( 20, 10));
             } /*else if (level == 2) {
                 enemies.add(new Enemy(enemyNames[level], 50, 12));
                 enemies.add(new Enemy(enemyNames[level - 1], 50, 12));
@@ -229,8 +232,10 @@ public class SlayChanged {
 
          // Level 3 with two bosses
          System.out.println("\n--- Level 3 ---");
-         BossEnemy cPlusPlus = new BossEnemy("C++", 50, 12);
-         BossEnemy c = new BossEnemy("C Boss", 80, 12);
+         //BossEnemy cPlusPlus = new BossEnemy("C++", 50, 12);
+         //BossEnemy c = new BossEnemy("C Boss", 80, 12);
+         BossEnemy cPlusPlus = new BossEnemy( 50, 12);
+         BossEnemy c = new BossEnemy( 80, 12);
          enemies.add(cPlusPlus);
          enemies.add(c);
  

@@ -1,4 +1,6 @@
 package comsimple;
+import comsimple.*;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
@@ -6,13 +8,7 @@ import java.util.Collections;
 import java.util.List;
 import javax.swing.*;
 
-import comsimple.AttackCard;
-import comsimple.BashCard;
-import comsimple.Card;
-import comsimple.CombustCard;
-import comsimple.DefendCard;
-import comsimple.Player;
-import comsimple.SimpleSlay;
+
 
 public class windowDemo extends JFrame {
     
@@ -32,6 +28,7 @@ public class windowDemo extends JFrame {
     private int defendNumber = 4; 
     private int bashNumber = 2;
     private int muscleNumber = 2;
+    private int combustNumber = 2;
     private JLabel monsterLabel;
     private JLabel manLabel;
     private JLabel hpLabel;
@@ -57,9 +54,33 @@ public class windowDemo extends JFrame {
     private int monsterHP = 20;
     private int energy;
     private int round = 0;
+    private JLabel vulnerableJLabel;
+    public int health = 20;
+
     public windowDemo() {
         init();
     }
+
+    
+    // 全局變數
+    ArrayList<Enemy> enemies = new ArrayList<>();
+    Player player;
+
+    // 初始化敵人和玩家，只在遊戲開始時調用一次
+    public void initGame() {
+        for (int level = 0; level < 3; level++) {
+            if (level == 0) {
+                enemies.add(new Enemy(20, 6));  
+            } else if (level == 1) {
+                enemies.add(new Enemy(20, 10));
+                enemies.add(new Enemy(20, 10));
+            }
+        }
+        player = new Player("Player", 80, 0);
+    }
+
+    
+
 
     @SuppressWarnings("removal")
     private void init() {
@@ -324,58 +345,73 @@ public class windowDemo extends JFrame {
         label.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
-                boolean collided = false;
+                boolean collided = false; 
+            
                 for (int i = 0; i < cardLabels.size(); i++) {
                     System.out.println(cardLabels.size());
                     JLabel otherLabel = cardLabels.get(i);
                     String otherLabelType = cardTypes.get(i);
+            
+                    
                     if (label != otherLabel && label.getBounds().intersects(monsterLabel.getBounds())) {
                         collided = true;
-
-                        cards.remove(labelType);
-                        // 移除
-                        cardPanel.remove(label);
-                        //cardLabels.remove(label);
-                        //cardTypes.remove(labelType); //有問題
+            
                         
-                        Player player = new Player("Player", 80, 0);
-
+                        cards.remove(labelType);
+                        cardPanel.remove(label);
+            
+                        
                         int countLabelName = Collections.frequency(cards, labelType);
                         JOptionPane.showMessageDialog(null, labelType + " 碰撞到怪物\n" +
-                        labelType + " 總共 " + countLabelName + " 張\n");
-                        switch (labelType){
-                            case "image/attack.png" :
-                            new AttackCard("Strike", 6, 0, 1);
-
-
-                                System.out.println("attack");
-                                break;
-
-
-                            case "image/defend.png" :
-                            new DefendCard("Defend", 0, 5, 1);
-
-
-                                System.out.println("defend");
-                                break;
-
-
-                            case "image/muscle.png" :
-                            new FlexCard("Muscle", 0, 0, 0);
-                            
+                                labelType + " 總共 " + countLabelName + " 張\n");
+            
+                       
+                        Enemy enemy = enemies.get(0);
+            
+                        
+                        switch (labelType) {
+                            case "image/attack.png":
+                                AttackCard attackCard = new AttackCard("Strike", 6, 0, 1);
+                                enemy.takeDamage(6); 
+                               // break;
+            
+                            case "image/defend.png":
+                                DefendCard defendCard = new DefendCard("Defend", 0, 5, 1);
+                                player.gainBlock(5);
+                                //break;
+            
+                            case "image/muscle.png":
+                                FlexCard muscleCard = new FlexCard("Muscle", 0, 0, 0);
                                 player.useMuscle();
-                                System.out.println("muscle");
-                                break;
-
-                            case "image/bash.png" :
-                            new BashCard("Bash", 8, 0, 2);
-                                System.out.println("defend");
-                                break;
-
+                                System.out.println("Muscle: Base attack increased by 2 for 1 turn.");
+                                //break;
+            
+                            case "image/bash.png":
+                                BashCard bashCard = new BashCard("Bash", 8, 0, 2);
+                                enemy.takeDamage(8); // 这会更新enemy的血量
+                                enemy.applyEffect(new Vulnerable(2));
+                                //break;
+            
+                            case "image/combust.png":
+                                BashCard combustCard = new BashCard("Bash (造成8點傷害，使敵人虛弱2回合)", 8, 0, 2);
+                                player.health -= 1;
+                                for (Enemy en : enemies) {
+                                    if (en.health > 0) {
+                                        en.takeDamage(5); // 这会更新enemies的血量
+                                    }
+                                }
+                                System.out.println("Combust: Dealt 5 damage to all enemies, player loses 1 health.");
+                                //break;
+            
                             default:
-                            System.out.println("");
+                                System.out.println("Unknown card type.");
+                                //break;
                         }
-
+            
+                        
+                        monsterhpNumber.setText(enemy.health + "/20");
+            
+                        
                         label.setVisible(false);
                         System.out.println(cards);
                         discardDeck++;
@@ -384,13 +420,19 @@ public class windowDemo extends JFrame {
                         break;
                     }
                 }
+            
                 if (!collided) {
                     label.setLocation(initialPosition);
                 }
             }
+            
+            
+            
         });
     }
+    private void vulnerable(){
 
+    }
     @SuppressWarnings("removal")
     private int showRandomCards() {
 
@@ -406,6 +448,9 @@ public class windowDemo extends JFrame {
         }
         for (int i = 0; i < muscleNumber; i++) {
             cards.add("image/muscle.png");
+        }
+        for (int i = 0; i < combustNumber; i++) {
+            cards.add("image/combust.png");
         }
 
         // 打乱卡片顺序
@@ -452,7 +497,7 @@ public class windowDemo extends JFrame {
         deckLabel.setBounds(10, 700, 148, 135);
         getLayeredPane().add(deckLabel, new Integer(Integer.MIN_VALUE + 3));
         
-        deckNumber = new JLabel((attackNumber + defendNumber + bashNumber + muscleNumber) + ""); //牌堆數量
+        deckNumber = new JLabel((attackNumber + defendNumber + bashNumber + muscleNumber + combustNumber) + ""); //牌堆數量
         deckNumber.setFont(new Font("Arial", Font.BOLD, 25));
         deckNumber.setForeground(Color.WHITE);
         getLayeredPane().add(deckNumber, new Integer(Integer.MIN_VALUE + 4));
@@ -472,7 +517,7 @@ public class windowDemo extends JFrame {
         monsterhpLabel.setBounds(1120, 500, 289, 20);
         getLayeredPane().add(monsterhpLabel, new Integer(Integer.MIN_VALUE + 3));
 
-        monsterhpNumber = new JLabel(monsterHP + "/20"); //怪物HP數量
+        monsterhpNumber = new JLabel(health + "/20"); //怪物HP數量
         monsterhpNumber.setFont(new Font("Arial", Font.BOLD, 25));
         monsterhpNumber.setForeground(Color.WHITE);
         getLayeredPane().add(monsterhpNumber, new Integer(Integer.MIN_VALUE + 4));

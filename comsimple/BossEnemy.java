@@ -1,9 +1,12 @@
 package comsimple;
 
 public class BossEnemy extends Enemy {
-    BossEnemy(String name, int health, int damage) {
-        super(name, health, damage);
+    /*BossEnemy(String name, int health, int damage) {
+        super(name, health, damage);*/
+    BossEnemy( int health, int damage) {
+        super( health, damage);
     }
+    
 
     @Override
     void act(Player player, int turnCounter) {

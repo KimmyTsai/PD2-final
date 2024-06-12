@@ -11,8 +11,9 @@ public class Enemy {
     int weakTurns;
     int turnCounter;
 
-    Enemy(String name, int health, int damage) {
-        this.name = name;
+    //Enemy(String name, int health, int damage) {
+    Enemy(int health, int damage) {
+        //this.name = name;
         this.health = health;
         this.block = 0;
         this.damage = damage;
@@ -24,11 +25,11 @@ public class Enemy {
     }
 
     void takeDamage(int damage) {
-        if (turnCounter % 2 == 0) {
+        /*if (turnCounter % 2 == 0) {
             block = 2;
         } else {
             block = 0;
-        }
+        }*/
         
         int effectiveDamage = isVulnerable ? (int)(damage * 1.5) : damage;
         //
