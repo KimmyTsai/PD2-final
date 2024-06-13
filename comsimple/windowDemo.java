@@ -398,49 +398,83 @@ public class windowDemo extends JFrame {
                         
                         switch (labelType) {
                             case "image/attack.png":
-                                AttackCard attackCard = new AttackCard("Strike", 6, 0, 1);
-                                enemy.takeDamage(6); 
-                                if(enemy.health <= 0) levelChoose();
-                                break;
-            
-                            case "image/defend.png":
-                                DefendCard defendCard = new DefendCard("Defend", 0, 5, 1);
-                                player.gainBlock(5);
-                                break;
-            
-                            case "image/muscle.png":
-                                FlexCard muscleCard = new FlexCard("Muscle", 0, 0, 0);
-                                player.useMuscle();
-                                System.out.println("Muscle: Base attack increased by 2 for 1 turn.");
-                                break;
-            
-                            case "image/bash.png":
-                                BashCard bashCard = new BashCard("Bash", 8, 0, 2);
-                                enemy.takeDamage(8); // 这会更新enemy的血量
-                                enemy.applyEffect(new Vulnerable(2));
-                                if(enemy.health <= 0) levelChoose();
-                                break;
-            
-                            case "image/combust.png":
-                                BashCard combustCard = new BashCard("Bash (造成8點傷害，使敵人虛弱2回合)", 8, 0, 2);
-                                player.health -= 1;
-                                for (Enemy en : enemies) {
-                                    if (en.health > 0) {
-                                        en.takeDamage(5); // 这会更新enemies的血量
-                                    }
+                                AttackCard attackCard = new AttackCard("Strike", 6, 0, 1); 
+                                if (player.energy >= attackCard.energyCost) {
+                                    //enemy.takeDamage(6);
+                                    int totalDamage = player.baseAttack + attackCard.damage;
+                                    enemy.takeDamage(totalDamage);
+                                    player.energy -= attackCard.energyCost;
+                                    if (enemy.health <= 0) levelChoose();
+                                } else {
+                                    System.out.println("Not enough energy to play Strike.");
                                 }
-                                System.out.println("Combust: Dealt 5 damage to all enemies, player loses 1 health.");
-                                if(enemy.health <= 0) levelChoose();
                                 break;
-            
+                        
+                            case "image/defend.png":
+                                DefendCard defendCard = new DefendCard("Defend", 0, 5, 1); 
+                                if (player.energy >= defendCard.energyCost) {
+                                    player.gainBlock(5);
+                                    player.energy -= defendCard.energyCost;
+                                } else {
+                                    System.out.println("Not enough energy to play Defend.");
+                                }
+                                break;
+                        
+                            case "image/muscle.png":
+                                FlexCard muscleCard = new FlexCard("Muscle", 0, 0, 0); 
+                                if (player.energy >= muscleCard.energyCost) {
+                                    //player.useMuscle();
+                                    player.baseAttack += 2; 
+                                    System.out.println("Muscle: Base attack increased by 2 for 1 turn.");
+                                    player.energy -= muscleCard.energyCost;
+                                } else {
+                                    System.out.println("Not enough energy to play Muscle.");
+                                }
+                                break;
+                        
+                            case "image/bash.png":
+                                BashCard bashCard = new BashCard("Bash", 8, 0, 2); 
+                                if (player.energy >= bashCard.energyCost) {
+                                    //enemy.takeDamage(8); 
+                                    int totalDamage = player.baseAttack + bashCard.damage;
+                                    enemy.takeDamage(totalDamage);
+                                    enemy.applyEffect(new Vulnerable(2));
+                                    player.energy -= bashCard.energyCost;
+                                    if (enemy.health <= 0) levelChoose();
+                                } else {
+                                    System.out.println("Not enough energy to play Bash.");
+                                }
+                                break;
+                        
+                            case "image/combust.png":
+                                CombustCard combustCard = new CombustCard("Combust", 5, 0, 2); 
+                                if (player.energy >= combustCard.energyCost) {
+                                    player.health -= 1;
+                                    for (Enemy en : enemies) {
+                                        if (en.health > 0) {
+                                            //en.takeDamage(5);
+                                            int totalDamage = player.baseAttack + combustCard.damage; 
+                                            en.takeDamage(totalDamage);
+                                        }
+                                    }
+                                    System.out.println("Combust: Dealt 5 damage to all enemies, player loses 1 health.");
+                                    player.energy -= combustCard.energyCost;
+                                    if (enemy.health <= 0) levelChoose();
+                                } else {
+                                    System.out.println("Not enough energy to play Combust.");
+                                }
+                                break;
+                        
                             default:
                                 System.out.println("Unknown card type.");
                                 break;
                         }
+                        
             
                         
                         monsterhpNumber.setText(enemy.health + "/20");
                         hpNumber.setText(player.health + "/80");
+                        energyNumber.setText(player.energy+"/3");
             
                         
                         label.setVisible(false);
