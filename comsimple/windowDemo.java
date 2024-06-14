@@ -162,7 +162,7 @@ public class windowDemo extends JFrame {
         cardPanel = new JPanel();
         cardPanel.setOpaque(false);
         cardPanel.setLayout(new FlowLayout());
-        this.getLayeredPane().add(cardPanel, new Integer(Integer.MIN_VALUE + 8));
+        this.getLayeredPane().add(cardPanel, new Integer(Integer.MIN_VALUE + 4));
         cardPanel.setBounds(0, getScreenHeight() - 330, getScreenWidth(), 990);
 
         // 背景音樂
@@ -257,9 +257,10 @@ public class windowDemo extends JFrame {
                     iconLabel1.setIcon(new ImageIcon("image/icon1_new.png"));
                     //關卡內容
                     energy = 3; //能量值
-                    initGame();
                     callAllLabel();
                     initCards();
+                    initGame();
+
                     
                     showRandomCards();
                     deckNumber.setText(deck + "");
@@ -427,10 +428,11 @@ public class windowDemo extends JFrame {
                                     label.setVisible(false);
                                     cards.remove(labelType);
                                     cardPanel.remove(label);
-                                    cardLabels.remove(label);
+                                    cardLabels.remove(label); //有問題？
                                     cardTypes.remove(labelType);
                                     //放打擊音效
                                     musicPlayer.playMusicOnce("comsimple/music/attack.wav");
+
                                     //enemy.takeDamage(6);
                                     int totalDamage = player.baseAttack + attackCard.damage;
                                     enemy.takeDamage(totalDamage);
@@ -721,6 +723,15 @@ public class windowDemo extends JFrame {
         getLayeredPane().add(energyNumber, new Integer(Integer.MIN_VALUE + 5));
         energyNumber.setBounds(52, 570, 120, 50);
 
+        bossattackLabel = new JLabel(new ImageIcon("image/bossattack.png")); //怪物攻擊提示
+        bossattackLabel.setBounds(1180, 40, 42, 43);
+        getLayeredPane().add(bossattackLabel, new Integer(Integer.MIN_VALUE + 4));
+
+        bossattackNumber = new JLabel(bossattack + "", SwingConstants.CENTER); //怪物攻擊傷害
+        bossattackNumber.setFont(new Font("Arial", Font.BOLD, 30));
+        bossattackNumber.setForeground(Color.WHITE);
+        getLayeredPane().add(bossattackNumber, new Integer(Integer.MIN_VALUE + 5));
+        bossattackNumber.setBounds(1125, 50, 120, 50);
         monsterattackLabel = new JLabel(new ImageIcon("image/bossattack.png")); //怪物攻擊提示
         monsterattackLabel.setBounds(1180, 40, 42, 43);
         getLayeredPane().add(monsterattackLabel, new Integer(Integer.MIN_VALUE + 4));
@@ -761,20 +772,31 @@ public class windowDemo extends JFrame {
                 }
                 else vulnerableLabel.setVisible(false);
 
+
+                //怪物攻擊
+                if (!allEnemiesDefeated()) {
+                    for (Enemy enemy : enemies) {
+                        if (enemy.health > 0) {
+                        //enemy.act(player, round);
+                        int effectiveDamage = enemy.damage - player.block;
+                        if (effectiveDamage > 0) {
+                        player.health -= effectiveDamage;
+                        block = 0;
+                        }
+                            System.out.println("enemy attack");
+                            enemy.act(player, round);
+                        }
+                    }
+                }
+
+
                 if(player.block != 0){
                     player.block = 0;
                     blockNumber.setVisible(false);
                     blockLabel.setVisible(false);
                 }
 
-                //怪物攻擊
-                if (!allEnemiesDefeated()) {
-                    for (Enemy enemy : enemies) {
-                        if (enemy.health > 0) {
-                            enemy.act(player, round);
-                        }
-                    }
-                }
+
                 hpNumber.setText(player.health + "/80");
                 
                 if (muscleturn > 0 ){
