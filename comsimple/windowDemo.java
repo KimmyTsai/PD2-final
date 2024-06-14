@@ -311,6 +311,7 @@ public class windowDemo extends JFrame {
                     //關卡內容
                     player.energy = 3; //能量值
                     player.baseAttack = 0;
+                    //hpLabel.setVisible(true);
                     initGame();
                     callAllLabel();
                     initCards();
@@ -698,9 +699,17 @@ public class windowDemo extends JFrame {
     }
     @SuppressWarnings("removal")
     private void callAllLabel(){
-        monsterLabel = new JLabel(new ImageIcon("image/monster1.png"));  //怪物
-        monsterLabel.setBounds(1050, 50, 400, 400);
-        getLayeredPane().add(monsterLabel, new Integer(Integer.MIN_VALUE + 3));
+        if(level == 0){
+            monsterLabel = new JLabel(new ImageIcon("image/monster1.png"));  //怪物
+            monsterLabel.setBounds(1050, 50, 400, 400);
+            getLayeredPane().add(monsterLabel, new Integer(Integer.MIN_VALUE + 3));
+        }
+        else if(level == 1){
+            monsterLabel = new JLabel(new ImageIcon("image/monster2.png"));  //怪物2
+            monsterLabel.setBounds(1050, 50, 400, 400);
+            getLayeredPane().add(monsterLabel, new Integer(Integer.MIN_VALUE + 3));
+        }
+        
 
         manLabel = new JLabel(new ImageIcon("image/fighter.png")); //角色
         manLabel.setBounds(45, 45, 500, 500);
@@ -730,7 +739,7 @@ public class windowDemo extends JFrame {
         hpLabel.setBounds(180, 450, 289 * (player.health / 80), 20);
         getLayeredPane().add(hpLabel, new Integer(Integer.MIN_VALUE + 3));
 
-        hpNumber = new JLabel(HP + "/80"); //HP數字
+        hpNumber = new JLabel(player.health + "/80"); //HP數字
         hpNumber.setFont(new Font("Arial", Font.BOLD, 25));
         hpNumber.setForeground(Color.WHITE);
         getLayeredPane().add(hpNumber, new Integer(Integer.MIN_VALUE + 4));
