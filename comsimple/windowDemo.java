@@ -224,19 +224,21 @@ public class windowDemo extends JFrame {
             imagePanel.setVisible(false);
         }
 
-        Timer timer = new Timer(0, null);
-        timer.addActionListener(new ActionListener() {
-
+        SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            protected Void doInBackground() throws Exception {
                 mapImg = new ImageIcon("image/new_wallpaper.jpg");
+                return null;
+            }
+    
+            @Override
+            protected void done() {
                 imgLabel.setIcon(scaleImageIcon(mapImg, getScreenWidth(), getScreenHeight()));
                 imgLabel.repaint();
-                timer.stop();
                 addCustomIcons(); //關卡圖示
             }
-        });
-        timer.start();
+        };
+        worker.execute();
     }
 
     @SuppressWarnings("removal")
