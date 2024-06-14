@@ -311,7 +311,7 @@ public class windowDemo extends JFrame {
                     //關卡內容
                     player.energy = 3; //能量值
                     player.baseAttack = 0;
-                    //hpLabel.setVisible(true);
+                    hpLabel.setVisible(true);
                     initGame();
                     callAllLabel();
                     initCards();
