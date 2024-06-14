@@ -157,15 +157,19 @@ public class windowDemo extends JFrame {
         // 初始化并播放背景音乐
         musicPlayer = new MusicPlayer();
         System.out.println("Attempting to play background music.");
-        musicPlayer.playBackgroundMusic("comsimple/resources/bgm.wav");
+        musicPlayer.playBackgroundMusic("comsimple/music/bgm.wav");
     }
     
     private void levelChoose() { //關卡選擇頁面
         // 隱藏按鈕
         btn1.setVisible(false);
         btn2.setVisible(false);
+        if(pass[0] != 0){
+            // 停止播放關卡音樂 播放背景音樂
+            musicPlayer.stopBackgroundMusic();
+            musicPlayer.playBackgroundMusic("comsimple/music/bgm.wav");
+        }
 
-        //停止播放關卡音樂
         for(JLabel label : cardLabels){
             label.setVisible(false);
         }
@@ -228,6 +232,10 @@ public class windowDemo extends JFrame {
             public void mouseClicked(MouseEvent e) {
                 if(pass[0] != 1){
                     //加關卡音樂
+                    musicPlayer.stopBackgroundMusic();
+                    // 播放新的关卡音樂
+                    musicPlayer.playBackgroundMusic("comsimple/music/edm.wav");
+                    
                     imgLabel.setIcon(scaleImageIcon(new ImageIcon("image/level1.jpg"), getScreenWidth(), getScreenHeight()));
                     imgLabel.repaint();
                     hideIcon();
