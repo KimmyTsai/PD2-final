@@ -492,6 +492,7 @@ public class windowDemo extends JFrame {
                                     cardLabels.remove(label);
                                     cardTypes.remove(labelType);
                                     //放打擊音效
+                                    musicPlayer.playMusicOnce("comsimple/music/attack.wav");
                                     //enemy.takeDamage(8); 
                                     int totalDamage = player.baseAttack + bashCard.damage;
                                     enemy.takeDamage(totalDamage);
@@ -520,6 +521,7 @@ public class windowDemo extends JFrame {
                                     cardLabels.remove(label);
                                     cardTypes.remove(labelType);
                                     //放打擊音效
+                                    musicPlayer.playMusicOnce("comsimple/music/attack.wav");
                                     player.health -= 1;
                                     for (Enemy en : enemies) {
                                         if (en.health > 0) {
