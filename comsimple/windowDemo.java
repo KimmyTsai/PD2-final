@@ -508,10 +508,15 @@ public class windowDemo extends JFrame {
                                     musicPlayer.playMusicOnce("comsimple/music/attack.wav");
                                     //enemy.takeDamage(8); 
                                     int totalDamage = player.baseAttack + bashCard.damage;
-                                    enemy.takeDamage(totalDamage);
-                                    enemy.applyEffect(new Vulnerable(2));
-                                    vulnerableDuration += 2;
-
+                                    enemy.takeDamage(totalDamage);                                                                                                     
+                                    //enemy.applyEffect(new Vulnerable(2));
+                                    
+                                    vulnerableDuration += 2;     
+                                    
+                                    //if ( vulnerableDuration > 0 ) {
+                                        enemy.haveEffect(2);
+                                    //}
+                                    
                                     vulnerableLabel.setVisible(true);
 
                                     player.energy -= bashCard.energyCost;
@@ -539,7 +544,7 @@ public class windowDemo extends JFrame {
                                     for (Enemy en : enemies) {
                                         if (en.health > 0) {
                                             //en.takeDamage(5);
-                                            int totalDamage = player.baseAttack + combustCard.damage; 
+                                            int totalDamage = player.baseAttack + combustCard.damage;
                                             en.takeDamage(totalDamage);
                                         }
                                     }
@@ -811,6 +816,10 @@ public class windowDemo extends JFrame {
 
                 if (muscleturn == 0){
                     player.baseAttack = 0 ;
+                }
+                
+                for (Enemy enemy : enemies) {
+                    enemy.endTurn();  //減掉vulnerable的回合
                 }
 
             }

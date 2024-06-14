@@ -68,6 +68,26 @@ public class Enemy {
         System.out.println(name + " is now Vulnerable for " + vulnerable.duration + " turns.");
     }
 
+
+
+    public void haveEffect(int duration) {
+        this.isVulnerable = true;
+        this.vulnerableTurns = duration;
+        System.out.println(name + " is now Vulnerable for " + duration + " turns.");
+    }
+
+
+    public void endTurn() {
+        if (isVulnerable) {
+            vulnerableTurns--;
+            if (vulnerableTurns <= 0) {
+                isVulnerable = false;
+                System.out.println(name + " is no longer Vulnerable.");
+            }
+        }
+    }
+
+
     void applyEffect(Weak weak) {
         this.isWeak = true;
         this.weakTurns = weak.duration;
