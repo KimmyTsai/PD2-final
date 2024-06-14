@@ -430,6 +430,7 @@ public class windowDemo extends JFrame {
                                     cardLabels.remove(label);
                                     cardTypes.remove(labelType);
                                     //放打擊音效
+                                    musicPlayer.playMusicOnce("comsimple/music/attack.wav");
                                     //enemy.takeDamage(6);
                                     int totalDamage = player.baseAttack + attackCard.damage;
                                     enemy.takeDamage(totalDamage);
