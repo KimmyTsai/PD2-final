@@ -175,7 +175,7 @@ public class windowDemo extends JFrame {
             deckNumber.setVisible(false);
             blockLabel.setVisible(false);
             blockNumber.setVisible(false);
-            //if(!vulnerableLabel.isVisible()) vulnerableLabel.setVisible(false);
+            vulnerableLabel.setVisible(false);
         }
         
         // 隱藏首頁
