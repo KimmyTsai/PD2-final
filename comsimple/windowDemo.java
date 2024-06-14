@@ -500,6 +500,7 @@ public class windowDemo extends JFrame {
                         monsterhpNumber.setText(enemy.health + "/20");
                         hpNumber.setText(player.health + "/80");
                         energyNumber.setText(player.energy+"/3");
+                        blockNumber.setText(player.block+"");
             
                         
                         
