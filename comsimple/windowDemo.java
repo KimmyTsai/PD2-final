@@ -63,6 +63,7 @@ public class windowDemo extends JFrame {
     private int bossattack;
     public MusicPlayer musicPlayer; // 添加MusicPlayer變量
     public int muscleturn = 0;
+    private int level = 0;
     
     public windowDemo() {
         init();
@@ -85,14 +86,12 @@ public class windowDemo extends JFrame {
 
     // 初始化敵人和玩家，只在遊戲開始時調用一次
     public void initGame() {
-        /*for (int level = 0; level < 3; level++) {
-            if (level == 0) {
-                enemies.add(new Enemy(20, 6));  
-            } else if (level == 1) {
-                enemies.add(new Enemy(20, 10));
-                enemies.add(new Enemy(20, 10));
-            }
-        }*/
+        if (level == 0) {
+            enemies.add(new Enemy(20, 6));  
+        } else if (level == 1) {
+            enemies.add(new Enemy(20, 10));
+            enemies.add(new Enemy(20, 10));
+        }
         enemies.add(new Enemy(20, 6));
         player = new Player("Player", 80, 0);
     }
