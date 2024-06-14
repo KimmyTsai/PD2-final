@@ -257,9 +257,10 @@ public class windowDemo extends JFrame {
                     iconLabel1.setIcon(new ImageIcon("image/icon1_new.png"));
                     //關卡內容
                     energy = 3; //能量值
+                    initGame();
                     callAllLabel();
                     initCards();
-                    initGame();
+                    
 
                     
                     showRandomCards();
@@ -723,15 +724,6 @@ public class windowDemo extends JFrame {
         getLayeredPane().add(energyNumber, new Integer(Integer.MIN_VALUE + 5));
         energyNumber.setBounds(52, 570, 120, 50);
 
-        bossattackLabel = new JLabel(new ImageIcon("image/bossattack.png")); //怪物攻擊提示
-        bossattackLabel.setBounds(1180, 40, 42, 43);
-        getLayeredPane().add(bossattackLabel, new Integer(Integer.MIN_VALUE + 4));
-
-        bossattackNumber = new JLabel(bossattack + "", SwingConstants.CENTER); //怪物攻擊傷害
-        bossattackNumber.setFont(new Font("Arial", Font.BOLD, 30));
-        bossattackNumber.setForeground(Color.WHITE);
-        getLayeredPane().add(bossattackNumber, new Integer(Integer.MIN_VALUE + 5));
-        bossattackNumber.setBounds(1125, 50, 120, 50);
         monsterattackLabel = new JLabel(new ImageIcon("image/bossattack.png")); //怪物攻擊提示
         monsterattackLabel.setBounds(1180, 40, 42, 43);
         getLayeredPane().add(monsterattackLabel, new Integer(Integer.MIN_VALUE + 4));
