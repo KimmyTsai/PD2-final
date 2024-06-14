@@ -313,7 +313,7 @@ public class windowDemo extends JFrame {
                     //關卡內容
                     player.energy = 3; //能量值
                     player.baseAttack = 0;
-                    hpLabel.setVisible(true);
+                    //hpLabel.setVisible(true);
                     initGame();
                     callAllLabel();
                     initCards();
@@ -738,7 +738,7 @@ public class windowDemo extends JFrame {
         deckNumber.setBounds(113, 767, 50, 50);
 
         hpLabel = new JLabel(new ImageIcon("image/hp.png")); //HP
-        hpLabel.setBounds(180, 450, 289 * (player.health / 80), 20);
+        hpLabel.setBounds(180, 450, 289 * (80 / 80), 20);
         getLayeredPane().add(hpLabel, new Integer(Integer.MIN_VALUE + 3));
 
         hpNumber = new JLabel(player.health + "/80"); //HP數字
