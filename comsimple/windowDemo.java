@@ -57,6 +57,7 @@ public class windowDemo extends JFrame {
     private int block = 0;
     private JLabel blockLabel;
     private JLabel blockNumber;
+    private int vulnerableDuration = 0;
     
     public windowDemo() {
         init();
@@ -88,8 +89,8 @@ public class windowDemo extends JFrame {
         this.setResizable(false);
         this.setVisible(true);
 
-        // 設置全屏
-        GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+        // 設置視窗大小
+       // GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
         this.setSize(1920, 1080);
         /*
         if (gd.isFullScreenSupported()) {
@@ -226,7 +227,7 @@ public class windowDemo extends JFrame {
                     initCards();
                     initGame();
 
-                    deck = showRandomCards();
+                    showRandomCards();
                     deckNumber.setText(deck + "");
                     nextRound();
 
@@ -462,6 +463,7 @@ public class windowDemo extends JFrame {
                                     int totalDamage = player.baseAttack + bashCard.damage;
                                     enemy.takeDamage(totalDamage);
                                     enemy.applyEffect(new Vulnerable(2));
+                                    vulnerableDuration += 2;
 
                                     vulnerableLabel.setVisible(true);
 
@@ -508,6 +510,8 @@ public class windowDemo extends JFrame {
                         hpNumber.setText(player.health + "/80");
                         energyNumber.setText(player.energy + "/3");
                         blockNumber.setText(player.block + "");
+                        deck = cards.size();
+                        deckNumber.setText(deck + "");
 
                         if(player.block == 0 && blockNumber != null){
                             blockNumber.setVisible(false);
@@ -569,25 +573,57 @@ public class windowDemo extends JFrame {
         for (int i = 0; i < combustNumber; i++) {
             cards.add("image/combust.png");
         }
+        deck = cards.size();
+        deckNumber.setText(deck + "");
     }
     @SuppressWarnings("removal")
     private int showRandomCards() {
-        // 打乱卡片顺序
+        // 打亂卡牌順序
         Collections.shuffle(cards);
 
-        // 显示前五张卡片
+        // 選前五張
         cardPanel.removeAll();
         cardLabels.clear();
         cardTypes.clear();
-        for (int i = 0; i < 5; i++) {
-            JLabel cardLabel = new JLabel(new ImageIcon(cards.get(i))); //手牌
-            String cardType = cards.get(i);
-            moveObject(cardLabel, cardType);
-            cardLabel.setBounds(190 + i * 210, getScreenHeight() - 330, 220, 288); // 设置卡片位置和大小
-            this.getLayeredPane().add(cardLabel, new Integer(Integer.MIN_VALUE + 4));
-            cardLabels.add(cardLabel);
-            cardTypes.add(cardType);
+        if(cards.size() >= 5){
+            for (int i = 0; i < 5; i++) {
+                JLabel cardLabel = new JLabel(new ImageIcon(cards.get(i))); //手牌
+                String cardType = cards.get(i);
+                moveObject(cardLabel, cardType);
+                cardLabel.setBounds(190 + i * 210, getScreenHeight() - 330, 220, 288); // 手牌位置與大小
+                this.getLayeredPane().add(cardLabel, new Integer(Integer.MIN_VALUE + 4));
+                cardLabels.add(cardLabel);
+                cardTypes.add(cardType);
+            }
         }
+        else{
+            int temp = cards.size();
+            for (int i = 0; i < temp; i++) {
+                JLabel cardLabel = new JLabel(new ImageIcon(cards.get(i))); //手牌
+                String cardType = cards.get(i);
+                moveObject(cardLabel, cardType);
+                cardLabel.setBounds(190 + i * 210, getScreenHeight() - 330, 220, 288); // 手牌位置與大小
+                this.getLayeredPane().add(cardLabel, new Integer(Integer.MIN_VALUE + 4));
+                cardLabels.add(cardLabel);
+                cardTypes.add(cardType);
+            }
+            initCards();
+            Collections.shuffle(cards);
+
+            for (int i = 0; i < 5 - temp; i++) {
+                JLabel cardLabel = new JLabel(new ImageIcon(cards.get(i))); //手牌
+                String cardType = cards.get(i);
+                moveObject(cardLabel, cardType);
+                cardLabel.setBounds(190 + i * 210, getScreenHeight() - 330, 220, 288); // 手牌位置與大小
+                this.getLayeredPane().add(cardLabel, new Integer(Integer.MIN_VALUE + 4));
+                cardLabels.add(cardLabel);
+                cardTypes.add(cardType);
+            }
+            discardDeck = 0;
+            discardDeckNumber.setText(discardDeck + "");
+        }
+        deck = cards.size();
+        deckNumber.setText(deck + "");
         cardPanel.revalidate();
         cardPanel.repaint();
         return cards.size();
@@ -661,6 +697,8 @@ public class windowDemo extends JFrame {
         nextLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                discardDeck += cardLabels.size();
+                discardDeckNumber.setText(discardDeck + "");
                 JOptionPane.showMessageDialog(null, "Next Round!");
                 round ++;
                 for(String cardname : cardTypes){
@@ -669,7 +707,27 @@ public class windowDemo extends JFrame {
                 for(JLabel label : cardLabels){
                     label.setVisible(false);
                 }
+                
                 showRandomCards();
+                deck = cards.size();
+                deckNumber.setText(deck + "");
+                player.energy = 3;
+                energyNumber.setText(player.energy + "/3");
+                if(vulnerableDuration > 0){
+                    vulnerableDuration --;
+                    if(vulnerableDuration > 0){
+                        vulnerableLabel.setVisible(true);
+                    }
+                    else vulnerableLabel.setVisible(false);
+                }
+                else vulnerableLabel.setVisible(false);
+
+                if(player.block != 0){
+                    player.block = 0;
+                    blockNumber.setVisible(false);
+                    blockLabel.setVisible(false);
+                }
+                
             }
         });
     }
