@@ -58,6 +58,9 @@ public class windowDemo extends JFrame {
     private JLabel blockLabel;
     private JLabel blockNumber;
     private int vulnerableDuration = 0;
+    private JLabel bossattackLabel;
+    private JLabel bossattackNumber;
+    private int bossattack;
     
     public windowDemo() {
         init();
@@ -691,6 +694,16 @@ public class windowDemo extends JFrame {
         energyNumber.setForeground(Color.BLACK);
         getLayeredPane().add(energyNumber, new Integer(Integer.MIN_VALUE + 5));
         energyNumber.setBounds(52, 570, 120, 50);
+
+        bossattackLabel = new JLabel(new ImageIcon("image/bossattack.png")); //怪物攻擊提示
+        bossattackLabel.setBounds(1180, 40, 42, 43);
+        getLayeredPane().add(bossattackLabel, new Integer(Integer.MIN_VALUE + 4));
+
+        bossattackNumber = new JLabel(bossattack + "", SwingConstants.CENTER); //怪物攻擊傷害
+        bossattackNumber.setFont(new Font("Arial", Font.BOLD, 30));
+        bossattackNumber.setForeground(Color.WHITE);
+        getLayeredPane().add(bossattackNumber, new Integer(Integer.MIN_VALUE + 5));
+        bossattackNumber.setBounds(1125, 50, 120, 50);
 
     }
     private void nextRound() {
