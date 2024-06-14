@@ -63,6 +63,7 @@ public class windowDemo extends JFrame {
     private int bossattack;
     public MusicPlayer musicPlayer; // 添加MusicPlayer變量
     public int muscleturn = 0;
+    private int level = 0;
     
     public windowDemo() {
         init();
@@ -85,14 +86,12 @@ public class windowDemo extends JFrame {
 
     // 初始化敵人和玩家，只在遊戲開始時調用一次
     public void initGame() {
-        /*for (int level = 0; level < 3; level++) {
-            if (level == 0) {
-                enemies.add(new Enemy(20, 6));  
-            } else if (level == 1) {
-                enemies.add(new Enemy(20, 10));
-                enemies.add(new Enemy(20, 10));
-            }
-        }*/
+        if (level == 0) {
+            enemies.add(new Enemy(20, 6));  
+        } else if (level == 1) {
+            enemies.add(new Enemy(20, 10));
+            enemies.add(new Enemy(20, 10));
+        }
         enemies.add(new Enemy(20, 6));
         player = new Player("Player", 80, 0);
     }
@@ -169,15 +168,19 @@ public class windowDemo extends JFrame {
         // 初始化并播放背景音乐
         musicPlayer = new MusicPlayer();
         System.out.println("Attempting to play background music.");
-        musicPlayer.playBackgroundMusic("comsimple/resources/bgm.wav");
+        musicPlayer.playBackgroundMusic("comsimple/music/bgm.wav");
     }
     
     private void levelChoose() { //關卡選擇頁面
         // 隱藏按鈕
         btn1.setVisible(false);
         btn2.setVisible(false);
+        if(pass[0] != 0){
+            // 停止播放關卡音樂 播放背景音樂
+            musicPlayer.stopBackgroundMusic();
+            musicPlayer.playBackgroundMusic("comsimple/music/bgm.wav");
+        }
 
-        //停止播放關卡音樂
         for(JLabel label : cardLabels){
             label.setVisible(false);
         }
@@ -240,6 +243,10 @@ public class windowDemo extends JFrame {
             public void mouseClicked(MouseEvent e) {
                 if(pass[0] != 1){
                     //加關卡音樂
+                    musicPlayer.stopBackgroundMusic();
+                    // 播放新的关卡音樂
+                    musicPlayer.playBackgroundMusic("comsimple/music/edm.wav");
+                    
                     imgLabel.setIcon(scaleImageIcon(new ImageIcon("image/level1.jpg"), getScreenWidth(), getScreenHeight()));
                     imgLabel.repaint();
                     hideIcon();
@@ -395,10 +402,8 @@ public class windowDemo extends JFrame {
                 for (int i = 0; i < cardLabels.size(); i++) {
                     System.out.println(cardLabels.size());
                     JLabel otherLabel = cardLabels.get(i);
-                    String otherLabelType = cardTypes.get(i);
-            
                     
-                    if (label != otherLabel && label.getBounds().intersects(monsterLabel.getBounds())) {
+                    if (label.getBounds().intersects(monsterLabel.getBounds())) {
                         collided = true;
                         
                         
@@ -420,6 +425,8 @@ public class windowDemo extends JFrame {
                                     cardPanel.remove(label);
                                     cardLabels.remove(label); //有問題？
                                     cardTypes.remove(labelType);
+                                    //放打擊音效
+                                    musicPlayer.playMusicOnce("comsimple/music/attack.wav");
 
                                     //enemy.takeDamage(6);
                                     int totalDamage = player.baseAttack + attackCard.damage;
@@ -484,6 +491,8 @@ public class windowDemo extends JFrame {
                                     cardPanel.remove(label);
                                     cardLabels.remove(label);
                                     cardTypes.remove(labelType);
+                                    //放打擊音效
+                                    musicPlayer.playMusicOnce("comsimple/music/attack.wav");
                                     //enemy.takeDamage(8); 
                                     int totalDamage = player.baseAttack + bashCard.damage;
                                     enemy.takeDamage(totalDamage);
@@ -511,6 +520,8 @@ public class windowDemo extends JFrame {
                                     cardPanel.remove(label);
                                     cardLabels.remove(label);
                                     cardTypes.remove(labelType);
+                                    //放打擊音效
+                                    musicPlayer.playMusicOnce("comsimple/music/attack.wav");
                                     player.health -= 1;
                                     for (Enemy en : enemies) {
                                         if (en.health > 0) {
