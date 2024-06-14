@@ -64,6 +64,7 @@ public class windowDemo extends JFrame {
     public MusicPlayer musicPlayer; // 添加MusicPlayer變量
     public int muscleturn = 0;
     private int level = -1;
+    private int [] fullMonsterHP = new int[4];
     
     public windowDemo() {
         init();
@@ -89,10 +90,17 @@ public class windowDemo extends JFrame {
         if (level == 0) {
             player = new Player("Player", 80, 0);
             enemies.add(new Enemy(20, 6));  
+            fullMonsterHP[level] = enemies.get(level).health;
         } 
         else if (level == 1) {
-            enemies.add(new Enemy(20, 10));
-            enemies.add(new Enemy(20, 10));
+            enemies.add(new Enemy(40, 10));
+            fullMonsterHP[level] = enemies.get(level).health;
+        }
+        else if(level == 3){
+            enemies.add(new Enemy(40, 10));
+            enemies.add(new Enemy(40, 10));
+            fullMonsterHP[level] = enemies.get(level).health;
+            fullMonsterHP[level + 1] = enemies.get(level + 1).health;
         }
         
     }
@@ -216,7 +224,7 @@ public class windowDemo extends JFrame {
             imagePanel.setVisible(false);
         }
 
-        Timer timer = new Timer(50, null);
+        Timer timer = new Timer(0, null);
         timer.addActionListener(new ActionListener() {
 
             @Override
@@ -301,7 +309,7 @@ public class windowDemo extends JFrame {
                     hideIcon();
                     iconLabel2.setIcon(new ImageIcon("image/icon1_new.png"));
                     //關卡內容
-                    energy = 3; //能量值
+                    player.energy = 3; //能量值
                     player.baseAttack = 0;
                     initGame();
                     callAllLabel();
@@ -568,7 +576,8 @@ public class windowDemo extends JFrame {
                                 System.out.println("Unknown card type.");
                                 break;
                         }
-                        monsterhpNumber.setText(enemy.health + "/20");
+                        monsterhpNumber.setText(enemy.health + "/" + fullMonsterHP[level]);
+                        monsterhpLabel.setBounds(1120, 450, (int)(289 * ((double)enemy.health / fullMonsterHP[level])), 20);
                         hpNumber.setText(player.health + "/80");
                         energyNumber.setText(player.energy + "/3");
                         blockNumber.setText(player.block + "");
@@ -718,7 +727,7 @@ public class windowDemo extends JFrame {
         deckNumber.setBounds(113, 767, 50, 50);
 
         hpLabel = new JLabel(new ImageIcon("image/hp.png")); //HP
-        hpLabel.setBounds(180, 450, 289, 20);
+        hpLabel.setBounds(180, 450, 289 * (player.health / 80), 20);
         getLayeredPane().add(hpLabel, new Integer(Integer.MIN_VALUE + 3));
 
         hpNumber = new JLabel(HP + "/80"); //HP數字
@@ -731,7 +740,7 @@ public class windowDemo extends JFrame {
         monsterhpLabel.setBounds(1120, 450, 289, 20);
         getLayeredPane().add(monsterhpLabel, new Integer(Integer.MIN_VALUE + 3));
 
-        monsterhpNumber = new JLabel(health + "/20"); //怪物HP數量
+        monsterhpNumber = new JLabel(enemies.get(level).health + "/" + fullMonsterHP[level]); //怪物HP數量
         monsterhpNumber.setFont(new Font("Arial", Font.BOLD, 25));
         monsterhpNumber.setForeground(Color.WHITE);
         getLayeredPane().add(monsterhpNumber, new Integer(Integer.MIN_VALUE + 4));
@@ -805,6 +814,7 @@ public class windowDemo extends JFrame {
                             //System.out.println("enemy attack");
                         }
                     }
+                    hpLabel.setBounds(180, 450, (int)(289 * ((double)player.health / 80)), 20);
                 }
 
 
