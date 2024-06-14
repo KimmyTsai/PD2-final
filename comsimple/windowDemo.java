@@ -467,7 +467,7 @@ public class windowDemo extends JFrame {
                                     player.baseAttack += 2; 
                                     System.out.println("Muscle: Base attack increased by 2 for 1 turn.");
                                     player.energy -= muscleCard.energyCost;
-                                    muscleturn = 2 ;
+                                    muscleturn = 1 ;
                                     System.out.println(muscleturn + "活動肌肉回合");
                                 } else {
                                     System.out.println("Not enough energy to play Muscle.");
