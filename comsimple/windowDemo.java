@@ -59,7 +59,7 @@ public class windowDemo extends JFrame {
     private int block = 1;
     private JLabel blockLabel;
     private JLabel blockNumber;
-
+    
     public windowDemo() {
         init();
     }
@@ -233,7 +233,6 @@ public class windowDemo extends JFrame {
 
                     deck = showRandomCards();
                     deckNumber.setText(deck + "");
-                    //if(enemy.health <= 0)
                     nextRound();
 
                     //
@@ -382,30 +381,33 @@ public class windowDemo extends JFrame {
                     
                     if (label != otherLabel && label.getBounds().intersects(monsterLabel.getBounds())) {
                         collided = true;
-            
                         
-                        cards.remove(labelType);
-                        cardPanel.remove(label);
-            
                         
+
                         int countLabelName = Collections.frequency(cards, labelType);
                         JOptionPane.showMessageDialog(null, labelType + " 碰撞到怪物\n" +
                                 labelType + " 總共 " + countLabelName + " 張\n");
             
-                       
                         Enemy enemy = enemies.get(0);
-            
                         
                         switch (labelType) {
                             case "image/attack.png":
                                 AttackCard attackCard = new AttackCard("Strike", 6, 0, 1); 
                                 if (player.energy >= attackCard.energyCost) {
+                                    discardDeck++;
+                                    discardDeckNumber.setText(discardDeck + "");
+                                    label.setVisible(false);
+                                    cards.remove(labelType);
+                                    cardPanel.remove(label);
+
                                     //enemy.takeDamage(6);
                                     int totalDamage = player.baseAttack + attackCard.damage;
                                     enemy.takeDamage(totalDamage);
                                     player.energy -= attackCard.energyCost;
                                     if (enemy.health <= 0) levelChoose();
                                 } else {
+                                    JOptionPane.showMessageDialog(null, "能量不足");
+                                    label.setLocation(initialPosition);
                                     System.out.println("Not enough energy to play Strike.");
                                 }
                                 break;
@@ -413,9 +415,17 @@ public class windowDemo extends JFrame {
                             case "image/defend.png":
                                 DefendCard defendCard = new DefendCard("Defend", 0, 5, 1); 
                                 if (player.energy >= defendCard.energyCost) {
+                                    discardDeck++;
+                                    discardDeckNumber.setText(discardDeck + "");
+                                    label.setVisible(false);
+                                    cards.remove(labelType);
+                                    cardPanel.remove(label);
                                     player.gainBlock(5);
                                     player.energy -= defendCard.energyCost;
-                                } else {
+                                }
+                                else {
+                                    JOptionPane.showMessageDialog(null, "能量不足");
+                                    label.setLocation(initialPosition);
                                     System.out.println("Not enough energy to play Defend.");
                                 }
                                 break;
@@ -423,6 +433,11 @@ public class windowDemo extends JFrame {
                             case "image/muscle.png":
                                 FlexCard muscleCard = new FlexCard("Muscle", 0, 0, 0); 
                                 if (player.energy >= muscleCard.energyCost) {
+                                    discardDeck++;
+                                    discardDeckNumber.setText(discardDeck + "");
+                                    label.setVisible(false);
+                                    cards.remove(labelType);
+                                    cardPanel.remove(label);
                                     //player.useMuscle();
                                     player.baseAttack += 2; 
                                     System.out.println("Muscle: Base attack increased by 2 for 1 turn.");
@@ -435,20 +450,33 @@ public class windowDemo extends JFrame {
                             case "image/bash.png":
                                 BashCard bashCard = new BashCard("Bash", 8, 0, 2); 
                                 if (player.energy >= bashCard.energyCost) {
+                                    discardDeck++;
+                                    discardDeckNumber.setText(discardDeck + "");
+                                    label.setVisible(false);
+                                    cards.remove(labelType);
+                                    cardPanel.remove(label);
                                     //enemy.takeDamage(8); 
                                     int totalDamage = player.baseAttack + bashCard.damage;
                                     enemy.takeDamage(totalDamage);
                                     enemy.applyEffect(new Vulnerable(2));
+                                    vulnerable();
                                     player.energy -= bashCard.energyCost;
                                     if (enemy.health <= 0) levelChoose();
                                 } else {
+                                    JOptionPane.showMessageDialog(null, "能量不足");
+                                    label.setLocation(initialPosition);
                                     System.out.println("Not enough energy to play Bash.");
                                 }
                                 break;
                         
                             case "image/combust.png":
-                                CombustCard combustCard = new CombustCard("Combust", 5, 0, 2); 
+                                CombustCard combustCard = new CombustCard("Combust", 5, 0, 0); 
                                 if (player.energy >= combustCard.energyCost) {
+                                    discardDeck++;
+                                    discardDeckNumber.setText(discardDeck + "");
+                                    label.setVisible(false);
+                                    cards.remove(labelType);
+                                    cardPanel.remove(label);
                                     player.health -= 1;
                                     for (Enemy en : enemies) {
                                         if (en.health > 0) {
@@ -469,18 +497,13 @@ public class windowDemo extends JFrame {
                                 System.out.println("Unknown card type.");
                                 break;
                         }
-                        
-            
-                        
                         monsterhpNumber.setText(enemy.health + "/20");
                         hpNumber.setText(player.health + "/80");
                         energyNumber.setText(player.energy+"/3");
             
                         
-                        label.setVisible(false);
+                        
                         System.out.println(cards);
-                        discardDeck++;
-                        discardDeckNumber.setText(discardDeck + "");
                         label.setLocation(initialPosition);
                         break;
                     }
