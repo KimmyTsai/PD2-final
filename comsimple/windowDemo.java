@@ -87,13 +87,14 @@ public class windowDemo extends JFrame {
     // 初始化敵人和玩家，只在遊戲開始時調用一次
     public void initGame() {
         if (level == 0) {
+            player = new Player("Player", 80, 0);
             enemies.add(new Enemy(20, 6));  
         } 
         else if (level == 1) {
             enemies.add(new Enemy(20, 10));
             enemies.add(new Enemy(20, 10));
         }
-        player = new Player("Player", 80, 0);
+        
     }
 
     @SuppressWarnings("removal")
@@ -172,6 +173,8 @@ public class windowDemo extends JFrame {
     
     private void levelChoose() { //關卡選擇頁面
         level ++;
+        muscleturn = 0;
+        //player.baseAttack = 0;
         System.out.println(level);
         // 隱藏按鈕
         btn1.setVisible(false);
@@ -257,6 +260,7 @@ public class windowDemo extends JFrame {
                     iconLabel1.setIcon(new ImageIcon("image/icon1_new.png"));
                     //關卡內容
                     energy = 3; //能量值
+                    
                     initGame();
                     callAllLabel();
                     initCards();
@@ -296,7 +300,15 @@ public class windowDemo extends JFrame {
                     hideIcon();
                     iconLabel2.setIcon(new ImageIcon("image/icon1_new.png"));
                     //關卡內容
-                    
+                    energy = 3; //能量值
+                    player.baseAttack = 0;
+                    initGame();
+                    callAllLabel();
+                    initCards();
+
+                    showRandomCards();
+                    deckNumber.setText(deck + "");
+                    nextRound();
                     //
                     pass[1] = 1;
                     //levelChoose();
@@ -418,7 +430,7 @@ public class windowDemo extends JFrame {
                         JOptionPane.showMessageDialog(null, labelType + " 碰撞到怪物\n" +
                                 labelType + " 總共 " + countLabelName + " 張\n");
             
-                        Enemy enemy = enemies.get(0);
+                        Enemy enemy = enemies.get(level);
                         
                         switch (labelType) {
                             case "image/attack.png":
@@ -728,7 +740,7 @@ public class windowDemo extends JFrame {
         monsterattackLabel.setBounds(1180, 40, 42, 43);
         getLayeredPane().add(monsterattackLabel, new Integer(Integer.MIN_VALUE + 4));
         
-        monsterattackNumber = new JLabel(enemies.get(0).damage + "", SwingConstants.CENTER); //怪物攻擊傷害
+        monsterattackNumber = new JLabel(enemies.get(level).damage + "", SwingConstants.CENTER); //怪物攻擊傷害
         monsterattackNumber.setFont(new Font("Arial", Font.BOLD, 30));
         monsterattackNumber.setForeground(Color.WHITE);
         getLayeredPane().add(monsterattackNumber, new Integer(Integer.MIN_VALUE + 5));
