@@ -51,12 +51,13 @@ public class Enemy {
         if (isVulnerable) {
             System.out.println(name + " is vulnerable!");
         }
-        if (turnCounter % 2 == 0) {
+        /*if (turnCounter % 2 == 0) {
             block = 2;
             System.out.println(name + " blocks for " + block + " points.");
-        } else {
+        }*/
+         else {
             player.takeDamage(damage);
-            System.out.println(name + " attacks for " + damage + " points.");
+            System.out.println(" attacks for " + damage + " points.");
         }
     }
 
