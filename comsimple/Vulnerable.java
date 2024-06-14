@@ -10,6 +10,6 @@ public class Vulnerable {
     public void apply(Player player) {
         player.isVulnerable = true;
         player.vulnerableDuration = duration;
-        System.out.println(player.name + " is now Vulnerable for " + duration + " turns.");
+        //System.out.println(player.name + " is now Vulnerable for " + duration + " turns.");
     }
 }

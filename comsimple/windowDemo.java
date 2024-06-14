@@ -54,7 +54,7 @@ public class windowDemo extends JFrame {
     private int round = 0;
     private JLabel vulnerableLabel;
     public int health = 20;
-    private int block = 0;
+    ///private int block = 0;
     private JLabel blockLabel;
     private JLabel blockNumber;
     private int vulnerableDuration = 0;
@@ -175,7 +175,7 @@ public class windowDemo extends JFrame {
         level ++;
         muscleturn = 0;
         //player.baseAttack = 0;
-        System.out.println(level);
+        // System.out.println(level);
         // 隱藏按鈕
         btn1.setVisible(false);
         btn2.setVisible(false);
@@ -189,6 +189,7 @@ public class windowDemo extends JFrame {
             label.setVisible(false);
         }
         if(pass[0] != 0){
+            player.block = 0;
             monsterLabel.setVisible(false);
             manLabel.setVisible(false);
             hpLabel.setVisible(false);
@@ -450,7 +451,10 @@ public class windowDemo extends JFrame {
                                     int totalDamage = player.baseAttack + attackCard.damage;
                                     enemy.takeDamage(totalDamage);
                                     player.energy -= attackCard.energyCost;
-                                    if (enemy.health <= 0) levelChoose();
+                                    if (enemy.health <= 0) {
+                                        player.block = 0;
+                                        levelChoose();
+                                    }
                                 } else {
                                     JOptionPane.showMessageDialog(null, "能量不足");
                                     label.setLocation(initialPosition);
@@ -520,7 +524,10 @@ public class windowDemo extends JFrame {
                                     vulnerableLabel.setVisible(true);
 
                                     player.energy -= bashCard.energyCost;
-                                    if (enemy.health <= 0) levelChoose();
+                                    if (enemy.health <= 0) {
+                                        player.block = 0;
+                                        levelChoose();
+                                    }
                                 } else {
                                     JOptionPane.showMessageDialog(null, "能量不足");
                                     label.setLocation(initialPosition);
@@ -549,7 +556,10 @@ public class windowDemo extends JFrame {
                                         }
                                     }
                                     player.energy -= combustCard.energyCost;
-                                    if (enemy.health <= 0) levelChoose();
+                                    if (enemy.health <= 0) {
+                                        player.block = 0;
+                                        levelChoose();
+                                    }
                                 } else {
                                 }
                                 break;
@@ -565,15 +575,15 @@ public class windowDemo extends JFrame {
                         deck = cards.size();
                         deckNumber.setText(deck + "");
 
-                        if(player.block == 0 && blockNumber != null){
+                        if(player.block <= 0){
                             blockNumber.setVisible(false);
                             blockLabel.setVisible(false);
                         }
-                        else if(player.block > 0){
+                        else{
                             blockNumber.setVisible(true);
                             blockLabel.setVisible(true);
                         }
-            
+                        System.out.println(player.block);
                         label.setLocation(initialPosition);
                         break;
                     }
@@ -591,7 +601,7 @@ public class windowDemo extends JFrame {
         blockLabel = new JLabel(new ImageIcon("image/block.png")); //格擋
         blockLabel.setBounds(155, 435, 50, 50);
         getLayeredPane().add(blockLabel, new Integer(Integer.MIN_VALUE + 4));
-        blockNumber = new JLabel(block + "", SwingConstants.CENTER); //格擋值
+        blockNumber = new JLabel(0 + "", SwingConstants.CENTER); //格擋值
         blockNumber.setFont(new Font("Arial", Font.BOLD, 25));
         blockNumber.setForeground(Color.BLACK);
         getLayeredPane().add(blockNumber, new Integer(Integer.MIN_VALUE + 5));
@@ -790,9 +800,9 @@ public class windowDemo extends JFrame {
                         int effectiveDamage = enemy.damage - player.block;
                         if (effectiveDamage > 0) {
                         player.health -= effectiveDamage;
-                        block = 0;
+                        player.block = 0;
                         }
-                            System.out.println("enemy attack");
+                            //System.out.println("enemy attack");
                         }
                     }
                 }
@@ -801,9 +811,6 @@ public class windowDemo extends JFrame {
                 if(player.block != 0){
                     player.block = 0;
                 }
-
-                blockNumber.setVisible(false);
-                blockLabel.setVisible(false);
 
                 blockNumber.setVisible(false);
                 blockLabel.setVisible(false);
