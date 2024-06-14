@@ -8,8 +8,6 @@ import java.util.Collections;
 import java.util.List;
 import javax.swing.*;
 
-
-
 public class windowDemo extends JFrame {
     
     private JLabel imgLabel;
@@ -81,9 +79,6 @@ public class windowDemo extends JFrame {
         }
         player = new Player("Player", 80, 0);
     }
-
-    
-
 
     @SuppressWarnings("removal")
     private void init() {
