@@ -789,6 +789,8 @@ public class windowDemo extends JFrame {
                 blockNumber.setVisible(false);
                 blockLabel.setVisible(false);
 
+                blockNumber.setVisible(false);
+                blockLabel.setVisible(false);
 
                 hpNumber.setText(player.health + "/80");
                 
