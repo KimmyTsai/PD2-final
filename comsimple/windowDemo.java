@@ -58,6 +58,10 @@ public class windowDemo extends JFrame {
     private JLabel blockLabel;
     private JLabel blockNumber;
     private int vulnerableDuration = 0;
+    private JLabel bossattackLabel;
+    private JLabel bossattackNumber;
+    private int bossattack;
+    public MusicPlayer musicPlayer; // 添加MusicPlayer變量
     public int muscleturn = 0;
     
     public windowDemo() {
@@ -162,12 +166,18 @@ public class windowDemo extends JFrame {
         this.getLayeredPane().add(cardPanel, new Integer(Integer.MIN_VALUE + 4));
         cardPanel.setBounds(0, getScreenHeight() - 330, getScreenWidth(), 990);
 
+        // 初始化并播放背景音乐
+        musicPlayer = new MusicPlayer();
+        System.out.println("Attempting to play background music.");
+        musicPlayer.playBackgroundMusic("comsimple/resources/bgm.wav");
     }
     
     private void levelChoose() { //關卡選擇頁面
         // 隱藏按鈕
         btn1.setVisible(false);
         btn2.setVisible(false);
+
+        //停止播放關卡音樂
         for(JLabel label : cardLabels){
             label.setVisible(false);
         }
@@ -187,7 +197,7 @@ public class windowDemo extends JFrame {
             deckNumber.setVisible(false);
             blockLabel.setVisible(false);
             blockNumber.setVisible(false);
-            //if(!vulnerableLabel.isVisible()) vulnerableLabel.setVisible(false);
+            vulnerableLabel.setVisible(false);
         }
         
         // 隱藏首頁
@@ -229,6 +239,7 @@ public class windowDemo extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if(pass[0] != 1){
+                    //加關卡音樂
                     imgLabel.setIcon(scaleImageIcon(new ImageIcon("image/level1.jpg"), getScreenWidth(), getScreenHeight()));
                     imgLabel.repaint();
                     hideIcon();
@@ -705,6 +716,16 @@ public class windowDemo extends JFrame {
         energyNumber.setForeground(Color.BLACK);
         getLayeredPane().add(energyNumber, new Integer(Integer.MIN_VALUE + 5));
         energyNumber.setBounds(52, 570, 120, 50);
+
+        bossattackLabel = new JLabel(new ImageIcon("image/bossattack.png")); //怪物攻擊提示
+        bossattackLabel.setBounds(1180, 40, 42, 43);
+        getLayeredPane().add(bossattackLabel, new Integer(Integer.MIN_VALUE + 4));
+
+        bossattackNumber = new JLabel(bossattack + "", SwingConstants.CENTER); //怪物攻擊傷害
+        bossattackNumber.setFont(new Font("Arial", Font.BOLD, 30));
+        bossattackNumber.setForeground(Color.WHITE);
+        getLayeredPane().add(bossattackNumber, new Integer(Integer.MIN_VALUE + 5));
+        bossattackNumber.setBounds(1125, 50, 120, 50);
 
     }
     private void nextRound() {
