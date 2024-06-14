@@ -327,15 +327,14 @@ public class windowDemo extends JFrame {
                 for (int i = 0; i < cardLabels.size(); i++) {
                     System.out.println(cardLabels.size());
                     JLabel otherLabel = cardLabels.get(i);
-                    String otherLabelType = cardTypes.get(i);
-                    if (label != otherLabel && label.getBounds().intersects(monsterLabel.getBounds())) {
+                    if (label.getBounds().intersects(monsterLabel.getBounds())) {
                         collided = true;
 
                         cards.remove(labelType);
                         // 移除
                         cardPanel.remove(label);
-                        //cardLabels.remove(label);
-                        //cardTypes.remove(labelType); //有問題
+                        cardLabels.remove(label);
+                        cardTypes.remove(labelType); //有問題
 
                         int countLabelName = Collections.frequency(cards, labelType);
                         JOptionPane.showMessageDialog(null, labelType + " 碰撞到怪物\n" +

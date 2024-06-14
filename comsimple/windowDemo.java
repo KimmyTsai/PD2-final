@@ -21,7 +21,7 @@ public class windowDemo extends JFrame {
     private JLabel iconLabel2;
     private JLabel iconLabel3;
     private JLabel iconLabel4;
-    private List<JLabel> cardLabels = new ArrayList<>();
+    private List<JLabel> cardLabels = new ArrayList<>(); // 手牌表
     private int attackNumber = 5;
     private int defendNumber = 4; 
     private int bashNumber = 2;
@@ -223,9 +223,8 @@ public class windowDemo extends JFrame {
                     //關卡內容
                     energy = 3; //能量值
                     callAllLabel();
+                    initCards();
                     initGame();
-                    
-
 
                     deck = showRandomCards();
                     deckNumber.setText(deck + "");
@@ -395,6 +394,8 @@ public class windowDemo extends JFrame {
                                     label.setVisible(false);
                                     cards.remove(labelType);
                                     cardPanel.remove(label);
+                                    cardLabels.remove(label); //有問題？
+                                    cardTypes.remove(labelType);
 
                                     //enemy.takeDamage(6);
                                     int totalDamage = player.baseAttack + attackCard.damage;
@@ -416,6 +417,8 @@ public class windowDemo extends JFrame {
                                     label.setVisible(false);
                                     cards.remove(labelType);
                                     cardPanel.remove(label);
+                                    cardLabels.remove(label);
+                                    cardTypes.remove(labelType);
                                     player.gainBlock(5);
                                     player.energy -= defendCard.energyCost;
                                 }
@@ -434,6 +437,8 @@ public class windowDemo extends JFrame {
                                     label.setVisible(false);
                                     cards.remove(labelType);
                                     cardPanel.remove(label);
+                                    cardLabels.remove(label);
+                                    cardTypes.remove(labelType);
                                     //player.useMuscle();
                                     player.baseAttack += 2; 
                                     System.out.println("Muscle: Base attack increased by 2 for 1 turn.");
@@ -451,6 +456,8 @@ public class windowDemo extends JFrame {
                                     label.setVisible(false);
                                     cards.remove(labelType);
                                     cardPanel.remove(label);
+                                    cardLabels.remove(label);
+                                    cardTypes.remove(labelType);
                                     //enemy.takeDamage(8); 
                                     int totalDamage = player.baseAttack + bashCard.damage;
                                     enemy.takeDamage(totalDamage);
@@ -475,6 +482,8 @@ public class windowDemo extends JFrame {
                                     label.setVisible(false);
                                     cards.remove(labelType);
                                     cardPanel.remove(label);
+                                    cardLabels.remove(label);
+                                    cardTypes.remove(labelType);
                                     player.health -= 1;
                                     for (Enemy en : enemies) {
                                         if (en.health > 0) {
@@ -542,9 +551,8 @@ public class windowDemo extends JFrame {
         getLayeredPane().add(vulnerableLabel, new Integer(Integer.MIN_VALUE + 4));
         vulnerableLabel.setVisible(false);
     }
-    @SuppressWarnings("removal")
-    private int showRandomCards() {
-
+    private void initCards() {
+        cards.clear();
         // 添加卡片到列表
         for (int i = 0; i < attackNumber; i++) {
             cards.add("image/attack.png");
@@ -561,7 +569,9 @@ public class windowDemo extends JFrame {
         for (int i = 0; i < combustNumber; i++) {
             cards.add("image/combust.png");
         }
-
+    }
+    @SuppressWarnings("removal")
+    private int showRandomCards() {
         // 打乱卡片顺序
         Collections.shuffle(cards);
 
@@ -653,6 +663,13 @@ public class windowDemo extends JFrame {
             public void mouseClicked(MouseEvent e) {
                 JOptionPane.showMessageDialog(null, "Next Round!");
                 round ++;
+                for(String cardname : cardTypes){
+                    cards.remove(cardname);
+                }
+                for(JLabel label : cardLabels){
+                    label.setVisible(false);
+                }
+                showRandomCards();
             }
         });
     }
