@@ -56,7 +56,7 @@ public class windowDemo extends JFrame {
     private int round = 0;
     private JLabel vulnerableLabel;
     public int health = 20;
-    private int block = 1;
+    private int block = 0;
     private JLabel blockLabel;
     private JLabel blockNumber;
     
@@ -206,7 +206,7 @@ public class windowDemo extends JFrame {
     private void addCustomIcons() {
         final JDialog dialog = new JDialog();
         dialog.setAlwaysOnTop(true);
-
+        addBlockAndVulnerable();
         // 第一關
         
         if(pass[0] != 1){
@@ -229,7 +229,8 @@ public class windowDemo extends JFrame {
                     energy = 3; //能量值
                     callAllLabel();
                     initGame();
-                    addBlock();
+                    
+
 
                     deck = showRandomCards();
                     deckNumber.setText(deck + "");
@@ -459,7 +460,9 @@ public class windowDemo extends JFrame {
                                     int totalDamage = player.baseAttack + bashCard.damage;
                                     enemy.takeDamage(totalDamage);
                                     enemy.applyEffect(new Vulnerable(2));
-                                    vulnerable();
+
+                                    vulnerableLabel.setVisible(true);
+
                                     player.energy -= bashCard.energyCost;
                                     if (enemy.health <= 0) levelChoose();
                                 } else {
@@ -499,8 +502,17 @@ public class windowDemo extends JFrame {
                         }
                         monsterhpNumber.setText(enemy.health + "/20");
                         hpNumber.setText(player.health + "/80");
-                        energyNumber.setText(player.energy+"/3");
-                        blockNumber.setText(player.block+"");
+                        energyNumber.setText(player.energy + "/3");
+                        blockNumber.setText(player.block + "");
+
+                        if(player.block == 0 && blockNumber != null){
+                            blockNumber.setVisible(false);
+                            blockLabel.setVisible(false);
+                        }
+                        else if(player.block > 0){
+                            blockNumber.setVisible(true);
+                            blockLabel.setVisible(true);
+                        }
             
                         
                         
@@ -514,31 +526,26 @@ public class windowDemo extends JFrame {
                     label.setLocation(initialPosition);
                 }
             }
-            
-            
-            
         });
     }
+
     @SuppressWarnings("removal")
-    private void vulnerable(){
+    private void addBlockAndVulnerable(){ //因為兩者都會視情況消失
+        blockLabel = new JLabel(new ImageIcon("image/block.png")); //格擋
+        blockLabel.setBounds(155, 435, 50, 50);
+        getLayeredPane().add(blockLabel, new Integer(Integer.MIN_VALUE + 4));
+        blockNumber = new JLabel(block + "", SwingConstants.CENTER); //格擋值
+        blockNumber.setFont(new Font("Arial", Font.BOLD, 25));
+        blockNumber.setForeground(Color.BLACK);
+        getLayeredPane().add(blockNumber, new Integer(Integer.MIN_VALUE + 5));
+        blockNumber.setBounds(153, 435, 50, 50);
+        blockNumber.setVisible(false);
+        blockLabel.setVisible(false);
+
         vulnerableLabel = new JLabel(new ImageIcon("image/vulnerable.png")); //易傷
         vulnerableLabel.setBounds(1120, 470, 35, 35);
         getLayeredPane().add(vulnerableLabel, new Integer(Integer.MIN_VALUE + 4));
-    }
-
-    @SuppressWarnings("removal")
-    private void addBlock(){
-        if(block >= 1){
-            blockLabel = new JLabel(new ImageIcon("image/block.png")); //格擋
-            blockLabel.setBounds(155, 435, 50, 50);
-            getLayeredPane().add(blockLabel, new Integer(Integer.MIN_VALUE + 4));
-            blockNumber = new JLabel(block + ""); //格擋值
-            blockNumber.setFont(new Font("Arial", Font.BOLD, 25));
-            blockNumber.setForeground(Color.BLACK);
-            getLayeredPane().add(blockNumber, new Integer(Integer.MIN_VALUE + 5));
-            blockNumber.setBounds(173, 435, 50, 50);
-        }
-
+        vulnerableLabel.setVisible(false);
     }
     @SuppressWarnings("removal")
     private int showRandomCards() {
