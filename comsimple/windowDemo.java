@@ -163,7 +163,7 @@ public class windowDemo extends JFrame {
         cardPanel = new JPanel();
         cardPanel.setOpaque(false);
         cardPanel.setLayout(new FlowLayout());
-        this.getLayeredPane().add(cardPanel, new Integer(Integer.MIN_VALUE + 4));
+        this.getLayeredPane().add(cardPanel, new Integer(Integer.MIN_VALUE + 8));
         cardPanel.setBounds(0, getScreenHeight() - 330, getScreenWidth(), 990);
 
         // 初始化并播放背景音乐
@@ -246,9 +246,10 @@ public class windowDemo extends JFrame {
                     iconLabel1.setIcon(new ImageIcon("image/icon1_new.png"));
                     //關卡內容
                     energy = 3; //能量值
+                    initGame();
                     callAllLabel();
                     initCards();
-                    initGame();
+                    
 
                     showRandomCards();
                     deckNumber.setText(deck + "");
@@ -418,9 +419,9 @@ public class windowDemo extends JFrame {
                                     label.setVisible(false);
                                     cards.remove(labelType);
                                     cardPanel.remove(label);
-                                    cardLabels.remove(label); //有問題？
+                                    cardLabels.remove(label);
                                     cardTypes.remove(labelType);
-
+                                    //放打擊音效
                                     //enemy.takeDamage(6);
                                     int totalDamage = player.baseAttack + attackCard.damage;
                                     enemy.takeDamage(totalDamage);
@@ -484,6 +485,7 @@ public class windowDemo extends JFrame {
                                     cardPanel.remove(label);
                                     cardLabels.remove(label);
                                     cardTypes.remove(labelType);
+                                    //放打擊音效
                                     //enemy.takeDamage(8); 
                                     int totalDamage = player.baseAttack + bashCard.damage;
                                     enemy.takeDamage(totalDamage);
@@ -511,6 +513,7 @@ public class windowDemo extends JFrame {
                                     cardPanel.remove(label);
                                     cardLabels.remove(label);
                                     cardTypes.remove(labelType);
+                                    //放打擊音效
                                     player.health -= 1;
                                     for (Enemy en : enemies) {
                                         if (en.health > 0) {
@@ -720,8 +723,8 @@ public class windowDemo extends JFrame {
         bossattackLabel = new JLabel(new ImageIcon("image/bossattack.png")); //怪物攻擊提示
         bossattackLabel.setBounds(1180, 40, 42, 43);
         getLayeredPane().add(bossattackLabel, new Integer(Integer.MIN_VALUE + 4));
-
-        bossattackNumber = new JLabel(bossattack + "", SwingConstants.CENTER); //怪物攻擊傷害
+        
+        bossattackNumber = new JLabel(enemies.get(0).damage + "", SwingConstants.CENTER); //怪物攻擊傷害
         bossattackNumber.setFont(new Font("Arial", Font.BOLD, 30));
         bossattackNumber.setForeground(Color.WHITE);
         getLayeredPane().add(bossattackNumber, new Integer(Integer.MIN_VALUE + 5));
