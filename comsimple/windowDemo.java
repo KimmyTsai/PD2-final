@@ -58,12 +58,12 @@ public class windowDemo extends JFrame {
     private JLabel blockLabel;
     private JLabel blockNumber;
     private int vulnerableDuration = 0;
-    private JLabel bossattackLabel;
-    private JLabel bossattackNumber;
-    private int bossattack;
+    private JLabel monsterattackLabel;
+    private JLabel monsterattackNumber;
+    private int monsterattack;
     public MusicPlayer musicPlayer; // 添加MusicPlayer變量
     public int muscleturn = 0;
-    private int level = 0;
+    private int level = -1;
     
     public windowDemo() {
         init();
@@ -88,11 +88,11 @@ public class windowDemo extends JFrame {
     public void initGame() {
         if (level == 0) {
             enemies.add(new Enemy(20, 6));  
-        } else if (level == 1) {
+        } 
+        else if (level == 1) {
             enemies.add(new Enemy(20, 10));
             enemies.add(new Enemy(20, 10));
         }
-        enemies.add(new Enemy(20, 6));
         player = new Player("Player", 80, 0);
     }
 
@@ -158,20 +158,21 @@ public class windowDemo extends JFrame {
                 levelChoose();
         }});
 
-        // 创建显示抽取卡片的面板
+        // 抽卡牌的面板
         cardPanel = new JPanel();
         cardPanel.setOpaque(false);
         cardPanel.setLayout(new FlowLayout());
         this.getLayeredPane().add(cardPanel, new Integer(Integer.MIN_VALUE + 8));
         cardPanel.setBounds(0, getScreenHeight() - 330, getScreenWidth(), 990);
 
-        // 初始化并播放背景音乐
+        // 背景音樂
         musicPlayer = new MusicPlayer();
-        System.out.println("Attempting to play background music.");
         musicPlayer.playBackgroundMusic("comsimple/music/bgm.wav");
     }
     
     private void levelChoose() { //關卡選擇頁面
+        level ++;
+        System.out.println(level);
         // 隱藏按鈕
         btn1.setVisible(false);
         btn2.setVisible(false);
@@ -201,6 +202,9 @@ public class windowDemo extends JFrame {
             blockLabel.setVisible(false);
             blockNumber.setVisible(false);
             vulnerableLabel.setVisible(false);
+            monsterattackLabel.setVisible(false);
+            monsterattackNumber.setVisible(false);
+            
         }
         
         // 隱藏首頁
@@ -257,7 +261,6 @@ public class windowDemo extends JFrame {
                     callAllLabel();
                     initCards();
                     
-
                     showRandomCards();
                     deckNumber.setText(deck + "");
                     nextRound();
@@ -291,9 +294,10 @@ public class windowDemo extends JFrame {
                     hideIcon();
                     iconLabel2.setIcon(new ImageIcon("image/icon1_new.png"));
                     //關卡內容
+                    
                     //
                     pass[1] = 1;
-                    levelChoose();
+                    //levelChoose();
                 }
                 else{
                     JOptionPane.showMessageDialog(null, "Please pass the previous level!");
@@ -401,7 +405,6 @@ public class windowDemo extends JFrame {
                 boolean collided = false; 
             
                 for (int i = 0; i < cardLabels.size(); i++) {
-                    System.out.println(cardLabels.size());
                     JLabel otherLabel = cardLabels.get(i);
                     
                     if (label.getBounds().intersects(monsterLabel.getBounds())) {
@@ -436,7 +439,6 @@ public class windowDemo extends JFrame {
                                 } else {
                                     JOptionPane.showMessageDialog(null, "能量不足");
                                     label.setLocation(initialPosition);
-                                    System.out.println("Not enough energy to play Strike.");
                                 }
                                 break;
                         
@@ -456,7 +458,6 @@ public class windowDemo extends JFrame {
                                 else {
                                     JOptionPane.showMessageDialog(null, "能量不足");
                                     label.setLocation(initialPosition);
-                                    System.out.println("Not enough energy to play Defend.");
                                 }
                                 break;
                         
@@ -472,12 +473,9 @@ public class windowDemo extends JFrame {
                                     cardTypes.remove(labelType);
                                     //player.useMuscle();
                                     player.baseAttack += 2; 
-                                    System.out.println("Muscle: Base attack increased by 2 for 1 turn.");
                                     player.energy -= muscleCard.energyCost;
                                     muscleturn = 1 ;
-                                    System.out.println(muscleturn + "活動肌肉回合");
                                 } else {
-                                    System.out.println("Not enough energy to play Muscle.");
                                 }
                                 break;
                         
@@ -506,7 +504,7 @@ public class windowDemo extends JFrame {
                                 } else {
                                     JOptionPane.showMessageDialog(null, "能量不足");
                                     label.setLocation(initialPosition);
-                                    System.out.println("Not enough energy to play Bash.");
+                                    
                                 }
                                 break;
                         
@@ -530,11 +528,9 @@ public class windowDemo extends JFrame {
                                             en.takeDamage(totalDamage);
                                         }
                                     }
-                                    System.out.println("Combust: Dealt 5 damage to all enemies, player loses 1 health.");
                                     player.energy -= combustCard.energyCost;
                                     if (enemy.health <= 0) levelChoose();
                                 } else {
-                                    System.out.println("Not enough energy to play Combust.");
                                 }
                                 break;
                         
@@ -558,9 +554,6 @@ public class windowDemo extends JFrame {
                             blockLabel.setVisible(true);
                         }
             
-                        
-                        
-                        System.out.println(cards);
                         label.setLocation(initialPosition);
                         break;
                     }
@@ -627,7 +620,7 @@ public class windowDemo extends JFrame {
                 String cardType = cards.get(i);
                 moveObject(cardLabel, cardType);
                 cardLabel.setBounds(190 + i * 210, getScreenHeight() - 330, 220, 288); // 手牌位置與大小
-                this.getLayeredPane().add(cardLabel, new Integer(Integer.MIN_VALUE + 4));
+                this.getLayeredPane().add(cardLabel, new Integer(Integer.MIN_VALUE + 8));
                 cardLabels.add(cardLabel);
                 cardTypes.add(cardType);
             }
@@ -728,15 +721,15 @@ public class windowDemo extends JFrame {
         getLayeredPane().add(energyNumber, new Integer(Integer.MIN_VALUE + 5));
         energyNumber.setBounds(52, 570, 120, 50);
 
-        bossattackLabel = new JLabel(new ImageIcon("image/bossattack.png")); //怪物攻擊提示
-        bossattackLabel.setBounds(1180, 40, 42, 43);
-        getLayeredPane().add(bossattackLabel, new Integer(Integer.MIN_VALUE + 4));
+        monsterattackLabel = new JLabel(new ImageIcon("image/bossattack.png")); //怪物攻擊提示
+        monsterattackLabel.setBounds(1180, 40, 42, 43);
+        getLayeredPane().add(monsterattackLabel, new Integer(Integer.MIN_VALUE + 4));
         
-        bossattackNumber = new JLabel(enemies.get(0).damage + "", SwingConstants.CENTER); //怪物攻擊傷害
-        bossattackNumber.setFont(new Font("Arial", Font.BOLD, 30));
-        bossattackNumber.setForeground(Color.WHITE);
-        getLayeredPane().add(bossattackNumber, new Integer(Integer.MIN_VALUE + 5));
-        bossattackNumber.setBounds(1125, 50, 120, 50);
+        monsterattackNumber = new JLabel(enemies.get(0).damage + "", SwingConstants.CENTER); //怪物攻擊傷害
+        monsterattackNumber.setFont(new Font("Arial", Font.BOLD, 30));
+        monsterattackNumber.setForeground(Color.WHITE);
+        getLayeredPane().add(monsterattackNumber, new Integer(Integer.MIN_VALUE + 5));
+        monsterattackNumber.setBounds(1125, 50, 120, 50);
 
     }
     private void nextRound() {
@@ -779,7 +772,6 @@ public class windowDemo extends JFrame {
                     for (Enemy enemy : enemies) {
                         if (enemy.health > 0) {
                             enemy.act(player, round);
-                            System.out.println("enemy attack");
                         }
                     }
                 }
