@@ -3,30 +3,32 @@ package comsimple;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.AudioInputStream;
-import java.io.BufferedInputStream;
-import java.io.InputStream;
+import java.io.File;
 
 public class MusicPlayer {
     private Clip clip;
 
-    public void playBackgroundMusic(String resourcePath) {
+    public void playBackgroundMusic(String filePath) {
         try {
-            // 從資源加載音頻文件
-            InputStream audioSrc = getClass().getClassLoader().getResourceAsStream(resourcePath);
-            if (audioSrc == null) {
-                System.err.println("Could not find the resource: " + resourcePath);
+            // 打印文件路径
+            System.out.println("Trying to load file: " + filePath);
+            
+            // 从文件加载音频
+            File audioFile = new File(filePath);
+            if (!audioFile.exists()) {
+                System.err.println("Could not find the file: " + filePath);
                 return;
             }
-            InputStream bufferedIn = new BufferedInputStream(audioSrc);
-            AudioInputStream audioStream = AudioSystem.getAudioInputStream(bufferedIn);
+            AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
 
-            // 獲取音頻剪輯並打開
+            // 获取音频剪辑并打开
             clip = AudioSystem.getClip();
             clip.open(audioStream);
 
-            // 開始播放並循環
+            // 开始播放并循环
             clip.start();
             clip.loop(Clip.LOOP_CONTINUOUSLY);
+            System.out.println("Background music started successfully.");
         } catch (Exception e) {
             e.printStackTrace();
         }

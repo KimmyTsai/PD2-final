@@ -58,6 +58,7 @@ public class windowDemo extends JFrame {
     private JLabel blockLabel;
     private JLabel blockNumber;
     private int vulnerableDuration = 0;
+    public MusicPlayer musicPlayer; // 添加MusicPlayer變量
     
     public windowDemo() {
         init();
@@ -150,6 +151,10 @@ public class windowDemo extends JFrame {
         this.getLayeredPane().add(cardPanel, new Integer(Integer.MIN_VALUE + 4));
         cardPanel.setBounds(0, getScreenHeight() - 330, getScreenWidth(), 990);
 
+        // 初始化并播放背景音乐
+        musicPlayer = new MusicPlayer();
+        System.out.println("Attempting to play background music.");
+        musicPlayer.playBackgroundMusic("C:\\Users\\User\\OneDrive\\附件\\PD2-FINAL\\resources\\Age of Empires 2 - Age of Kings.wav");
     }
     
     private void levelChoose() { //關卡選擇頁面
