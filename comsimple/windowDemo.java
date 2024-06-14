@@ -396,10 +396,8 @@ public class windowDemo extends JFrame {
                 for (int i = 0; i < cardLabels.size(); i++) {
                     System.out.println(cardLabels.size());
                     JLabel otherLabel = cardLabels.get(i);
-                    String otherLabelType = cardTypes.get(i);
-            
                     
-                    if (label != otherLabel && label.getBounds().intersects(monsterLabel.getBounds())) {
+                    if (label.getBounds().intersects(monsterLabel.getBounds())) {
                         collided = true;
                         
                         
