@@ -56,6 +56,7 @@ public class Enemy {
             System.out.println(name + " blocks for " + block + " points.");
         }*/
          else {
+            //block -= damage;
             player.takeDamage(damage);
             System.out.println(" attacks for " + damage + " points.");
         }
