@@ -62,26 +62,38 @@ public class windowDemo extends JFrame {
     private JLabel bossattackNumber;
     private int bossattack;
     public MusicPlayer musicPlayer; // 添加MusicPlayer變量
+    public int muscleturn = 0;
     
     public windowDemo() {
         init();
     }
 
-    
+    //怪死了沒
+    private boolean allEnemiesDefeated() {
+        for (Enemy enemy : enemies) {
+            if (enemy.health > 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
     // 全局變數
     ArrayList<Enemy> enemies = new ArrayList<>();
     Player player;
 
     // 初始化敵人和玩家，只在遊戲開始時調用一次
     public void initGame() {
-        for (int level = 0; level < 3; level++) {
+        /*for (int level = 0; level < 3; level++) {
             if (level == 0) {
                 enemies.add(new Enemy(20, 6));  
             } else if (level == 1) {
                 enemies.add(new Enemy(20, 10));
                 enemies.add(new Enemy(20, 10));
             }
-        }
+        }*/
+        enemies.add(new Enemy(20, 6));
         player = new Player("Player", 80, 0);
     }
 
@@ -151,7 +163,7 @@ public class windowDemo extends JFrame {
         cardPanel = new JPanel();
         cardPanel.setOpaque(false);
         cardPanel.setLayout(new FlowLayout());
-        this.getLayeredPane().add(cardPanel, new Integer(Integer.MIN_VALUE + 4));
+        this.getLayeredPane().add(cardPanel, new Integer(Integer.MIN_VALUE + 8));
         cardPanel.setBounds(0, getScreenHeight() - 330, getScreenWidth(), 990);
 
         // 初始化并播放背景音乐
@@ -242,9 +254,10 @@ public class windowDemo extends JFrame {
                     iconLabel1.setIcon(new ImageIcon("image/icon1_new.png"));
                     //關卡內容
                     energy = 3; //能量值
+                    initGame();
                     callAllLabel();
                     initCards();
-                    initGame();
+                    
 
                     showRandomCards();
                     deckNumber.setText(deck + "");
@@ -414,9 +427,9 @@ public class windowDemo extends JFrame {
                                     label.setVisible(false);
                                     cards.remove(labelType);
                                     cardPanel.remove(label);
-                                    cardLabels.remove(label); //有問題？
+                                    cardLabels.remove(label);
                                     cardTypes.remove(labelType);
-
+                                    //放打擊音效
                                     //enemy.takeDamage(6);
                                     int totalDamage = player.baseAttack + attackCard.damage;
                                     enemy.takeDamage(totalDamage);
@@ -463,6 +476,8 @@ public class windowDemo extends JFrame {
                                     player.baseAttack += 2; 
                                     System.out.println("Muscle: Base attack increased by 2 for 1 turn.");
                                     player.energy -= muscleCard.energyCost;
+                                    muscleturn = 1 ;
+                                    System.out.println(muscleturn + "活動肌肉回合");
                                 } else {
                                     System.out.println("Not enough energy to play Muscle.");
                                 }
@@ -478,6 +493,7 @@ public class windowDemo extends JFrame {
                                     cardPanel.remove(label);
                                     cardLabels.remove(label);
                                     cardTypes.remove(labelType);
+                                    //放打擊音效
                                     //enemy.takeDamage(8); 
                                     int totalDamage = player.baseAttack + bashCard.damage;
                                     enemy.takeDamage(totalDamage);
@@ -505,6 +521,7 @@ public class windowDemo extends JFrame {
                                     cardPanel.remove(label);
                                     cardLabels.remove(label);
                                     cardTypes.remove(labelType);
+                                    //放打擊音效
                                     player.health -= 1;
                                     for (Enemy en : enemies) {
                                         if (en.health > 0) {
@@ -714,8 +731,8 @@ public class windowDemo extends JFrame {
         bossattackLabel = new JLabel(new ImageIcon("image/bossattack.png")); //怪物攻擊提示
         bossattackLabel.setBounds(1180, 40, 42, 43);
         getLayeredPane().add(bossattackLabel, new Integer(Integer.MIN_VALUE + 4));
-
-        bossattackNumber = new JLabel(bossattack + "", SwingConstants.CENTER); //怪物攻擊傷害
+        
+        bossattackNumber = new JLabel(enemies.get(0).damage + "", SwingConstants.CENTER); //怪物攻擊傷害
         bossattackNumber.setFont(new Font("Arial", Font.BOLD, 30));
         bossattackNumber.setForeground(Color.WHITE);
         getLayeredPane().add(bossattackNumber, new Integer(Integer.MIN_VALUE + 5));
@@ -756,7 +773,26 @@ public class windowDemo extends JFrame {
                     blockNumber.setVisible(false);
                     blockLabel.setVisible(false);
                 }
+
+                //怪物攻擊
+                if (!allEnemiesDefeated()) {
+                    for (Enemy enemy : enemies) {
+                        if (enemy.health > 0) {
+                            enemy.act(player, round);
+                            System.out.println("enemy attack");
+                        }
+                    }
+                }
+                hpNumber.setText(player.health + "/80");
                 
+                if (muscleturn > 0 ){
+                    muscleturn -- ;
+                }
+
+                if (muscleturn == 0){
+                    player.baseAttack = 0 ;
+                }
+
             }
         });
     }
