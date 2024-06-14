@@ -776,7 +776,6 @@ public class windowDemo extends JFrame {
                         block = 0;
                         }
                             System.out.println("enemy attack");
-                            enemy.act(player, round);
                         }
                     }
                 }
@@ -785,7 +784,7 @@ public class windowDemo extends JFrame {
                 if(player.block != 0){
                     player.block = 0;
                 }
-                
+
                 blockNumber.setVisible(false);
                 blockLabel.setVisible(false);
 
