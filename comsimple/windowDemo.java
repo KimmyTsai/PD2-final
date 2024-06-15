@@ -64,7 +64,7 @@ public class windowDemo extends JFrame {
     public MusicPlayer musicPlayer; // 添加MusicPlayer變量
     public int muscleturn = 0;
     private int level = -1;
-    private int [] fullMonsterHP = new int[4];
+    private int [] fullMonsterHP = new int[5];
     
     public windowDemo() {
         init();
@@ -188,7 +188,6 @@ public class windowDemo extends JFrame {
     }
     
     private void levelChoose() { //關卡選擇頁面
-        level ++;
         muscleturn = 0;
         //player.baseAttack = 0;
         // System.out.println(level);
@@ -201,52 +200,37 @@ public class windowDemo extends JFrame {
             musicPlayer.playBackgroundMusic("comsimple/music/bgm.wav");
         }
 
-        for(JLabel label : cardLabels){
-            label.setVisible(false);
-        }
-        if(pass[0] != 0){
-            player.block = 0;
-            monsterLabel.setVisible(false);
-            manLabel.setVisible(false);
-            hpLabel.setVisible(false);
-            hpNumber.setVisible(false);
-            monsterhpLabel.setVisible(false);
-            monsterhpNumber.setVisible(false);
-            nextLabel.setVisible(false);
-            energyLabel.setVisible(false);
-            energyNumber.setVisible(false);
-            discardDeckLabel.setVisible(false);
-            deckLabel.setVisible(false);
-            discardDeckNumber.setVisible(false);
-            deckNumber.setVisible(false);
-            blockLabel.setVisible(false);
-            blockNumber.setVisible(false);
-            vulnerableLabel.setVisible(false);
-            monsterattackLabel.setVisible(false);
-            monsterattackNumber.setVisible(false);
-            
-        }
+        hideAllLabel();
         
         // 隱藏首頁
         if (imagePanel.isVisible()) {
             imagePanel.setVisible(false);
         }
 
-        SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
-            @Override
-            protected Void doInBackground() throws Exception {
-                mapImg = new ImageIcon("image/new_wallpaper.jpg");
-                return null;
-            }
-    
-            @Override
-            protected void done() {
-                imgLabel.setIcon(scaleImageIcon(mapImg, getScreenWidth(), getScreenHeight()));
-                imgLabel.repaint();
-                addCustomIcons(); //關卡圖示
-            }
-        };
-        worker.execute();
+        if(level < 2){
+            SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
+                @Override
+                protected Void doInBackground() throws Exception {
+                    mapImg = new ImageIcon("image/new_wallpaper.jpg");
+                    return null;
+                }
+        
+                @Override
+                protected void done() {
+                    imgLabel.setIcon(scaleImageIcon(mapImg, getScreenWidth(), getScreenHeight()));
+                    imgLabel.repaint();
+                    addCustomIcons(); //關卡圖示
+                }
+            };
+            worker.execute();
+        }
+        
+        if(level == 2){
+            hideAllLabel();
+            passImg = new ImageIcon("image/win.png");
+            imgLabel.setIcon(scaleImageIcon(passImg, getScreenWidth(), getScreenHeight()));
+            imgLabel.repaint();
+        }
     }
 
     @SuppressWarnings("removal")
@@ -277,6 +261,8 @@ public class windowDemo extends JFrame {
                     hideIcon();
                     iconLabel1.setIcon(new ImageIcon("image/icon1_new.png"));
                     //關卡內容
+                    
+                    level ++;  
                     energy = 3; //能量值
                     
                     initGame();
@@ -318,6 +304,8 @@ public class windowDemo extends JFrame {
                     hideIcon();
                     iconLabel2.setIcon(new ImageIcon("image/icon1_new.png"));
                     //關卡內容
+                    discardDeck = 0;
+                    level ++;
                     player.energy = 3; //能量值
                     player.baseAttack = 0;
                     //hpLabel.setVisible(true);
@@ -390,6 +378,10 @@ public class windowDemo extends JFrame {
                     hideIcon();
                     iconLabel4.setIcon(new ImageIcon("image/icon3_new.png"));
                     //關卡內容
+                    discardDeck = 0;
+                    level ++;
+                    player.energy = 3; //能量值
+                    player.baseAttack = 0;
                     initGame();
                     callAllLabel();
                     initCards();
@@ -399,9 +391,7 @@ public class windowDemo extends JFrame {
                     nextRound();
                     //
                     pass[3] = 1;
-                    passImg = new ImageIcon("image/win.png");
-                    imgLabel.setIcon(scaleImageIcon(passImg, getScreenWidth(), getScreenHeight()));
-                    imgLabel.repaint();
+                    
                 }
                 else{
                     JOptionPane.showMessageDialog(null, "Please pass the previous level!");
@@ -692,7 +682,7 @@ public class windowDemo extends JFrame {
                 String cardType = cards.get(i);
                 moveObject(cardLabel, cardType);
                 cardLabel.setBounds(190 + i * 210, getScreenHeight() - 330, 220, 288); // 手牌位置與大小
-                this.getLayeredPane().add(cardLabel, new Integer(Integer.MIN_VALUE + 4));
+                this.getLayeredPane().add(cardLabel, new Integer(Integer.MIN_VALUE + 8));
                 cardLabels.add(cardLabel);
                 cardTypes.add(cardType);
             }
@@ -726,6 +716,11 @@ public class windowDemo extends JFrame {
         }
         else if(level == 1){
             monsterLabel = new JLabel(new ImageIcon("image/monster2.png"));  //怪物2
+            monsterLabel.setBounds(1050, 50, 400, 400);
+            getLayeredPane().add(monsterLabel, new Integer(Integer.MIN_VALUE + 3));
+        }
+        else if(level == 2){
+            monsterLabel = new JLabel(new ImageIcon("image/monster3.png"));  //怪物2
             monsterLabel.setBounds(1050, 50, 400, 400);
             getLayeredPane().add(monsterLabel, new Integer(Integer.MIN_VALUE + 3));
         }
@@ -769,11 +764,22 @@ public class windowDemo extends JFrame {
         monsterhpLabel.setBounds(1120, 450, 289, 20);
         getLayeredPane().add(monsterhpLabel, new Integer(Integer.MIN_VALUE + 3));
 
-        monsterhpNumber = new JLabel(enemies.get(level).health + "/" + fullMonsterHP[level]); //怪物HP數量
-        monsterhpNumber.setFont(new Font("Arial", Font.BOLD, 25));
-        monsterhpNumber.setForeground(Color.WHITE);
-        getLayeredPane().add(monsterhpNumber, new Integer(Integer.MIN_VALUE + 4));
-        monsterhpNumber.setBounds(1230, 435, 120, 50);
+        if(level <= 1){
+            monsterhpNumber = new JLabel(enemies.get(level).health + "/" + fullMonsterHP[level]); //怪物HP數量
+            monsterhpNumber.setFont(new Font("Arial", Font.BOLD, 25));  
+            monsterhpNumber.setForeground(Color.WHITE);
+            getLayeredPane().add(monsterhpNumber, new Integer(Integer.MIN_VALUE + 4));
+            monsterhpNumber.setBounds(1230, 435, 120, 50);
+        }
+        else{
+            monsterhpNumber = new JLabel(enemies.get(level).health + "/" + fullMonsterHP[level]); //怪物HP數量
+            monsterhpNumber.setFont(new Font("Arial", Font.BOLD, 25));  
+            monsterhpNumber.setForeground(Color.WHITE);
+            getLayeredPane().add(monsterhpNumber, new Integer(Integer.MIN_VALUE + 4));
+            monsterhpNumber.setBounds(1230, 435, 120, 50);
+        }
+
+        
 
         nextLabel = new JLabel(new ImageIcon("image/next.png")); //結束回合
         nextLabel.setBounds(1290, 570, 195, 83);
@@ -799,6 +805,33 @@ public class windowDemo extends JFrame {
         getLayeredPane().add(monsterattackNumber, new Integer(Integer.MIN_VALUE + 5));
         monsterattackNumber.setBounds(1125, 50, 120, 50);
 
+    }
+    private void hideAllLabel(){
+        for(JLabel label : cardLabels){
+            label.setVisible(false);
+        }
+        if(pass[0] != 0){
+            player.block = 0;
+            monsterLabel.setVisible(false);
+            manLabel.setVisible(false);
+            hpLabel.setVisible(false);
+            hpNumber.setVisible(false);
+            monsterhpLabel.setVisible(false);
+            monsterhpNumber.setVisible(false);
+            nextLabel.setVisible(false);
+            energyLabel.setVisible(false);
+            energyNumber.setVisible(false);
+            discardDeckLabel.setVisible(false);
+            deckLabel.setVisible(false);
+            discardDeckNumber.setVisible(false);
+            deckNumber.setVisible(false);
+            blockLabel.setVisible(false);
+            blockNumber.setVisible(false);
+            vulnerableLabel.setVisible(false);
+            monsterattackLabel.setVisible(false);
+            monsterattackNumber.setVisible(false);
+            
+        }
     }
     private void nextRound() {
         nextLabel.addMouseListener(new MouseAdapter() {
@@ -844,6 +877,12 @@ public class windowDemo extends JFrame {
                         }
                     }
                     hpLabel.setBounds(180, 450, (int)(289 * ((double)player.health / 80)), 20);
+                    if(player.health <= 0){
+                        hideAllLabel();
+                        passImg = new ImageIcon("image/lose.jpg");
+                        imgLabel.setIcon(scaleImageIcon(passImg, getScreenWidth(), getScreenHeight()));
+                        imgLabel.repaint();
+                    }
                 }
 
 
