@@ -299,6 +299,8 @@ public class windowDemo extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if(pass[1] != 1 && pass[0] == 1){
+                    musicPlayer.stopBackgroundMusic();
+                    musicPlayer.playBackgroundMusic("comsimple/music/edm.wav");
                     imgLabel.setIcon(scaleImageIcon(new ImageIcon("image/level2.jpg"), getScreenWidth(), getScreenHeight()));
                     imgLabel.repaint();
                     hideIcon();
@@ -373,6 +375,8 @@ public class windowDemo extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if(pass[3] != 1 && pass[0] == 1 && pass[1] == 1 && pass[2] == 1){
+                    musicPlayer.stopBackgroundMusic();
+                    musicPlayer.playBackgroundMusic("comsimple/music/edm.wav");
                     imgLabel.setIcon(scaleImageIcon(new ImageIcon("image/level4.jpg"), getScreenWidth(), getScreenHeight()));
                     imgLabel.repaint();
                     hideIcon();
