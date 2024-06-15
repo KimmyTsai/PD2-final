@@ -153,7 +153,10 @@ public class windowDemo extends JFrame {
         JLabel popupLabel = new JLabel(popupImg);
         JButton closeButton = new JButton("Close");
         
-        closeButton.addActionListener(e -> imagePanel.setVisible(false));
+        closeButton.addActionListener(e -> {
+            musicPlayer.playMusicOnce("comsimple/music/click.wav");
+            imagePanel.setVisible(false);
+        });
 
         imagePanel.add(popupLabel, BorderLayout.CENTER);
         imagePanel.add(closeButton, BorderLayout.SOUTH);
@@ -166,6 +169,7 @@ public class windowDemo extends JFrame {
         button1.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                musicPlayer.playMusicOnce("comsimple/music/click.wav");
                 imagePanel.setVisible(true);
             }
         });
@@ -173,6 +177,7 @@ public class windowDemo extends JFrame {
         button2.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                musicPlayer.playMusicOnce("comsimple/music/click.wav");
                 levelChoose();
             }
         });
@@ -229,6 +234,8 @@ public class windowDemo extends JFrame {
         
         if(level == 2){
             hideAllLabel();
+            musicPlayer.stopBackgroundMusic();
+            musicPlayer.playBackgroundMusic("comsimple/music/win.wav");
             passImg = new ImageIcon("image/win.png");
             imgLabel.setIcon(scaleImageIcon(passImg, getScreenWidth(), getScreenHeight()));
             imgLabel.repaint();
@@ -378,7 +385,7 @@ public class windowDemo extends JFrame {
             public void mouseClicked(MouseEvent e) {
                 if(pass[3] != 1 && pass[0] == 1 && pass[1] == 1 && pass[2] == 1){
                     musicPlayer.stopBackgroundMusic();
-                    musicPlayer.playBackgroundMusic("comsimple/music/edm.wav");
+                    musicPlayer.playBackgroundMusic("comsimple/music/boss.wav");
                     imgLabel.setIcon(scaleImageIcon(new ImageIcon("image/level4.jpg"), getScreenWidth(), getScreenHeight()));
                     imgLabel.repaint();
                     hideIcon();
@@ -865,6 +872,7 @@ public class windowDemo extends JFrame {
         nextLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                musicPlayer.playMusicOnce("comsimple/music/click.wav");
                 discardDeck += cardLabels.size();
                 discardDeckNumber.setText(discardDeck + "");
                 JOptionPane.showMessageDialog(null, "Next Round!");
@@ -901,12 +909,15 @@ public class windowDemo extends JFrame {
                         player.health -= effectiveDamage;
                         player.block = 0;
                         }
-                            //System.out.println("enemy attack");
+                        //System.out.println("enemy attack");
+                        musicPlayer.playMusicOnce("comsimple/music/enemy attack.wav");
                         }
                     }
                     hpLabel.setBounds(180, 450, (int)(289 * ((double)player.health / 80)), 20);
                     if(player.health <= 0){
                         hideAllLabel();
+                        musicPlayer.stopBackgroundMusic();
+                        musicPlayer.playBackgroundMusic("comsimple/music/lose.wav");
                         passImg = new ImageIcon("image/lose.jpg");
                         imgLabel.setIcon(scaleImageIcon(passImg, getScreenWidth(), getScreenHeight()));
                         imgLabel.repaint();
