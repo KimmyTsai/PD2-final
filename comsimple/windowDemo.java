@@ -12,8 +12,8 @@ public class windowDemo extends JFrame {
     
     private JLabel imgLabel;
     private JPanel imagePanel;
-    private JButton btn1;
-    private JButton btn2;
+    private JLabel button1;
+    private JLabel button2;
     private ImageIcon homeImg;
     private ImageIcon mapImg;
     private ImageIcon passImg;
@@ -124,9 +124,6 @@ public class windowDemo extends JFrame {
             this.setSize(1920, 1080); //視窗大小，不能全屏就1920*1080
         }
         */
-
-        btn1 = new JButton("How To Play");
-        btn2 = new JButton("Start");
         
         // 主畫面
         homeImg = new ImageIcon("image/wallpaper.jpg");
@@ -141,8 +138,13 @@ public class windowDemo extends JFrame {
         ((JPanel) contain).setOpaque(false); 
 
         contain.setLayout(new FlowLayout());
-        contain.add(btn1);
-        contain.add(btn2);
+
+        button1 = new JLabel(new ImageIcon("image/button1.png"));
+        button2 = new JLabel(new ImageIcon("image/button2.png"));
+        button1.setBounds(120, 620, 200, 120);
+        button2.setBounds(120, 490, 200, 120);
+        this.getLayeredPane().add(button1, new Integer(Integer.MIN_VALUE + 30));
+        this.getLayeredPane().add(button2, new Integer(Integer.MIN_VALUE + 20));
   
         imagePanel = new JPanel(new BorderLayout());
         ImageIcon popupImg = new ImageIcon("image/rule.png");
@@ -157,15 +159,21 @@ public class windowDemo extends JFrame {
         
         // 關卡選擇頁
         this.getLayeredPane().add(imagePanel, new Integer(Integer.MIN_VALUE + 1));
-        imagePanel.setBounds(100, 100, popupImg.getIconWidth(), popupImg.getIconHeight());
+        imagePanel.setBounds(400, 100, popupImg.getIconWidth(), popupImg.getIconHeight());
         
-        btn1.addActionListener(e -> imagePanel.setVisible(true));
-
-        btn2.addActionListener(new ActionListener() {
+        button1.addMouseListener(new MouseAdapter() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void mouseClicked(MouseEvent e) {
+                imagePanel.setVisible(true);
+            }
+        });
+
+        button2.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
                 levelChoose();
-        }});
+            }
+        });
 
         // 抽卡牌的面板
         cardPanel = new JPanel();
@@ -185,8 +193,8 @@ public class windowDemo extends JFrame {
         //player.baseAttack = 0;
         // System.out.println(level);
         // 隱藏按鈕
-        btn1.setVisible(false);
-        btn2.setVisible(false);
+        button1.setVisible(false);
+        button2.setVisible(false);
         if(pass[0] != 0){
             // 停止播放關卡音樂 播放背景音樂
             musicPlayer.stopBackgroundMusic();
