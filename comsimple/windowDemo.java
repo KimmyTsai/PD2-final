@@ -65,7 +65,9 @@ public class windowDemo extends JFrame {
     public int muscleturn = 0;
     private int level = -1;
     private int [] fullMonsterHP = new int[5];
-    
+    private JLabel muscleiconLabel;
+    private JLabel muscleiconNumber;  
+
     public windowDemo() {
         init();
     }
@@ -596,6 +598,7 @@ public class windowDemo extends JFrame {
                         hpNumber.setText(player.health + "/80");
                         energyNumber.setText(player.energy + "/3");
                         blockNumber.setText(player.block + "");
+                        muscleiconNumber.setText(player.baseAttack + "");
                         deck = cards.size();
                         deckNumber.setText(deck + "");
 
@@ -606,6 +609,14 @@ public class windowDemo extends JFrame {
                         else{
                             blockNumber.setVisible(true);
                             blockLabel.setVisible(true);
+                        }
+                        if(player.baseAttack <= 0){
+                            muscleiconNumber.setVisible(false);
+                            muscleiconLabel.setVisible(false);
+                        }
+                        else{
+                            muscleiconNumber.setVisible(true);
+                            muscleiconLabel.setVisible(true);
                         }
                         System.out.println(player.block);
                         label.setLocation(initialPosition);
@@ -637,6 +648,17 @@ public class windowDemo extends JFrame {
         vulnerableLabel.setBounds(1120, 470, 35, 35);
         getLayeredPane().add(vulnerableLabel, new Integer(Integer.MIN_VALUE + 4));
         vulnerableLabel.setVisible(false);
+
+        muscleiconLabel = new JLabel(new ImageIcon("image/muscleicon.png")); //肌肉
+        muscleiconLabel.setBounds(175, 475, 40, 40);
+        getLayeredPane().add(muscleiconLabel, new Integer(Integer.MIN_VALUE + 4));
+        muscleiconNumber = new JLabel(0 + "", SwingConstants.CENTER); //格擋值
+        muscleiconNumber.setFont(new Font("Arial", Font.BOLD, 25));
+        muscleiconNumber.setForeground(Color.BLACK);
+        getLayeredPane().add(muscleiconNumber, new Integer(Integer.MIN_VALUE + 5));
+        muscleiconNumber.setBounds(173, 475, 50, 50);
+        muscleiconNumber.setVisible(false);
+        muscleiconLabel.setVisible(false);
     }
     private void initCards() {
         cards.clear();
@@ -831,6 +853,8 @@ public class windowDemo extends JFrame {
             deckNumber.setVisible(false);
             blockLabel.setVisible(false);
             blockNumber.setVisible(false);
+            muscleiconLabel.setVisible(false);
+            muscleiconNumber.setVisible(false);
             vulnerableLabel.setVisible(false);
             monsterattackLabel.setVisible(false);
             monsterattackNumber.setVisible(false);
@@ -896,6 +920,8 @@ public class windowDemo extends JFrame {
 
                 blockNumber.setVisible(false);
                 blockLabel.setVisible(false);
+                muscleiconNumber.setVisible(false);
+                muscleiconLabel.setVisible(false);
 
                 hpNumber.setText(player.health + "/80");
                 
