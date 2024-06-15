@@ -96,11 +96,11 @@ public class windowDemo extends JFrame {
             enemies.add(new Enemy(40, 10));
             fullMonsterHP[level] = enemies.get(level).health;
         }
-        else if(level == 3){
-            enemies.add(new Enemy(40, 10));
-            enemies.add(new Enemy(40, 10));
+        else if(level == 2){
+            enemies.add(new Enemy(60, 15));
+            //enemies.add(new Enemy(40, 10));
             fullMonsterHP[level] = enemies.get(level).health;
-            fullMonsterHP[level + 1] = enemies.get(level + 1).health;
+            //fullMonsterHP[level + 1] = enemies.get(level + 1).health;
         }
         
     }
@@ -145,7 +145,7 @@ public class windowDemo extends JFrame {
         contain.add(btn2);
   
         imagePanel = new JPanel(new BorderLayout());
-        ImageIcon popupImg = new ImageIcon("image/test.png");
+        ImageIcon popupImg = new ImageIcon("image/rule.png");
         JLabel popupLabel = new JLabel(popupImg);
         JButton closeButton = new JButton("Close");
         
@@ -262,7 +262,6 @@ public class windowDemo extends JFrame {
                 if(pass[0] != 1){
                     //加關卡音樂
                     musicPlayer.stopBackgroundMusic();
-                    // 播放新的关卡音樂
                     musicPlayer.playBackgroundMusic("comsimple/music/edm.wav");
                     
                     imgLabel.setIcon(scaleImageIcon(new ImageIcon("image/level1.jpg"), getScreenWidth(), getScreenHeight()));
@@ -306,7 +305,7 @@ public class windowDemo extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if(pass[1] != 1 && pass[0] == 1){
-                    imgLabel.setIcon(scaleImageIcon(new ImageIcon("image/level1.jpg"), getScreenWidth(), getScreenHeight()));
+                    imgLabel.setIcon(scaleImageIcon(new ImageIcon("image/level2.jpg"), getScreenWidth(), getScreenHeight()));
                     imgLabel.repaint();
                     hideIcon();
                     iconLabel2.setIcon(new ImageIcon("image/icon1_new.png"));
@@ -345,11 +344,15 @@ public class windowDemo extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if(pass[2] != 1 && pass[0] == 1 && pass[1] == 1){
-                    imgLabel.setIcon(scaleImageIcon(new ImageIcon("image/level1.jpg"), getScreenWidth(), getScreenHeight()));
+                    imgLabel.setIcon(scaleImageIcon(new ImageIcon("image/level3.jpg"), getScreenWidth(), getScreenHeight()));
                     imgLabel.repaint();
                     hideIcon();
                     iconLabel3.setIcon(new ImageIcon("image/icon2_new.png"));
                     //關卡內容
+                    player.health += 15;
+                    if(player.health >= 80) player.health = 80 ;
+                    JOptionPane.showMessageDialog(null, "回血點：HP增加15\n" + 
+                    "目前血量：" + player.health + "/80");
                     //
                     pass[2] = 1;
                     levelChoose();
@@ -374,14 +377,21 @@ public class windowDemo extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if(pass[3] != 1 && pass[0] == 1 && pass[1] == 1 && pass[2] == 1){
-                    imgLabel.setIcon(scaleImageIcon(new ImageIcon("image/level1.jpg"), getScreenWidth(), getScreenHeight()));
+                    imgLabel.setIcon(scaleImageIcon(new ImageIcon("image/level4.jpg"), getScreenWidth(), getScreenHeight()));
                     imgLabel.repaint();
                     hideIcon();
                     iconLabel4.setIcon(new ImageIcon("image/icon3_new.png"));
                     //關卡內容
+                    initGame();
+                    callAllLabel();
+                    initCards();
+
+                    showRandomCards();
+                    deckNumber.setText(deck + "");
+                    nextRound();
                     //
                     pass[3] = 1;
-                    passImg = new ImageIcon("image/pass.jpg");
+                    passImg = new ImageIcon("image/win.png");
                     imgLabel.setIcon(scaleImageIcon(passImg, getScreenWidth(), getScreenHeight()));
                     imgLabel.repaint();
                 }
@@ -736,9 +746,9 @@ public class windowDemo extends JFrame {
         deckNumber.setForeground(Color.WHITE);
         getLayeredPane().add(deckNumber, new Integer(Integer.MIN_VALUE + 4));
         deckNumber.setBounds(113, 767, 50, 50);
-
+        System.out.println(player.health);
         hpLabel = new JLabel(new ImageIcon("image/hp.png")); //HP
-        hpLabel.setBounds(180, 450, 289 * (80 / 80), 20);
+        hpLabel.setBounds(180, 450, (int)(289 * ((double)player.health / 80)), 20); //有bug?
         getLayeredPane().add(hpLabel, new Integer(Integer.MIN_VALUE + 3));
 
         hpNumber = new JLabel(player.health + "/80"); //HP數字
