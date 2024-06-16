@@ -24,7 +24,7 @@ public class Enemy {
         this.turnCounter = 0;
     }
 
-    void takeDamage(int damage) {
+    int takeDamage(int damage) {
         /*if (turnCounter % 2 == 0) {
             block = 2;
         } else {
@@ -41,6 +41,7 @@ public class Enemy {
         } else {
             block -= effectiveDamage;
         }
+        return effectiveDamage;
     }
 
     void act(Player player, int turnCounter) {

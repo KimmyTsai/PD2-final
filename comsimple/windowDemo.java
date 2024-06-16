@@ -459,9 +459,9 @@ public class windowDemo extends JFrame {
                         
                         
 
-                        int countLabelName = Collections.frequency(cards, labelType);
-                        JOptionPane.showMessageDialog(null, labelType + " 碰撞到怪物\n" +
-                                labelType + " 總共 " + countLabelName + " 張\n");
+                        // int countLabelName = Collections.frequency(cards, labelType);
+                        // JOptionPane.showMessageDialog(null, labelType + " 碰撞到怪物\n" +
+                        //         labelType + " 總共 " + countLabelName + " 張\n");
             
                         Enemy enemy = enemies.get(level);
                         
@@ -474,14 +474,16 @@ public class windowDemo extends JFrame {
                                     label.setVisible(false);
                                     cards.remove(labelType);
                                     cardPanel.remove(label);
-                                    cardLabels.remove(label); //有問題？
+                                    cardLabels.remove(label); 
                                     cardTypes.remove(labelType);
                                     //放打擊音效
                                     musicPlayer.playMusicOnce("comsimple/music/attack.wav");
-
+                                    
                                     //enemy.takeDamage(6);
                                     int totalDamage = player.baseAttack + attackCard.damage;
-                                    enemy.takeDamage(totalDamage);
+                                    
+                                    //enemy.takeDamage(totalDamage);
+                                    JOptionPane.showMessageDialog(null, "對敵方造成" + enemy.takeDamage(totalDamage) + "點傷害！");
                                     player.energy -= attackCard.energyCost;
                                     if (enemy.health <= 0) {
                                         player.block = 0;
@@ -496,9 +498,10 @@ public class windowDemo extends JFrame {
                             case "image/defend.png":
                                 DefendCard defendCard = new DefendCard("Defend", 0, 5, 1); 
                                 if (player.energy >= defendCard.energyCost) {
+                                    label.setVisible(false);
+                                    JOptionPane.showMessageDialog(null, "獲得5點格擋！");
                                     discardDeck++;
                                     discardDeckNumber.setText(discardDeck + "");
-                                    label.setVisible(false);
                                     cards.remove(labelType);
                                     cardPanel.remove(label);
                                     cardLabels.remove(label);
@@ -515,9 +518,10 @@ public class windowDemo extends JFrame {
                             case "image/muscle.png":
                                 FlexCard muscleCard = new FlexCard("Muscle", 0, 0, 0); 
                                 if (player.energy >= muscleCard.energyCost) {
+                                    label.setVisible(false);
+                                    JOptionPane.showMessageDialog(null, "本回合增加兩點力量！");
                                     discardDeck++;
                                     discardDeckNumber.setText(discardDeck + "");
-                                    label.setVisible(false);
                                     cards.remove(labelType);
                                     cardPanel.remove(label);
                                     cardLabels.remove(label);
@@ -542,9 +546,12 @@ public class windowDemo extends JFrame {
                                     cardTypes.remove(labelType);
                                     //放打擊音效
                                     musicPlayer.playMusicOnce("comsimple/music/attack.wav");
+                                    
                                     //enemy.takeDamage(8); 
                                     int totalDamage = player.baseAttack + bashCard.damage;
-                                    enemy.takeDamage(totalDamage);                                                                                                     
+                                    //enemy.takeDamage(totalDamage);                        
+                                    JOptionPane.showMessageDialog(null, "對敵方造成" + enemy.takeDamage(totalDamage) + "點傷害！\n" + 
+                                    "敵方附加兩層易傷");                                                                             
                                     //enemy.applyEffect(new Vulnerable(2));
                                     
                                     vulnerableDuration += 2;     
@@ -584,7 +591,9 @@ public class windowDemo extends JFrame {
                                         if (en.health > 0) {
                                             //en.takeDamage(5);
                                             int totalDamage = player.baseAttack + combustCard.damage;
-                                            en.takeDamage(totalDamage);
+                                            //en.takeDamage(totalDamage);
+                                            JOptionPane.showMessageDialog(null, "對敵方造成" + en.takeDamage(totalDamage) + "點傷害！\n" + 
+                                            "玩家損失1點血量");
                                         }
                                     }
                                     player.energy -= combustCard.energyCost;
@@ -845,6 +854,7 @@ public class windowDemo extends JFrame {
         }
         if(pass[0] != 0){
             player.block = 0;
+            player.baseAttack = 0;
             monsterLabel.setVisible(false);
             manLabel.setVisible(false);
             hpLabel.setVisible(false);
