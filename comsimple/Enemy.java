@@ -47,10 +47,10 @@ public class Enemy {
     void act(Player player, int turnCounter) {
         turnCounter++;
         if (isWeak) {
-            System.out.println(name + " is weak and attacks with half damage!");
+            //System.out.println(name + " is weak and attacks with half damage!");
         }
         if (isVulnerable) {
-            System.out.println(name + " is vulnerable!");
+            //System.out.println(name + " is vulnerable!");
         }
         /*if (turnCounter % 2 == 0) {
             block = 2;
@@ -59,7 +59,7 @@ public class Enemy {
          else {
             //block -= damage;
             player.takeDamage(damage);
-            System.out.println(" attacks for " + damage + " points.");
+            //System.out.println(" attacks for " + damage + " points.");
         }
     }
 

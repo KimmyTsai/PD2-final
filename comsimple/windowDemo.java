@@ -634,7 +634,7 @@ public class windowDemo extends JFrame {
                             muscleiconNumber.setVisible(true);
                             muscleiconLabel.setVisible(true);
                         }
-                        System.out.println(player.block);
+                        //System.out.println(player.block);
                         label.setLocation(initialPosition);
                         break;
                     }
@@ -791,7 +791,7 @@ public class windowDemo extends JFrame {
         deckNumber.setForeground(Color.WHITE);
         getLayeredPane().add(deckNumber, new Integer(Integer.MIN_VALUE + 4));
         deckNumber.setBounds(113, 767, 50, 50);
-        System.out.println(player.health);
+        
         hpLabel = new JLabel(new ImageIcon("image/hp.png")); //HP
         hpLabel.setBounds(180, 450, (int)(289 * ((double)player.health / 80)), 20); //有bug?
         getLayeredPane().add(hpLabel, new Integer(Integer.MIN_VALUE + 3));
