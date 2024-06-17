@@ -56,7 +56,7 @@ This project uses music and images from the following sources:
 
 - **Images**:
   - [ArtStation](https://www.pinterest.com/ArtStation_HQ/): Background and the monster pictures.
-  - [SLay the Spire pictures](https://sts.huijiwiki.com/wiki/%E5%8D%A1%E7%89%8C): Pictures of the cards and icons.
+  - [Slay the Spire pictures](https://sts.huijiwiki.com/wiki/%E5%8D%A1%E7%89%8C): Pictures of the cards and icons.
 
 Please ensure you comply with the licensing terms of these resources.
 
