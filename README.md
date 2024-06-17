@@ -12,7 +12,7 @@ This project is a card adventure game inspired by the popular game "Slay the Spi
 
 ## How to Play
 
-1. **Build Your Deck**: Start by selecting cards to include in your deck. You can customize your deck to suit your play style.
+1. **Check Your Deck**: Start by inital cards to include in your deck.
 2. **Start Your Adventure**: Begin your journey and encounter various enemies.
 3. **Use Your Cards**: During battles, use the cards in your hand to attack, defend, and use special abilities.
 4. **Win Battles**: Defeat enemies by efficiently using your cards and strategy.
