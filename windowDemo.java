@@ -915,9 +915,11 @@ public class windowDemo extends JFrame {
                         }
                         //System.out.println("enemy attack");
                         musicPlayer.playMusicOnce("music/enemy attack.wav");
+                        if(level == 2){
+                            enemy.damage += 3;
+                            monsterattackNumber.setText(enemy.damage + "");
+                        }
                         
-                        enemy.damage += 3;
-                        monsterattackNumber.setText(enemy.damage + "");
                         }
                     }
                     hpLabel.setBounds(180, 450, (int)(289 * ((double)player.health / 80)), 20);
