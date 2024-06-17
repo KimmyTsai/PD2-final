@@ -2,9 +2,9 @@ package comsimple;
 
 public class Enemy {
     String name;
-    int health;
+    public int health;
     int block;
-    int damage;
+    public int damage;
     boolean isVulnerable;
     int vulnerableTurns;
     boolean isWeak;
@@ -12,7 +12,7 @@ public class Enemy {
     int turnCounter;
 
     //Enemy(String name, int health, int damage) {
-    Enemy(int health, int damage) {
+    public Enemy(int health, int damage) {
         //this.name = name;
         this.health = health;
         this.block = 0;
@@ -24,7 +24,7 @@ public class Enemy {
         this.turnCounter = 0;
     }
 
-    int takeDamage(int damage) {
+    public int takeDamage(int damage) {
         /*if (turnCounter % 2 == 0) {
             block = 2;
         } else {

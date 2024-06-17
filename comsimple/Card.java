@@ -1,10 +1,10 @@
 package comsimple;
 
-abstract class Card {
+public abstract class Card {
     String name;
-    int damage;
+    public int damage;
     int block;
-    int energyCost;
+    public int energyCost;
 
     Card(String name, int damage, int block, int energyCost) {
         //String name, int damage, int block, int energyCost, String imagePath

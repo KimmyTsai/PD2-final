@@ -1,9 +1,9 @@
 package comsimple;
 
-class BashCard extends Card {
+public class BashCard extends Card {
     int vulnerableDuration;
 
-    BashCard(String name, int damage, int block, int vulnerableDuration) {
+    public BashCard(String name, int damage, int block, int vulnerableDuration) {
         super(name, damage, block, 2); // 能量耗费为2
         this.vulnerableDuration = vulnerableDuration;
     }

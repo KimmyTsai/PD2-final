@@ -1,7 +1,7 @@
 package comsimple;
 
-class CombustCard extends Card {
-    CombustCard(String name, int damage, int block, int energyCost) {
+public class CombustCard extends Card {
+    public CombustCard(String name, int damage, int block, int energyCost) {
         super(name, damage, block, energyCost);
     }
 

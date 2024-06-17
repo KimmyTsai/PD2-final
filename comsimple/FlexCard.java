@@ -1,7 +1,7 @@
 package comsimple;
 
-class FlexCard extends Card {
-    FlexCard(String name, int damage, int block, int energyCost) {
+public class FlexCard extends Card {
+    public FlexCard(String name, int damage, int block, int energyCost) {
         super(name, damage, block, energyCost);
     }
 

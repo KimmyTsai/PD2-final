@@ -3,12 +3,12 @@ package comsimple;
 import java.util.ArrayList;
 import java.util.Collections;
 
-class Player {
+public class Player {
     String name;
-    int health;
-    int block;
-    int energy;
-    int baseAttack;
+    public int health;
+    public int block;
+    public int energy;
+    public int baseAttack;
     int muscleTurns;
     boolean isVulnerable;
     int vulnerableDuration;
@@ -18,7 +18,7 @@ class Player {
     ArrayList<Card> hand;
     ArrayList<Card> discardPile;
 
-    Player(String name, int health, int baseAttack) {
+    public Player(String name, int health, int baseAttack) {
         this.name = name;
         this.health = health;
         this.block = 0;
@@ -106,7 +106,7 @@ class Player {
         }
     }
 
-    void gainBlock(int amount) {
+    public void gainBlock(int amount) {
         block += amount;
     }
 

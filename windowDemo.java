@@ -1,3 +1,19 @@
+//package comsimple;
+import comsimple.AttackCard;
+import comsimple.BashCard;
+import comsimple.BossEnemy;
+import comsimple.Card;
+import comsimple.CombustCard;
+import comsimple.DefendCard;
+import comsimple.Enemy;
+import comsimple.FlexCard;
+import comsimple.MusicPlayer;
+import comsimple.SimpleSlay;
+import comsimple.SlayChanged;
+import comsimple.Vulnerable;
+import comsimple.Weak;
+import comsimple.Player;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
@@ -9,8 +25,8 @@ public class windowDemo extends JFrame {
     
     private JLabel imgLabel;
     private JPanel imagePanel;
-    private JButton btn1;
-    private JButton btn2;
+    private JLabel button1;
+    private JLabel button2;
     private ImageIcon homeImg;
     private ImageIcon mapImg;
     private ImageIcon passImg;
@@ -18,7 +34,7 @@ public class windowDemo extends JFrame {
     private JLabel iconLabel2;
     private JLabel iconLabel3;
     private JLabel iconLabel4;
-    private List<JLabel> cardLabels = new ArrayList<>();
+    private List<JLabel> cardLabels = new ArrayList<>(); // 手牌表
     private int attackNumber = 5;
     private int defendNumber = 4; 
     private int bashNumber = 2;
@@ -50,11 +66,58 @@ public class windowDemo extends JFrame {
     private int energy;
     private int round = 0;
     private JLabel vulnerableLabel;
-    private int block = 0;
+    public int health = 20;
+    ///private int block = 0;
     private JLabel blockLabel;
     private JLabel blockNumber;
+    private int vulnerableDuration = 0;
+    private JLabel monsterattackLabel;
+    private JLabel monsterattackNumber;
+    private int monsterattack;
+    public MusicPlayer musicPlayer; // 添加MusicPlayer變量
+    public int muscleturn = 0;
+    private int level = -1;
+    private int [] fullMonsterHP = new int[5];
+    private JLabel muscleiconLabel;
+    private JLabel muscleiconNumber;  
+
     public windowDemo() {
         init();
+    }
+
+    //怪死了沒
+    private boolean allEnemiesDefeated() {
+        for (Enemy enemy : enemies) {
+            if (enemy.health > 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
+    // 全局變數
+    ArrayList<Enemy> enemies = new ArrayList<>();
+    Player player;
+
+    // 初始化敵人和玩家，只在遊戲開始時調用一次
+    public void initGame() {
+        if (level == 0) {
+            player = new Player("Player", 80, 0);
+            enemies.add(new Enemy(20, 6));  
+            fullMonsterHP[level] = enemies.get(level).health;
+        } 
+        else if (level == 1) {
+            enemies.add(new Enemy(40, 10));
+            fullMonsterHP[level] = enemies.get(level).health;
+        }
+        else if(level == 2){
+            enemies.add(new Enemy(80, 15));
+            //enemies.add(new Enemy(40, 10));
+            fullMonsterHP[level] = enemies.get(level).health;
+            //fullMonsterHP[level + 1] = enemies.get(level + 1).health;
+        }
+        
     }
 
     @SuppressWarnings("removal")
@@ -65,8 +128,8 @@ public class windowDemo extends JFrame {
         this.setResizable(false);
         this.setVisible(true);
 
-        // 設置全屏
-        GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+        // 設置視窗大小
+       // GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
         this.setSize(1920, 1080);
         /*
         if (gd.isFullScreenSupported()) {
@@ -76,9 +139,6 @@ public class windowDemo extends JFrame {
             this.setSize(1920, 1080); //視窗大小，不能全屏就1920*1080
         }
         */
-
-        btn1 = new JButton("How To Play");
-        btn2 = new JButton("Start");
         
         // 主畫面
         homeImg = new ImageIcon("image/wallpaper.jpg");
@@ -93,15 +153,23 @@ public class windowDemo extends JFrame {
         ((JPanel) contain).setOpaque(false); 
 
         contain.setLayout(new FlowLayout());
-        contain.add(btn1);
-        contain.add(btn2);
+
+        button1 = new JLabel(new ImageIcon("image/button1.png"));
+        button2 = new JLabel(new ImageIcon("image/button2.png"));
+        button1.setBounds(120, 620, 200, 120);
+        button2.setBounds(120, 490, 200, 120);
+        this.getLayeredPane().add(button1, new Integer(Integer.MIN_VALUE + 30));
+        this.getLayeredPane().add(button2, new Integer(Integer.MIN_VALUE + 20));
   
         imagePanel = new JPanel(new BorderLayout());
-        ImageIcon popupImg = new ImageIcon("image/test.png");
+        ImageIcon popupImg = new ImageIcon("image/rule.png");
         JLabel popupLabel = new JLabel(popupImg);
         JButton closeButton = new JButton("Close");
         
-        closeButton.addActionListener(e -> imagePanel.setVisible(false));
+        closeButton.addActionListener(e -> {
+            musicPlayer.playMusicOnce("music/click.wav");
+            imagePanel.setVisible(false);
+        });
 
         imagePanel.add(popupLabel, BorderLayout.CENTER);
         imagePanel.add(closeButton, BorderLayout.SOUTH);
@@ -109,55 +177,89 @@ public class windowDemo extends JFrame {
         
         // 關卡選擇頁
         this.getLayeredPane().add(imagePanel, new Integer(Integer.MIN_VALUE + 1));
-        imagePanel.setBounds(100, 100, popupImg.getIconWidth(), popupImg.getIconHeight());
+        imagePanel.setBounds(400, 100, popupImg.getIconWidth(), popupImg.getIconHeight());
         
-        btn1.addActionListener(e -> imagePanel.setVisible(true));
-
-        btn2.addActionListener(new ActionListener() {
+        button1.addMouseListener(new MouseAdapter() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                levelChoose();
-        }});
+            public void mouseClicked(MouseEvent e) {
+                musicPlayer.playMusicOnce("music/click.wav");
+                imagePanel.setVisible(true);
+            }
+        });
 
-        // 创建显示抽取卡片的面板
+        button2.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                musicPlayer.playMusicOnce("music/click.wav");
+                levelChoose();
+            }
+        });
+
+        // 抽卡牌的面板
         cardPanel = new JPanel();
         cardPanel.setOpaque(false);
         cardPanel.setLayout(new FlowLayout());
         this.getLayeredPane().add(cardPanel, new Integer(Integer.MIN_VALUE + 4));
         cardPanel.setBounds(0, getScreenHeight() - 330, getScreenWidth(), 990);
 
+        // 背景音樂
+        musicPlayer = new MusicPlayer();
+        musicPlayer.playBackgroundMusic("music/bgm.wav");
     }
     
     private void levelChoose() { //關卡選擇頁面
+        muscleturn = 0;
+        //player.baseAttack = 0;
+        // System.out.println(level);
         // 隱藏按鈕
-        btn1.setVisible(false);
-        btn2.setVisible(false);
+        button1.setVisible(false);
+        button2.setVisible(false);
+        if(pass[0] != 0){
+            // 停止播放關卡音樂 播放背景音樂
+            musicPlayer.stopBackgroundMusic();
+            musicPlayer.playBackgroundMusic("music/bgm.wav");
+        }
+
+        hideAllLabel();
         
         // 隱藏首頁
         if (imagePanel.isVisible()) {
             imagePanel.setVisible(false);
         }
 
-        Timer timer = new Timer(50, null);
-        timer.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                mapImg = new ImageIcon("image/new_wallpaper.jpg");
-                imgLabel.setIcon(scaleImageIcon(mapImg, getScreenWidth(), getScreenHeight()));
-                imgLabel.repaint();
-                timer.stop();
-                addCustomIcons(); //關卡圖示
-            }
-        });
-        timer.start();
+        if(level < 2){
+            SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
+                @Override
+                protected Void doInBackground() throws Exception {
+                    mapImg = new ImageIcon("image/new_wallpaper.jpg");
+                    return null;
+                }
+        
+                @Override
+                protected void done() {
+                    imgLabel.setIcon(scaleImageIcon(mapImg, getScreenWidth(), getScreenHeight()));
+                    imgLabel.repaint();
+                    addCustomIcons(); //關卡圖示
+                }
+            };
+            worker.execute();
+        }
+        
+        if(level == 2){
+            hideAllLabel();
+            musicPlayer.stopBackgroundMusic();
+            musicPlayer.playBackgroundMusic("music/win.wav");
+            passImg = new ImageIcon("image/win.png");
+            imgLabel.setIcon(scaleImageIcon(passImg, getScreenWidth(), getScreenHeight()));
+            imgLabel.repaint();
+        }
     }
 
     @SuppressWarnings("removal")
     private void addCustomIcons() {
         final JDialog dialog = new JDialog();
         dialog.setAlwaysOnTop(true);
-
+        addBlockAndVulnerable();
         // 第一關
         
         if(pass[0] != 1){
@@ -172,18 +274,26 @@ public class windowDemo extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if(pass[0] != 1){
+                    //加關卡音樂
+                    musicPlayer.stopBackgroundMusic();
+                    musicPlayer.playBackgroundMusic("music/edm.wav");
+                    
                     imgLabel.setIcon(scaleImageIcon(new ImageIcon("image/level1.jpg"), getScreenWidth(), getScreenHeight()));
                     imgLabel.repaint();
                     hideIcon();
                     iconLabel1.setIcon(new ImageIcon("image/icon1_new.png"));
                     //關卡內容
-                    energy = 3;
-                    vulnerable();
-                    addBlock();
-
+                    
+                    level ++;  
+                    energy = 3; //能量值
+                    
+                    initGame();
                     callAllLabel();
+                    initCards();
+                    
 
-                    deck = showRandomCards();
+                    
+                    showRandomCards();
                     deckNumber.setText(deck + "");
                     nextRound();
 
@@ -211,14 +321,29 @@ public class windowDemo extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if(pass[1] != 1 && pass[0] == 1){
-                    imgLabel.setIcon(scaleImageIcon(new ImageIcon("image/level1.jpg"), getScreenWidth(), getScreenHeight()));
+                    musicPlayer.stopBackgroundMusic();
+                    musicPlayer.playBackgroundMusic("music/edm.wav");
+                    imgLabel.setIcon(scaleImageIcon(new ImageIcon("image/level2.jpg"), getScreenWidth(), getScreenHeight()));
                     imgLabel.repaint();
                     hideIcon();
                     iconLabel2.setIcon(new ImageIcon("image/icon1_new.png"));
                     //關卡內容
+                    discardDeck = 0;
+                    level ++;
+                    player.energy = 3; //能量值
+                    player.baseAttack = 0;
+                    //hpLabel.setVisible(true);
+                    vulnerableDuration = 0;
+                    initGame();
+                    callAllLabel();
+                    initCards();
+
+                    showRandomCards();
+                    deckNumber.setText(deck + "");
+                    nextRound();
                     //
                     pass[1] = 1;
-                    levelChoose();
+                    //levelChoose();
                 }
                 else{
                     JOptionPane.showMessageDialog(null, "Please pass the previous level!");
@@ -240,11 +365,15 @@ public class windowDemo extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if(pass[2] != 1 && pass[0] == 1 && pass[1] == 1){
-                    imgLabel.setIcon(scaleImageIcon(new ImageIcon("image/level1.jpg"), getScreenWidth(), getScreenHeight()));
+                    imgLabel.setIcon(scaleImageIcon(new ImageIcon("image/level3.jpg"), getScreenWidth(), getScreenHeight()));
                     imgLabel.repaint();
                     hideIcon();
                     iconLabel3.setIcon(new ImageIcon("image/icon2_new.png"));
                     //關卡內容
+                    player.health += 15;
+                    if(player.health >= 80) player.health = 80 ;
+                    JOptionPane.showMessageDialog(null, "回血點：HP增加15\n" + 
+                    "目前血量：" + player.health + "/80");
                     //
                     pass[2] = 1;
                     levelChoose();
@@ -269,16 +398,28 @@ public class windowDemo extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if(pass[3] != 1 && pass[0] == 1 && pass[1] == 1 && pass[2] == 1){
-                    imgLabel.setIcon(scaleImageIcon(new ImageIcon("image/level1.jpg"), getScreenWidth(), getScreenHeight()));
+                    musicPlayer.stopBackgroundMusic();
+                    musicPlayer.playBackgroundMusic("music/boss.wav");
+                    imgLabel.setIcon(scaleImageIcon(new ImageIcon("image/level4.jpg"), getScreenWidth(), getScreenHeight()));
                     imgLabel.repaint();
                     hideIcon();
                     iconLabel4.setIcon(new ImageIcon("image/icon3_new.png"));
                     //關卡內容
+                    discardDeck = 0;
+                    level ++;
+                    player.energy = 3; //能量值
+                    player.baseAttack = 0;
+                    vulnerableDuration = 0;
+                    initGame();
+                    callAllLabel();
+                    initCards();
+
+                    showRandomCards();
+                    deckNumber.setText(deck + "");
+                    nextRound();
                     //
                     pass[3] = 1;
-                    passImg = new ImageIcon("image/pass.jpg");
-                    imgLabel.setIcon(scaleImageIcon(passImg, getScreenWidth(), getScreenHeight()));
-                    imgLabel.repaint();
+                    
                 }
                 else{
                     JOptionPane.showMessageDialog(null, "Please pass the previous level!");
@@ -323,85 +464,235 @@ public class windowDemo extends JFrame {
         label.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
-                boolean collided = false;
+                boolean collided = false; 
+            
                 for (int i = 0; i < cardLabels.size(); i++) {
-                    System.out.println(cardLabels.size());
                     JLabel otherLabel = cardLabels.get(i);
+                    
                     if (label.getBounds().intersects(monsterLabel.getBounds())) {
                         collided = true;
+                        
+                        
 
-                        cards.remove(labelType);
-                        // 移除
-                        cardPanel.remove(label);
-                        cardLabels.remove(label);
-                        cardTypes.remove(labelType); //有問題
-
-                        int countLabelName = Collections.frequency(cards, labelType);
-                        JOptionPane.showMessageDialog(null, labelType + " 碰撞到怪物\n" +
-                        labelType + " 總共 " + countLabelName + " 張\n");
-                        switch (labelType){
-                            case "image/attack.png" :
-                                System.out.println("attack");
+                        // int countLabelName = Collections.frequency(cards, labelType);
+                        // JOptionPane.showMessageDialog(null, labelType + " 碰撞到怪物\n" +
+                        //         labelType + " 總共 " + countLabelName + " 張\n");
+            
+                        Enemy enemy = enemies.get(level);
+                        
+                        switch (labelType) {
+                            case "image/attack.png":
+                                AttackCard attackCard = new AttackCard("Strike", 6, 0, 1); 
+                                if (player.energy >= attackCard.energyCost) {
+                                    discardDeck++;
+                                    discardDeckNumber.setText(discardDeck + "");
+                                    label.setVisible(false);
+                                    cards.remove(labelType);
+                                    cardPanel.remove(label);
+                                    cardLabels.remove(label); 
+                                    cardTypes.remove(labelType);
+                                    //放打擊音效
+                                    musicPlayer.playMusicOnce("music/attack.wav");
+                                    
+                                    //enemy.takeDamage(6);
+                                    int totalDamage = player.baseAttack + attackCard.damage;
+                                    
+                                    //enemy.takeDamage(totalDamage);
+                                    JOptionPane.showMessageDialog(null, "對敵方造成" + enemy.takeDamage(totalDamage) + "點傷害！");
+                                    player.energy -= attackCard.energyCost;
+                                    if (enemy.health <= 0) {
+                                        player.block = 0;
+                                        levelChoose();
+                                    }
+                                } else {
+                                    JOptionPane.showMessageDialog(null, "能量不足");
+                                    label.setLocation(initialPosition);
+                                }
                                 break;
-
-                            case "image/defend.png" :
-                                System.out.println("defend");
+                        
+                            case "image/defend.png":
+                                DefendCard defendCard = new DefendCard("Defend", 0, 5, 1); 
+                                if (player.energy >= defendCard.energyCost) {
+                                    label.setVisible(false);
+                                    JOptionPane.showMessageDialog(null, "獲得5點格擋！");
+                                    discardDeck++;
+                                    discardDeckNumber.setText(discardDeck + "");
+                                    cards.remove(labelType);
+                                    cardPanel.remove(label);
+                                    cardLabels.remove(label);
+                                    cardTypes.remove(labelType);
+                                    player.gainBlock(5);
+                                    player.energy -= defendCard.energyCost;
+                                }
+                                else {
+                                    JOptionPane.showMessageDialog(null, "能量不足");
+                                    label.setLocation(initialPosition);
+                                }
                                 break;
-
-                            case "image/muscle.png" :
-                                System.out.println("muscle");
+                        
+                            case "image/muscle.png":
+                                FlexCard muscleCard = new FlexCard("Muscle", 0, 0, 0); 
+                                if (player.energy >= muscleCard.energyCost) {
+                                    label.setVisible(false);
+                                    JOptionPane.showMessageDialog(null, "本回合增加2點力量！");
+                                    discardDeck++;
+                                    discardDeckNumber.setText(discardDeck + "");
+                                    cards.remove(labelType);
+                                    cardPanel.remove(label);
+                                    cardLabels.remove(label);
+                                    cardTypes.remove(labelType);
+                                    //player.useMuscle();
+                                    player.baseAttack += 2; 
+                                    player.energy -= muscleCard.energyCost;
+                                    muscleturn = 1 ;
+                                } else {
+                                }
                                 break;
+                        
+                            case "image/bash.png":
+                                BashCard bashCard = new BashCard("Bash", 8, 0, 2); 
+                                if (player.energy >= bashCard.energyCost) {
+                                    discardDeck++;
+                                    discardDeckNumber.setText(discardDeck + "");
+                                    label.setVisible(false);
+                                    cards.remove(labelType);
+                                    cardPanel.remove(label);
+                                    cardLabels.remove(label);
+                                    cardTypes.remove(labelType);
+                                    //放打擊音效
+                                    musicPlayer.playMusicOnce("music/attack.wav");
+                                    
+                                    //enemy.takeDamage(8); 
+                                    int totalDamage = player.baseAttack + bashCard.damage;
+                                    //enemy.takeDamage(totalDamage);                        
+                                    JOptionPane.showMessageDialog(null, "對敵方造成" + enemy.takeDamage(totalDamage) + "點傷害！\n" + 
+                                    "敵方附加兩層易傷");                                                                             
+                                    //enemy.applyEffect(new Vulnerable(2));
+                                    
+                                    vulnerableDuration += 2;     
+                                    
+                                    //if ( vulnerableDuration > 0 ) {
+                                        enemy.haveEffect(2);
+                                    //}
+                                    
+                                    vulnerableLabel.setVisible(true);
 
-                            case "image/bash.png" :
-                                System.out.println("defend");
+                                    player.energy -= bashCard.energyCost;
+                                    if (enemy.health <= 0) {
+                                        player.block = 0;
+                                        levelChoose();
+                                    }
+                                } else {
+                                    JOptionPane.showMessageDialog(null, "能量不足");
+                                    label.setLocation(initialPosition);
+                                    
+                                }
                                 break;
-                                
-                            case "image/combust.png" :
-                                System.out.println("combust");
+                        
+                            case "image/combust.png":
+                                CombustCard combustCard = new CombustCard("Combust", 5, 0, 0); 
+                                if (player.energy >= combustCard.energyCost) {
+                                    discardDeck++;
+                                    discardDeckNumber.setText(discardDeck + "");
+                                    label.setVisible(false);
+                                    cards.remove(labelType);
+                                    cardPanel.remove(label);
+                                    cardLabels.remove(label);
+                                    cardTypes.remove(labelType);
+                                    //放打擊音效
+                                    musicPlayer.playMusicOnce("music/attack.wav");
+                                    player.health -= 1;
+                                    for (Enemy en : enemies) {
+                                        if (en.health > 0) {
+                                            //en.takeDamage(5);
+                                            int totalDamage = player.baseAttack + combustCard.damage;
+                                            //en.takeDamage(totalDamage);
+                                            JOptionPane.showMessageDialog(null, "對敵方造成" + en.takeDamage(totalDamage) + "點傷害！\n" + 
+                                            "玩家損失1點血量");
+                                        }
+                                    }
+                                    player.energy -= combustCard.energyCost;
+                                    if (enemy.health <= 0) {
+                                        player.block = 0;
+                                        levelChoose();
+                                    }
+                                } else {
+                                }
                                 break;
-
+                        
                             default:
-                            System.out.println("");
+                                System.out.println("Unknown card type.");
+                                break;
                         }
+                        monsterhpNumber.setText(enemy.health + "/" + fullMonsterHP[level]);
+                        monsterhpLabel.setBounds(1120, 450, (int)(289 * ((double)enemy.health / fullMonsterHP[level])), 20);
+                        hpNumber.setText(player.health + "/80");
+                        energyNumber.setText(player.energy + "/3");
+                        blockNumber.setText(player.block + "");
+                        muscleiconNumber.setText(player.baseAttack + "");
+                        deck = cards.size();
+                        deckNumber.setText(deck + "");
 
-                        label.setVisible(false);
-                        System.out.println(cards);
-                        discardDeck++;
-                        discardDeckNumber.setText(discardDeck + "");
+                        if(player.block <= 0){
+                            blockNumber.setVisible(false);
+                            blockLabel.setVisible(false);
+                        }
+                        else{
+                            blockNumber.setVisible(true);
+                            blockLabel.setVisible(true);
+                        }
+                        if(player.baseAttack <= 0){
+                            muscleiconNumber.setVisible(false);
+                            muscleiconLabel.setVisible(false);
+                        }
+                        else{
+                            muscleiconNumber.setVisible(true);
+                            muscleiconLabel.setVisible(true);
+                        }
+                        //System.out.println(player.block);
                         label.setLocation(initialPosition);
                         break;
                     }
                 }
+            
                 if (!collided) {
                     label.setLocation(initialPosition);
                 }
             }
         });
     }
+
     @SuppressWarnings("removal")
-    private void vulnerable(){
+    private void addBlockAndVulnerable(){ //因為兩者都會視情況消失
+        blockLabel = new JLabel(new ImageIcon("image/block.png")); //格擋
+        blockLabel.setBounds(155, 435, 50, 50);
+        getLayeredPane().add(blockLabel, new Integer(Integer.MIN_VALUE + 4));
+        blockNumber = new JLabel(0 + "", SwingConstants.CENTER); //格擋值
+        blockNumber.setFont(new Font("Arial", Font.BOLD, 25));
+        blockNumber.setForeground(Color.BLACK);
+        getLayeredPane().add(blockNumber, new Integer(Integer.MIN_VALUE + 5));
+        blockNumber.setBounds(153, 435, 50, 50);
+        blockNumber.setVisible(false);
+        blockLabel.setVisible(false);
+
         vulnerableLabel = new JLabel(new ImageIcon("image/vulnerable.png")); //易傷
         vulnerableLabel.setBounds(1120, 470, 35, 35);
         getLayeredPane().add(vulnerableLabel, new Integer(Integer.MIN_VALUE + 4));
+        vulnerableLabel.setVisible(false);
+
+        muscleiconLabel = new JLabel(new ImageIcon("image/muscleicon.png")); //肌肉
+        muscleiconLabel.setBounds(175, 475, 40, 40);
+        getLayeredPane().add(muscleiconLabel, new Integer(Integer.MIN_VALUE + 4));
+        muscleiconNumber = new JLabel(0 + "", SwingConstants.CENTER); //格擋值
+        muscleiconNumber.setFont(new Font("Arial", Font.BOLD, 25));
+        muscleiconNumber.setForeground(Color.BLACK);
+        getLayeredPane().add(muscleiconNumber, new Integer(Integer.MIN_VALUE + 5));
+        muscleiconNumber.setBounds(173, 475, 50, 50);
+        muscleiconNumber.setVisible(false);
+        muscleiconLabel.setVisible(false);
     }
-
-    @SuppressWarnings("removal")
-    private void addBlock(){
-        if(block >= 1){
-            blockLabel = new JLabel(new ImageIcon("image/block.png")); //格擋
-            blockLabel.setBounds(155, 435, 50, 50);
-            getLayeredPane().add(blockLabel, new Integer(Integer.MIN_VALUE + 4));
-            blockNumber = new JLabel(block + ""); //格擋值
-            blockNumber.setFont(new Font("Arial", Font.BOLD, 25));
-            blockNumber.setForeground(Color.BLACK);
-            getLayeredPane().add(blockNumber, new Integer(Integer.MIN_VALUE + 5));
-            blockNumber.setBounds(173, 435, 50, 50);
-        }
-
-    }
-    @SuppressWarnings("removal")
-    private int showRandomCards() {
-
+    private void initCards() {
+        cards.clear();
         // 添加卡片到列表
         for (int i = 0; i < attackNumber; i++) {
             cards.add("image/attack.png");
@@ -418,32 +709,79 @@ public class windowDemo extends JFrame {
         for (int i = 0; i < combustNumber; i++) {
             cards.add("image/combust.png");
         }
-
-        // 打乱卡片顺序
+        deck = cards.size();
+        deckNumber.setText(deck + "");
+    }
+    @SuppressWarnings("removal")
+    private int showRandomCards() {
+        // 打亂卡牌順序
         Collections.shuffle(cards);
 
-        // 显示前五张卡片
+        // 選前五張
         cardPanel.removeAll();
         cardLabels.clear();
         cardTypes.clear();
-        for (int i = 0; i < 5; i++) {
-            JLabel cardLabel = new JLabel(new ImageIcon(cards.get(i))); //手牌
-            String cardType = cards.get(i);
-            moveObject(cardLabel, cardType);
-            cardLabel.setBounds(190 + i * 210, getScreenHeight() - 330, 220, 288); // 设置卡片位置和大小
-            this.getLayeredPane().add(cardLabel, new Integer(Integer.MIN_VALUE + 4));
-            cardLabels.add(cardLabel);
-            cardTypes.add(cardType);
+        if(cards.size() >= 5){
+            for (int i = 0; i < 5; i++) {
+                JLabel cardLabel = new JLabel(new ImageIcon(cards.get(i))); //手牌
+                String cardType = cards.get(i);
+                moveObject(cardLabel, cardType);
+                cardLabel.setBounds(190 + i * 210, getScreenHeight() - 330, 220, 288); // 手牌位置與大小
+                this.getLayeredPane().add(cardLabel, new Integer(Integer.MIN_VALUE + 8));
+                cardLabels.add(cardLabel);
+                cardTypes.add(cardType);
+            }
         }
+        else{
+            int temp = cards.size();
+            for (int i = 0; i < temp; i++) {
+                JLabel cardLabel = new JLabel(new ImageIcon(cards.get(i))); //手牌
+                String cardType = cards.get(i);
+                moveObject(cardLabel, cardType);
+                cardLabel.setBounds(190 + i * 210, getScreenHeight() - 330, 220, 288); // 手牌位置與大小
+                this.getLayeredPane().add(cardLabel, new Integer(Integer.MIN_VALUE + 8));
+                cardLabels.add(cardLabel);
+                cardTypes.add(cardType);
+            }
+            initCards();
+            Collections.shuffle(cards);
+
+            for (int i = 0; i < 5 - temp; i++) {
+                JLabel cardLabel = new JLabel(new ImageIcon(cards.get(i))); //手牌
+                String cardType = cards.get(i);
+                moveObject(cardLabel, cardType);
+                cardLabel.setBounds(190 + i * 210, getScreenHeight() - 330, 220, 288); // 手牌位置與大小
+                this.getLayeredPane().add(cardLabel, new Integer(Integer.MIN_VALUE + 8));
+                cardLabels.add(cardLabel);
+                cardTypes.add(cardType);
+            }
+            discardDeck = 0;
+            discardDeckNumber.setText(discardDeck + "");
+        }
+        deck = cards.size();
+        deckNumber.setText(deck + "");
         cardPanel.revalidate();
         cardPanel.repaint();
         return cards.size();
     }
     @SuppressWarnings("removal")
     private void callAllLabel(){
-        monsterLabel = new JLabel(new ImageIcon("image/monster1.png"));  //怪物
-        monsterLabel.setBounds(1050, 50, 400, 400);
-        getLayeredPane().add(monsterLabel, new Integer(Integer.MIN_VALUE + 3));
+        if(level == 0){
+            monsterLabel = new JLabel(new ImageIcon("image/monster1.png"));  //怪物
+            monsterLabel.setBounds(1050, 50, 400, 400);
+            getLayeredPane().add(monsterLabel, new Integer(Integer.MIN_VALUE + 3));
+        }
+        else if(level == 1){
+            monsterLabel = new JLabel(new ImageIcon("image/monster2.png"));  //怪物2
+            monsterLabel.setBounds(1050, 50, 400, 400);
+            getLayeredPane().add(monsterLabel, new Integer(Integer.MIN_VALUE + 3));
+        }
+        else if(level == 2){
+            monsterLabel = new JLabel(new ImageIcon("image/monster3.png"));  //怪物2
+            monsterLabel.setBounds(1050, 50, 400, 400);
+            getLayeredPane().add(monsterLabel, new Integer(Integer.MIN_VALUE + 3));
+        }
+        
 
         manLabel = new JLabel(new ImageIcon("image/fighter.png")); //角色
         manLabel.setBounds(45, 45, 500, 500);
@@ -468,12 +806,12 @@ public class windowDemo extends JFrame {
         deckNumber.setForeground(Color.WHITE);
         getLayeredPane().add(deckNumber, new Integer(Integer.MIN_VALUE + 4));
         deckNumber.setBounds(113, 767, 50, 50);
-
+        
         hpLabel = new JLabel(new ImageIcon("image/hp.png")); //HP
-        hpLabel.setBounds(180, 450, 289, 20);
+        hpLabel.setBounds(180, 450, (int)(289 * ((double)player.health / 80)), 20); //有bug?
         getLayeredPane().add(hpLabel, new Integer(Integer.MIN_VALUE + 3));
 
-        hpNumber = new JLabel(HP + "/80"); //HP數字
+        hpNumber = new JLabel(player.health + "/80"); //HP數字
         hpNumber.setFont(new Font("Arial", Font.BOLD, 25));
         hpNumber.setForeground(Color.WHITE);
         getLayeredPane().add(hpNumber, new Integer(Integer.MIN_VALUE + 4));
@@ -483,33 +821,158 @@ public class windowDemo extends JFrame {
         monsterhpLabel.setBounds(1120, 450, 289, 20);
         getLayeredPane().add(monsterhpLabel, new Integer(Integer.MIN_VALUE + 3));
 
-        monsterhpNumber = new JLabel(monsterHP + "/20"); //怪物HP數量
-        monsterhpNumber.setFont(new Font("Arial", Font.BOLD, 25));
-        monsterhpNumber.setForeground(Color.WHITE);
-        getLayeredPane().add(monsterhpNumber, new Integer(Integer.MIN_VALUE + 4));
-        monsterhpNumber.setBounds(1230, 435, 120, 50);
+        if(level <= 1){
+            monsterhpNumber = new JLabel(enemies.get(level).health + "/" + fullMonsterHP[level]); //怪物HP數量
+            monsterhpNumber.setFont(new Font("Arial", Font.BOLD, 25));  
+            monsterhpNumber.setForeground(Color.WHITE);
+            getLayeredPane().add(monsterhpNumber, new Integer(Integer.MIN_VALUE + 4));
+            monsterhpNumber.setBounds(1230, 435, 120, 50);
+        }
+        else{
+            monsterhpNumber = new JLabel(enemies.get(level).health + "/" + fullMonsterHP[level]); //怪物HP數量
+            monsterhpNumber.setFont(new Font("Arial", Font.BOLD, 25));  
+            monsterhpNumber.setForeground(Color.WHITE);
+            getLayeredPane().add(monsterhpNumber, new Integer(Integer.MIN_VALUE + 4));
+            monsterhpNumber.setBounds(1230, 435, 120, 50);
+        }
+
+        
 
         nextLabel = new JLabel(new ImageIcon("image/next.png")); //結束回合
         nextLabel.setBounds(1290, 570, 195, 83);
         getLayeredPane().add(nextLabel, new Integer(Integer.MIN_VALUE + 4));
 
-        energyLabel = new JLabel(new ImageIcon("image/energy.png")); //能量圖示
+        energyLabel = new JLabel(new ImageIcon("image/energy.png")); //能量圖示!!!!!!!!!!!!!!!!!!!!!!!!!
         energyLabel.setBounds(10, 530, 130, 131);
         getLayeredPane().add(energyLabel, new Integer(Integer.MIN_VALUE + 4));
 
-        energyNumber = new JLabel(energy + "/3"); //能量數量
+        energyNumber = new JLabel(energy + "/3"); //能量數量!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         energyNumber.setFont(new Font("Arial", Font.BOLD, 35));
         energyNumber.setForeground(Color.BLACK);
         getLayeredPane().add(energyNumber, new Integer(Integer.MIN_VALUE + 5));
         energyNumber.setBounds(52, 570, 120, 50);
 
+        monsterattackLabel = new JLabel(new ImageIcon("image/bossattack.png")); //怪物攻擊提示
+        monsterattackLabel.setBounds(1180, 40, 42, 43);
+        getLayeredPane().add(monsterattackLabel, new Integer(Integer.MIN_VALUE + 4));
+        
+        monsterattackNumber = new JLabel(enemies.get(level).damage + "", SwingConstants.CENTER); //怪物攻擊傷害
+        monsterattackNumber.setFont(new Font("Arial", Font.BOLD, 30));
+        monsterattackNumber.setForeground(Color.WHITE);
+        getLayeredPane().add(monsterattackNumber, new Integer(Integer.MIN_VALUE + 5));
+        monsterattackNumber.setBounds(1125, 50, 120, 50);
+
+    }
+    private void hideAllLabel(){
+        for(JLabel label : cardLabels){
+            label.setVisible(false);
+        }
+        if(pass[0] != 0){
+            player.block = 0;
+            player.baseAttack = 0;
+            monsterLabel.setVisible(false);
+            manLabel.setVisible(false);
+            hpLabel.setVisible(false);
+            hpNumber.setVisible(false);
+            monsterhpLabel.setVisible(false);
+            monsterhpNumber.setVisible(false);
+            nextLabel.setVisible(false);
+            energyLabel.setVisible(false);
+            energyNumber.setVisible(false);
+            discardDeckLabel.setVisible(false);
+            deckLabel.setVisible(false);
+            discardDeckNumber.setVisible(false);
+            deckNumber.setVisible(false);
+            blockLabel.setVisible(false);
+            blockNumber.setVisible(false);
+            muscleiconLabel.setVisible(false);
+            muscleiconNumber.setVisible(false);
+            vulnerableLabel.setVisible(false);
+            monsterattackLabel.setVisible(false);
+            monsterattackNumber.setVisible(false);
+            
+        }
     }
     private void nextRound() {
         nextLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                musicPlayer.playMusicOnce("music/click.wav");
+                discardDeck += cardLabels.size();
+                discardDeckNumber.setText(discardDeck + "");
                 JOptionPane.showMessageDialog(null, "Next Round!");
                 round ++;
+                for(String cardname : cardTypes){
+                    cards.remove(cardname);
+                }
+                for(JLabel label : cardLabels){
+                    label.setVisible(false);
+                }
+                
+                showRandomCards();
+                deck = cards.size();
+                deckNumber.setText(deck + "");
+                player.energy = 3;
+                energyNumber.setText(player.energy + "/3");
+                if(vulnerableDuration > 0){
+                    vulnerableDuration --;
+                    if(vulnerableDuration > 0){
+                        vulnerableLabel.setVisible(true);
+                    }
+                    else vulnerableLabel.setVisible(false);
+                }
+                else vulnerableLabel.setVisible(false);
+
+
+                //怪物攻擊
+                if (!allEnemiesDefeated()) {
+                    for (Enemy enemy : enemies) {
+                        if (enemy.health > 0) {
+                        //enemy.act(player, round);
+                        int effectiveDamage = enemy.damage - player.block;
+                        if (effectiveDamage > 0) {
+                        player.health -= effectiveDamage;
+                        player.block = 0;
+                        }
+                        //System.out.println("enemy attack");
+                        musicPlayer.playMusicOnce("music/enemy attack.wav");
+                        }
+                    }
+                    hpLabel.setBounds(180, 450, (int)(289 * ((double)player.health / 80)), 20);
+                    if(player.health <= 0){
+                        hideAllLabel();
+                        musicPlayer.stopBackgroundMusic();
+                        musicPlayer.playBackgroundMusic("music/lose.wav");
+                        passImg = new ImageIcon("image/lose.jpg");
+                        imgLabel.setIcon(scaleImageIcon(passImg, getScreenWidth(), getScreenHeight()));
+                        imgLabel.repaint();
+                    }
+                }
+
+
+                if(player.block != 0){
+                    player.block = 0;
+                }
+
+                blockNumber.setVisible(false);
+                blockLabel.setVisible(false);
+                muscleiconNumber.setVisible(false);
+                muscleiconLabel.setVisible(false);
+
+                hpNumber.setText(player.health + "/80");
+                
+                if (muscleturn > 0 ){
+                    muscleturn -- ;
+                }
+
+                if (muscleturn == 0){
+                    player.baseAttack = 0 ;
+                }
+                
+                for (Enemy enemy : enemies) {
+                    enemy.endTurn();  //減掉vulnerable的回合
+                }
+
             }
         });
     }
