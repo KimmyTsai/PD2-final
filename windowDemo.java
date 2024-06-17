@@ -915,6 +915,9 @@ public class windowDemo extends JFrame {
                         }
                         //System.out.println("enemy attack");
                         musicPlayer.playMusicOnce("music/enemy attack.wav");
+                        
+                        enemy.damage += 3;
+                        monsterattackNumber.setText(enemy.damage + "");
                         }
                     }
                     hpLabel.setBounds(180, 450, (int)(289 * ((double)player.health / 80)), 20);
@@ -927,7 +930,6 @@ public class windowDemo extends JFrame {
                         imgLabel.repaint();
                     }
                 }
-
 
                 if(player.block != 0){
                     player.block = 0;
