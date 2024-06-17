@@ -1,18 +1,5 @@
 //package comsimple;
-import comsimple.AttackCard;
-import comsimple.BashCard;
-import comsimple.BossEnemy;
-import comsimple.Card;
-import comsimple.CombustCard;
-import comsimple.DefendCard;
-import comsimple.Enemy;
-import comsimple.FlexCard;
-import comsimple.MusicPlayer;
-import comsimple.SimpleSlay;
-import comsimple.SlayChanged;
-import comsimple.Vulnerable;
-import comsimple.Weak;
-import comsimple.Player;
+import comsimple.*;
 
 import java.awt.*;
 import java.awt.event.*;

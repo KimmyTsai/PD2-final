@@ -66,7 +66,7 @@ public class Enemy {
     void applyEffect(Vulnerable vulnerable) {
         this.isVulnerable = true;
         this.vulnerableTurns = vulnerable.duration;
-        System.out.println(name + " is now Vulnerable for " + vulnerable.duration + " turns.");
+        //System.out.println(name + " is now Vulnerable for " + vulnerable.duration + " turns.");
     }
 
 
@@ -74,7 +74,7 @@ public class Enemy {
     public void haveEffect(int duration) {
         this.isVulnerable = true;
         this.vulnerableTurns = duration;
-        System.out.println(name + " is now Vulnerable for " + duration + " turns.");
+        //System.out.println(name + " is now Vulnerable for " + duration + " turns.");
     }
 
 
@@ -83,7 +83,7 @@ public class Enemy {
             vulnerableTurns--;
             if (vulnerableTurns <= 0) {
                 isVulnerable = false;
-                System.out.println(name + " is no longer Vulnerable.");
+                //System.out.println(name + " is no longer Vulnerable.");
             }
         }
     }
@@ -92,7 +92,7 @@ public class Enemy {
     void applyEffect(Weak weak) {
         this.isWeak = true;
         this.weakTurns = weak.duration;
-        System.out.println(name + " is now Weak for " + weak.duration + " turns.");
+        //System.out.println(name + " is now Weak for " + weak.duration + " turns.");
     }
 
     String getNextAction(int turnCounter) {

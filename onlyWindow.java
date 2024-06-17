@@ -528,6 +528,6 @@ public class onlyWindow extends JFrame {
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new windowDemo());
+        SwingUtilities.invokeLater(() -> new onlyWindow());
     }
 }
