@@ -44,6 +44,22 @@ This project is a card adventure game inspired by the popular game "Slay the Spi
     - Locate the `windowDemo.java` file in the `PD2-final` directory.
     - Right-click on `windowDemo.java` and select `Run Java`.
 
+## Resources
+
+This project uses music and images from the following sources:
+
+- **Music**:
+  - [Age of Empires 2: Age of Kings - Main Theme](https://www.youtube.com/watch?v=0WGKC2J3g_Y): Background music of the level choose interface.
+  - [Age of Empires - Main Theme](https://www.youtube.com/watch?v=E4NnynpQjHs): Background music of the first and second level.
+  - [神魔之塔BGM](https://tos.fandom.com/zh/wiki/%E7%A5%9E%E9%AD%94%E4%B9%8B%E5%A1%94%E4%BD%BF%E7%94%A8%E6%A8%82%E6%9B%B2%E5%88%97%E8%A1%A8?variant=zh-tw): Background music of the last level.
+  - [打擊音效](https://taira-komori.jpn.org/attack01tw.html): The attack sound effects.
+
+- **Images**:
+  - [ArtStation](https://www.pinterest.com/ArtStation_HQ/): Background and the monster pictures.
+  - [SLay the Spire pictures](https://sts.huijiwiki.com/wiki/%E5%8D%A1%E7%89%8C): Pictures of the cards and icons.
+
+Please ensure you comply with the licensing terms of these resources.
+
 ## Project Structure
 
 - `PD2-final`: Contains the main source code for the game.
