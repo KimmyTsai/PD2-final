@@ -99,7 +99,7 @@ public class windowDemo extends JFrame {
             fullMonsterHP[level] = enemies.get(level).health;
         }
         else if(level == 2){
-            enemies.add(new Enemy(60, 15));
+            enemies.add(new Enemy(80, 15));
             //enemies.add(new Enemy(40, 10));
             fullMonsterHP[level] = enemies.get(level).health;
             //fullMonsterHP[level + 1] = enemies.get(level + 1).health;
@@ -320,6 +320,7 @@ public class windowDemo extends JFrame {
                     player.energy = 3; //能量值
                     player.baseAttack = 0;
                     //hpLabel.setVisible(true);
+                    vulnerableDuration = 0;
                     initGame();
                     callAllLabel();
                     initCards();
@@ -395,6 +396,7 @@ public class windowDemo extends JFrame {
                     level ++;
                     player.energy = 3; //能量值
                     player.baseAttack = 0;
+                    vulnerableDuration = 0;
                     initGame();
                     callAllLabel();
                     initCards();
@@ -519,7 +521,7 @@ public class windowDemo extends JFrame {
                                 FlexCard muscleCard = new FlexCard("Muscle", 0, 0, 0); 
                                 if (player.energy >= muscleCard.energyCost) {
                                     label.setVisible(false);
-                                    JOptionPane.showMessageDialog(null, "本回合增加兩點力量！");
+                                    JOptionPane.showMessageDialog(null, "本回合增加2點力量！");
                                     discardDeck++;
                                     discardDeckNumber.setText(discardDeck + "");
                                     cards.remove(labelType);
@@ -736,7 +738,7 @@ public class windowDemo extends JFrame {
                 String cardType = cards.get(i);
                 moveObject(cardLabel, cardType);
                 cardLabel.setBounds(190 + i * 210, getScreenHeight() - 330, 220, 288); // 手牌位置與大小
-                this.getLayeredPane().add(cardLabel, new Integer(Integer.MIN_VALUE + 4));
+                this.getLayeredPane().add(cardLabel, new Integer(Integer.MIN_VALUE + 8));
                 cardLabels.add(cardLabel);
                 cardTypes.add(cardType);
             }
