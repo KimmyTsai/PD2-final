@@ -4,7 +4,7 @@ public class BashCard extends Card {
     int vulnerableDuration;
 
     public BashCard(String name, int damage, int block, int vulnerableDuration) {
-        super(name, damage, block, 2); // 能量耗费为2
+        super(name, damage, block, 2); // 耗能2
         this.vulnerableDuration = vulnerableDuration;
     }
 

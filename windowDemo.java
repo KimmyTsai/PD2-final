@@ -48,19 +48,14 @@ public class windowDemo extends JFrame {
     private JLabel deckLabel;
     private JLabel discardDeckNumber;
     private JLabel deckNumber;
-    private int HP = 80;
-    private int monsterHP = 20;
     private int energy;
-    private int round = 0;
     private JLabel vulnerableLabel;
     public int health = 20;
-    ///private int block = 0;
     private JLabel blockLabel;
     private JLabel blockNumber;
     private int vulnerableDuration = 0;
     private JLabel monsterattackLabel;
     private JLabel monsterattackNumber;
-    private int monsterattack;
     public MusicPlayer musicPlayer; // 添加MusicPlayer變量
     public int muscleturn = 0;
     private int level = -1;
@@ -454,8 +449,6 @@ public class windowDemo extends JFrame {
                 boolean collided = false; 
             
                 for (int i = 0; i < cardLabels.size(); i++) {
-                    JLabel otherLabel = cardLabels.get(i);
-                    
                     if (label.getBounds().intersects(monsterLabel.getBounds())) {
                         collided = true;
                         
@@ -795,7 +788,7 @@ public class windowDemo extends JFrame {
         deckNumber.setBounds(113, 767, 50, 50);
         
         hpLabel = new JLabel(new ImageIcon("image/hp.png")); //HP
-        hpLabel.setBounds(180, 450, (int)(289 * ((double)player.health / 80)), 20); //有bug?
+        hpLabel.setBounds(180, 450, (int)(289 * ((double)player.health / 80)), 20);
         getLayeredPane().add(hpLabel, new Integer(Integer.MIN_VALUE + 3));
 
         hpNumber = new JLabel(player.health + "/80"); //HP數字
@@ -888,7 +881,6 @@ public class windowDemo extends JFrame {
                 discardDeck += cardLabels.size();
                 discardDeckNumber.setText(discardDeck + "");
                 JOptionPane.showMessageDialog(null, "Next Round!");
-                round ++;
                 for(String cardname : cardTypes){
                     cards.remove(cardname);
                 }
