@@ -6,7 +6,6 @@ This project is a card adventure game inspired by the popular game "Slay the Spi
 
 ## Features
 
-- **Deck Building**: Build and customize your own deck of cards.
 - **Strategic Gameplay**: Use your cards strategically to overcome various challenges.
 - **Adventure Mode**: Embark on an adventure and face different enemies.
 - **Card Combos**: Combine cards to create powerful effects.
@@ -17,33 +16,40 @@ This project is a card adventure game inspired by the popular game "Slay the Spi
 2. **Start Your Adventure**: Begin your journey and encounter various enemies.
 3. **Use Your Cards**: During battles, use the cards in your hand to attack, defend, and use special abilities.
 4. **Win Battles**: Defeat enemies by efficiently using your cards and strategy.
-5. **Progress and Upgrade**: As you progress, earn rewards to upgrade your cards and deck.
 
 ## Getting Started
 
-1. **Clone the Repository**: 
+1. **Clone the Repository**:
+
     ```bash
     git clone https://github.com/KimmyTsai/PD2-final.git
     ```
 
-2. **Install Dependencies**: 
-    ```bash
-    cd card-adventure-game
-    npm install
-    ```
+2. **Set Up Java Environment**:
+    Ensure you have Java Development Kit (JDK) installed. You can download it from [here](https://www.oracle.com/java/technologies/javase-downloads.html).
 
-3. **Run the Game**: 
+3. **Set Up VS Code**:
+    - Download and install [Visual Studio Code](https://code.visualstudio.com/).
+    - Install the Java Extension Pack in VS Code:
+      1. Open VS Code.
+      2. Go to Extensions (you can press `Ctrl+Shift+X`).
+      3. Search for "Java Extension Pack" and install it.
 
-    ```bash
-    npm start
-    ```
+4. **Open the Project in VS Code**:
+    - Open VS Code.
+    - Click on `File` -> `Open Folder...` and select the cloned repository folder.
 
-## License
+5. **Run the Game**:
+    - You can run the game directly from VS Code.
+    - Locate the `windowDemo.java` file in the `PD2-final` directory.
+    - Right-click on `windowDemo.java` and select `Run Java`.
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+## Project Structure
+
+- `PD2-final`: Contains the main source code for the game.
+- `PD2-final/comsimple`: Contains the simple battle process, source code of each card and the test code.
 
 ## Acknowledgements
 
 - Inspired by "Slay the Spire" by MegaCrit.
 - Thanks to the open-source community for their contributions.
-
